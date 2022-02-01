@@ -5,12 +5,14 @@ import Footer from './components/Footer'
 import About from './pages/About'
 import Home from './pages/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import ScrollToTop from './components/ScrollToTop'
 
 export default function App() {
   return (
     <Router>
       <Header />
       <main>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
