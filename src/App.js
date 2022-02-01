@@ -1,15 +1,22 @@
 import React from 'react'
 import './App.css'
 import Header from './components/Header'
+import Footer from './components/Footer'
+import About from './pages/About'
+import Home from './pages/Home'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-function App() {
+export default function App() {
   return (
-    <>
+    <Router>
       <Header />
-    </>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </main>
+      <Footer />
+    </Router>
   )
 }
-
-export default App
-
-// className={classes.menuButton color="inherit" aria-label="menu"}
