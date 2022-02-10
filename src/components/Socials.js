@@ -1,6 +1,5 @@
 import React from 'react'
-import { IconButton, Box } from '@mui/material'
-import Stack from '@mui/material/Stack'
+import { IconButton, Box, Stack } from '@mui/material'
 import TelegramIcon from '@mui/icons-material/Telegram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -8,7 +7,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 export default function Socials() {
   return (
     <Box>
-      <Stack direction="row" spacing={1}>
+      <Stack justifyContent="center" direction="row" spacing={1}>
         <IconButton
           aria-label="telegram"
           target="_blank"
