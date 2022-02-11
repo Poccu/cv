@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <Box sx={{ mt: 16 }}>
       <Container maxwidth="sm">
-        <Box sx={{ mt: 30, mb: 14 }}>
+        <Box sx={{ mt: 26, mb: 10 }}>
           <Grid
             container
             spacing={2}

@@ -13,6 +13,7 @@ export default function Socials() {
           target="_blank"
           href="https://t.me/mordoboy"
           rel="noreferrer"
+          color="inherit"
         >
           <TelegramIcon />
         </IconButton>
@@ -21,6 +22,7 @@ export default function Socials() {
           target="_blank"
           href="https://www.linkedin.com/in/poccu/"
           rel="noreferrer"
+          color="inherit"
         >
           <LinkedInIcon />
         </IconButton>
@@ -29,6 +31,7 @@ export default function Socials() {
           target="_blank"
           href="https://github.com/Poccu"
           rel="noreferrer"
+          color="inherit"
         >
           <GitHubIcon />
         </IconButton>
