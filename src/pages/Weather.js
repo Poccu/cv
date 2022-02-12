@@ -14,6 +14,12 @@ import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
 import AirIcon from '@mui/icons-material/Air'
 import { WiHumidity, WiThermometer } from 'react-icons/wi'
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert from '@mui/material/Alert'
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
 const style = {
   // background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
@@ -69,15 +75,38 @@ export default function Weather() {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
   const [celsius, setCelsius] = useState(true)
+  const [error, setError] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  // const handleClick = () => {
+  //   setOpen(true)
+  // }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpen(false)
+  }
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=895284fb2d2c50a520ea537456963d9c`
 
   const searchLocation = (event) => {
     if (event.key === 'Enter') {
-      axios.get(url).then((response) => {
-        setData(response.data)
-        console.log(response.data)
-      })
+      axios
+        .get(url)
+        .then((response) => {
+          setData(response.data)
+          console.log(response.data)
+          // setOpen(true)
+        })
+        .catch((error) => {
+          setError(true)
+          setOpen(true)
+          console.error('THIS IS ERROR --->', error)
+        })
+      setError(false)
       setLocation('')
     }
   }
@@ -114,6 +143,23 @@ export default function Weather() {
               onKeyPress={searchLocation}
             />
           </Search>
+          <Box>
+            {error ? (
+              <Snackbar
+                open={open}
+                autoHideDuration={3000}
+                onClose={handleClose}
+              >
+                <Alert
+                  onClose={handleClose}
+                  severity="error"
+                  sx={{ width: '100%' }}
+                >
+                  Enter the correct name!
+                </Alert>
+              </Snackbar>
+            ) : null}
+          </Box>
         </Box>
         <br />
         <br />
@@ -260,6 +306,15 @@ export default function Weather() {
                 </Typography>
               </Grid>
             </Grid>
+            {/* <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                sx={{ width: '100%' }}
+              >
+                Great!
+              </Alert>
+            </Snackbar> */}
           </Box>
         ) : (
           <Box
