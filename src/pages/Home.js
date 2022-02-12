@@ -16,7 +16,7 @@ export default function Home() {
             <Grid item xs={12} md={7}>
               <Box>
                 <Typography variant="h1" component="div">
-                  Hello👋
+                  <b>Hello👋</b>
                 </Typography>
               </Box>
               <Box sx={{ mt: 2 }}>
@@ -29,7 +29,7 @@ export default function Home() {
               </Typography>
               <Box sx={{ mt: 4 }}>
                 <Typography variant="h3" component="div">
-                  And i'm a Frontend Developer
+                  <b>And I'm a Frontend Developer</b>
                 </Typography>
               </Box>
             </Grid>
