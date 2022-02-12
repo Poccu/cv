@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Typography,
   Container,
@@ -16,6 +16,7 @@ import AirIcon from '@mui/icons-material/Air'
 import { WiHumidity, WiThermometer } from 'react-icons/wi'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
+import NearMeIcon from '@mui/icons-material/NearMe'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -78,9 +79,40 @@ export default function Weather() {
   const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
 
-  // const handleClick = () => {
-  //   setOpen(true)
-  // }
+  const [lat, setLat] = useState(null)
+  const [lng, setLng] = useState(null)
+
+  const urlGeo = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=895284fb2d2c50a520ea537456963d9c`
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLat(position.coords.latitude)
+      setLng(position.coords.longitude)
+    })
+  }, [])
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLat(position.coords.latitude)
+        setLng(position.coords.longitude)
+        axios
+          .get(urlGeo)
+          .then((response) => {
+            setData(response.data)
+            console.log(response.data)
+            // setOpen(true)
+          })
+          .catch((error) => {
+            setError(true)
+            setOpen(true)
+            console.error('THIS IS ERROR --->', error)
+          })
+        setError(false)
+        setLocation('')
+      })
+    }
+  }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -131,6 +163,11 @@ export default function Weather() {
           justifyContent="center"
           alignItems="center"
         >
+          <Box>
+            <IconButton onClick={getLocation} color="inherit" size="large">
+              <NearMeIcon />
+            </IconButton>
+          </Box>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -227,8 +264,8 @@ export default function Weather() {
               </Grid>
               <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
-                  <IconButton color="inherit">
-                    <CloseIcon onClick={clearData} style={{ fontSize: 40 }} />
+                  <IconButton onClick={clearData} color="inherit">
+                    <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
                 </Box>
               </Grid>
@@ -255,14 +292,12 @@ export default function Weather() {
                       // height="100"
                     />
                   ) : null}
-                  <p>
-                    {data.weather ? (
-                      <h2>
-                        {data.weather[0].description[0].toUpperCase() +
-                          data.weather[0].description.slice(1)}
-                      </h2>
-                    ) : null}
-                  </p>
+                  {data.weather ? (
+                    <h2>
+                      {data.weather[0].description[0].toUpperCase() +
+                        data.weather[0].description.slice(1)}
+                    </h2>
+                  ) : null}
                 </Typography>
               </Grid>
               <Grid item xs={3} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
