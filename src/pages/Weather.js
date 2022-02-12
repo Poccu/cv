@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { Typography, Container, Box, Grid, IconButton } from '@mui/material'
+import {
+  Typography,
+  Container,
+  Box,
+  Grid,
+  IconButton,
+  Button,
+} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
@@ -7,6 +14,16 @@ import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
 import AirIcon from '@mui/icons-material/Air'
 import { WiHumidity, WiThermometer } from 'react-icons/wi'
+
+const style = {
+  // background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
+  borderRadius: 50,
+  border: 0,
+  // color: 'white',
+  height: 63,
+  padding: '0 16px',
+  // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .30)',
+}
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,6 +68,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Weather() {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
+  const [celsius, setCelsius] = useState(true)
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=895284fb2d2c50a520ea537456963d9c`
 
@@ -98,6 +116,7 @@ export default function Weather() {
           </Search>
         </Box>
         <br />
+        <br />
 
         {data.main ? (
           <Box>
@@ -107,11 +126,23 @@ export default function Weather() {
               justifyContent="center"
               alignItems="center"
             >
-              <Grid
-                item
-                xs
-                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-              ></Grid>
+              <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
+                <IconButton
+                  onClick={() => setCelsius((prev) => !prev)}
+                  color="inherit"
+                  size="large"
+                >
+                  {celsius ? (
+                    <Button style={style} fontSize="inherit" color="inherit">
+                      <h1>°F</h1>
+                    </Button>
+                  ) : (
+                    <Button style={style} fontSize="inherit" color="inherit">
+                      <h1>°C</h1>
+                    </Button>
+                  )}
+                </IconButton>
+              </Grid>
               <Grid item xs={6} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
                   <Box>
@@ -132,19 +163,23 @@ export default function Weather() {
                     </Typography>
                   </Box>
                   <br />
+
                   <Typography
                     variant="h1"
                     component="div"
                     sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                   >
-                    {data.main ? (
+                    {celsius ? (
                       <b>{data.main.temp.toFixed() - 273}°C</b>
-                    ) : null}
+                    ) : (
+                      <b>{((data.main.temp.toFixed() - 273) * 9) / 5 + 32}°F</b>
+                    )}
                   </Typography>
+                  <br />
                   <br />
                 </Box>
               </Grid>
-              <Grid item xs sx={{ flexGrow: 1 }}>
+              <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
                   <IconButton color="inherit">
                     <CloseIcon onClick={clearData} style={{ fontSize: 40 }} />
@@ -168,7 +203,8 @@ export default function Weather() {
                 >
                   {data.main ? (
                     <img
-                      src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
+                      src={`http://openweathermap.org/img/wn/${data.weather[0].icon}.png`}
+                      //@2x
                       alt="weather icon"
                       // height="100"
                     />
@@ -190,53 +226,44 @@ export default function Weather() {
                   component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
-                  <WiThermometer style={{ fontSize: 100 }} />
-                  {data.main ? (
-                    <h2 className="bold">
-                      {data.main.feels_like.toFixed() - 273}°C
+                  <WiThermometer style={{ fontSize: 50 }} />
+
+                  {celsius ? (
+                    <h2>{data.main.feels_like.toFixed() - 273}°C</h2>
+                  ) : (
+                    <h2>
+                      {((data.main.feels_like.toFixed() - 273) * 9) / 5 + 32}°F
                     </h2>
-                  ) : null}
+                  )}
                 </Typography>
               </Grid>
               <Grid item xs={3} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <h2>Humidity</h2>
-                <WiHumidity style={{ fontSize: 100 }} />
+                <WiHumidity style={{ fontSize: 50 }} />
                 <Typography
                   variant="p"
                   component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
-                  {data.main ? (
-                    <h2 className="bold">{data.main.humidity}</h2>
-                  ) : null}
+                  {data.main ? <h2>{data.main.humidity} %</h2> : null}
                 </Typography>
               </Grid>
               <Grid item xs={3} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <h2>Wind Speed</h2>
-                <AirIcon style={{ fontSize: 100 }} />
+                <AirIcon style={{ fontSize: 50 }} />
                 <Typography
                   variant="p"
                   component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
-                  {data.wind ? (
-                    <h2 className="bold">{data.wind.speed} m/s</h2>
-                  ) : null}
+                  {data.wind ? <h2>{data.wind.speed.toFixed()} m/s</h2> : null}
                 </Typography>
               </Grid>
             </Grid>
-
-            {data.name !== undefined && (
-              <div className="bottom">
-                <div className="feels"></div>
-                <div className="humidity"></div>
-                <div className="wind"></div>
-              </div>
-            )}
           </Box>
         ) : (
           <Box
-            sx={{ mt: 0 }}
+            sx={{ mt: -4 }}
             display="flex"
             justifyContent="center"
             alignItems="center"

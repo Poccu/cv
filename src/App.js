@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -39,7 +39,7 @@ const style = {
 }
 
 export default function App() {
-  const [light, setLight] = React.useState(false)
+  const [light, setLight] = useState(false)
 
   return (
     <ThemeProvider theme={light ? themeLight : themeDark}>
