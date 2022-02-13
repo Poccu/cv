@@ -255,7 +255,13 @@ export default function Weather() {
                     {celsius ? (
                       <b>{data.main.temp.toFixed() - 273}°C</b>
                     ) : (
-                      <b>{((data.main.temp.toFixed() - 273) * 9) / 5 + 32}°F</b>
+                      <b>
+                        {(
+                          ((data.main.temp.toFixed() - 273) * 9) / 5 +
+                          32
+                        ).toFixed()}
+                        °F
+                      </b>
                     )}
                   </Typography>
                   <br />
@@ -294,8 +300,14 @@ export default function Weather() {
                   ) : null}
                   {data.weather ? (
                     <h2>
-                      {data.weather[0].description[0].toUpperCase() +
-                        data.weather[0].description.slice(1)}
+                      {data.weather[0].description
+                        .toLowerCase()
+                        .split(' ')
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() + word.substring(1)
+                        )
+                        .join(' ')}
                     </h2>
                   ) : null}
                 </Typography>
@@ -313,7 +325,11 @@ export default function Weather() {
                     <h2>{data.main.feels_like.toFixed() - 273}°C</h2>
                   ) : (
                     <h2>
-                      {((data.main.feels_like.toFixed() - 273) * 9) / 5 + 32}°F
+                      {(
+                        ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
+                        32
+                      ).toFixed()}
+                      °F
                     </h2>
                   )}
                 </Typography>
@@ -337,7 +353,7 @@ export default function Weather() {
                   component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
-                  {data.wind ? <h2>{data.wind.speed.toFixed()} m/s</h2> : null}
+                  {data.wind ? <h2>{data.wind.speed.toFixed(1)} m/s</h2> : null}
                 </Typography>
               </Grid>
             </Grid>
