@@ -11,6 +11,8 @@ import HearingIcon from '@mui/icons-material/Hearing'
 import HearingDisabledIcon from '@mui/icons-material/HearingDisabled'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
+import ShuffleIcon from '@mui/icons-material/Shuffle'
+let randomWords = require('random-words')
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props
@@ -134,6 +136,26 @@ export default function Dictionary() {
     }
   }
 
+  const getRandom = () => {
+    const random = randomWords()
+    // console.log(random)
+    axios
+      .get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${random}`)
+      .then((response) => {
+        setValue(0)
+        setData(response.data[0])
+        console.log(response.data[0])
+        // setOpen(true)
+      })
+      .catch((error) => {
+        setError(true)
+        setOpen(true)
+        console.error('THIS IS ERROR --->', error)
+      })
+    setError(false)
+    setSearchWord('')
+  }
+
   const handleClick2 = () => {
     setOpen2(true)
   }
@@ -178,6 +200,16 @@ export default function Dictionary() {
           justifyContent="center"
           alignItems="center"
         >
+          <Box>
+            <IconButton
+              onClick={getRandom}
+              color="inherit"
+              size="large"
+              title="Random"
+            >
+              <ShuffleIcon />
+            </IconButton>
+          </Box>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -261,7 +293,7 @@ export default function Dictionary() {
                       {data.phonetic ? (
                         <Box>
                           <Typography variant="h5">
-                            [{data.phonetic}]
+                            [ {data.phonetic} ]
                           </Typography>
                         </Box>
                       ) : (
@@ -332,7 +364,7 @@ export default function Dictionary() {
                     </Typography>
                     <br />
                     <Typography variant="h5">
-                      <b>Definition:</b>
+                      <b>Definition</b>
                     </Typography>
                     <Typography>
                       {data.meanings[0].definitions[0].definition[0].toUpperCase() +
@@ -342,7 +374,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Example:</b>
+                          <b>Example</b>
                         </Typography>
                         <Typography>
                           <i>'{data.meanings[0].definitions[0].example}'</i>
@@ -353,7 +385,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Synonyms:</b>
+                          <b>Synonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[0].definitions[0].synonyms.join(', ')}
@@ -364,13 +396,24 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Antonyms:</b>
+                          <b>Antonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[0].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
                     ) : null}
+                    {/* {data.origin ? (
+                      <Box>
+                        <br />
+                        <Typography variant="h5">
+                          <b>Origin</b>
+                        </Typography>
+                        <Typography>
+                          {data.origin[0].toUpperCase() + data.origin.slice(1)}
+                        </Typography>
+                      </Box>
+                    ) : null} */}
                   </Box>
                 ) : null}
               </TabPanel>
@@ -382,7 +425,7 @@ export default function Dictionary() {
                     </Typography>
                     <br />
                     <Typography variant="h5">
-                      <b>Definition:</b>
+                      <b>Definition</b>
                     </Typography>
                     <Typography>
                       {data.meanings[1].definitions[0].definition[0].toUpperCase() +
@@ -392,7 +435,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Example:</b>
+                          <b>Example</b>
                         </Typography>
                         <Typography>
                           <i>'{data.meanings[1].definitions[0].example}'</i>
@@ -403,7 +446,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Synonyms:</b>
+                          <b>Synonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[1].definitions[0].synonyms.join(', ')}
@@ -414,7 +457,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Antonyms:</b>
+                          <b>Antonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[1].definitions[0].antonyms.join(', ')}
@@ -432,7 +475,7 @@ export default function Dictionary() {
                     </Typography>
                     <br />
                     <Typography variant="h5">
-                      <b>Definition:</b>
+                      <b>Definition</b>
                     </Typography>
                     <Typography>
                       {data.meanings[2].definitions[0].definition[0].toUpperCase() +
@@ -442,7 +485,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Example:</b>
+                          <b>Example</b>
                         </Typography>
                         <Typography>
                           <i>'{data.meanings[2].definitions[0].example}'</i>
@@ -453,7 +496,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Synonyms:</b>
+                          <b>Synonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[2].definitions[0].synonyms.join(', ')}
@@ -464,7 +507,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Antonyms:</b>
+                          <b>Antonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[2].definitions[0].antonyms.join(', ')}
@@ -482,7 +525,7 @@ export default function Dictionary() {
                     </Typography>
                     <br />
                     <Typography variant="h5">
-                      <b>Definition:</b>
+                      <b>Definition</b>
                     </Typography>
                     <Typography>
                       {data.meanings[3].definitions[0].definition[0].toUpperCase() +
@@ -492,7 +535,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Example:</b>
+                          <b>Example</b>
                         </Typography>
                         <Typography>
                           <i>'{data.meanings[3].definitions[0].example}'</i>
@@ -503,7 +546,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Synonyms:</b>
+                          <b>Synonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[3].definitions[0].synonyms.join(', ')}
@@ -514,7 +557,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Antonyms:</b>
+                          <b>Antonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[3].definitions[0].antonyms.join(', ')}
@@ -532,7 +575,7 @@ export default function Dictionary() {
                     </Typography>
                     <br />
                     <Typography variant="h5">
-                      <b>Definition:</b>
+                      <b>Definition</b>
                     </Typography>
                     <Typography>
                       {data.meanings[4].definitions[0].definition[0].toUpperCase() +
@@ -542,7 +585,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Example:</b>
+                          <b>Example</b>
                         </Typography>
                         <Typography>
                           <i>'{data.meanings[4].definitions[0].example}'</i>
@@ -553,7 +596,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Synonyms:</b>
+                          <b>Synonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[4].definitions[0].synonyms.join(', ')}
@@ -564,7 +607,7 @@ export default function Dictionary() {
                       <Box>
                         <br />
                         <Typography variant="h5">
-                          <b>Antonyms:</b>
+                          <b>Antonyms</b>
                         </Typography>
                         <Typography>
                           {data.meanings[4].definitions[0].antonyms.join(', ')}
