@@ -13,6 +13,7 @@ import { NavLink } from 'react-router-dom'
 import Socials from './Socials'
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined'
+import TranslateIcon from '@mui/icons-material/Translate'
 
 const style = {
   background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
@@ -56,6 +57,11 @@ export default function Header() {
                 <NavLink to="/weather" style={{ textDecoration: 'none' }}>
                   <Button style={style} startIcon={<WbSunnyOutlinedIcon />}>
                     Weather
+                  </Button>
+                </NavLink>
+                <NavLink to="/dictionary" style={{ textDecoration: 'none' }}>
+                  <Button style={style} startIcon={<TranslateIcon />}>
+                    Dictionary
                   </Button>
                 </NavLink>
               </Stack>

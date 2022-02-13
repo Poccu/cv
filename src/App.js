@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Weather from './pages/Weather'
 import Home from './pages/Home'
+import Dictionary from './pages/Dictionary'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -51,6 +52,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/weather" element={<Weather />} />
+            <Route path="/dictionary" element={<Dictionary />} />
           </Routes>
         </main>
         <Footer />
