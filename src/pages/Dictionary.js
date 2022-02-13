@@ -210,7 +210,6 @@ export default function Dictionary() {
           </Box>
         </Box>
         <br />
-        <br />
 
         {data.word ? (
           <Box>

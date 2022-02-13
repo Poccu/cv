@@ -18,6 +18,7 @@ const themeLight = createTheme({
     background: {
       default: '#eeeeee',
     },
+    // secondary: '#eeeeee',
   },
 })
 
@@ -33,7 +34,7 @@ const themeDark = createTheme({
 })
 
 const style = {
-  position: 'absolute',
+  position: 'fixed',
   // paddingTop: '15px',
   bottom: '47%',
   left: 0,
@@ -58,17 +59,25 @@ export default function App() {
         <Footer />
       </Router>
       <Box style={style}>
-        <IconButton
-          onClick={() => setLight((prev) => !prev)}
-          color="inherit"
-          size="large"
-        >
-          {light ? (
+        {light ? (
+          <IconButton
+            onClick={() => setLight((prev) => !prev)}
+            color="inherit"
+            size="large"
+            title="Dark mode"
+          >
             <DarkModeOutlinedIcon fontSize="inherit" />
-          ) : (
+          </IconButton>
+        ) : (
+          <IconButton
+            onClick={() => setLight((prev) => !prev)}
+            color="inherit"
+            size="large"
+            title="Light mode"
+          >
             <LightModeOutlinedIcon fontSize="inherit" />
-          )}
-        </IconButton>
+          </IconButton>
+        )}
       </Box>
     </ThemeProvider>
   )

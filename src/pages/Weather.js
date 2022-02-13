@@ -164,7 +164,12 @@ export default function Weather() {
           alignItems="center"
         >
           <Box>
-            <IconButton onClick={getLocation} color="inherit" size="large">
+            <IconButton
+              onClick={getLocation}
+              color="inherit"
+              size="large"
+              title="My location"
+            >
               <NearMeIcon />
             </IconButton>
           </Box>
@@ -210,21 +215,29 @@ export default function Weather() {
               alignItems="center"
             >
               <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
-                <IconButton
-                  onClick={() => setCelsius((prev) => !prev)}
-                  color="inherit"
-                  size="large"
-                >
-                  {celsius ? (
+                {celsius ? (
+                  <IconButton
+                    onClick={() => setCelsius((prev) => !prev)}
+                    color="inherit"
+                    size="large"
+                    title="Change to °F"
+                  >
                     <Button style={style} fontSize="inherit" color="inherit">
                       <h1>°F</h1>
                     </Button>
-                  ) : (
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    onClick={() => setCelsius((prev) => !prev)}
+                    color="inherit"
+                    size="large"
+                    title="Change to °C"
+                  >
                     <Button style={style} fontSize="inherit" color="inherit">
                       <h1>°C</h1>
                     </Button>
-                  )}
-                </IconButton>
+                  </IconButton>
+                )}
               </Grid>
               <Grid item xs={6} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
@@ -270,7 +283,7 @@ export default function Weather() {
               </Grid>
               <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
-                  <IconButton onClick={clearData} color="inherit">
+                  <IconButton onClick={clearData} color="inherit" title="Close">
                     <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
                 </Box>
