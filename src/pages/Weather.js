@@ -100,7 +100,7 @@ export default function Weather() {
           .get(urlGeo)
           .then((response) => {
             setData(response.data)
-            console.log(response.data)
+            // console.log(response.data)
             // setOpen(true)
           })
           .catch((error) => {
@@ -130,7 +130,7 @@ export default function Weather() {
         .get(url)
         .then((response) => {
           setData(response.data)
-          console.log(response.data)
+          // console.log(response.data)
           // setOpen(true)
         })
         .catch((error) => {

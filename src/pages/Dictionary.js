@@ -123,8 +123,10 @@ export default function Dictionary() {
         .then((response) => {
           setValue(0)
           setData(response.data[0])
-          console.log(response.data[0])
+          // console.log(response.data[0])
           // setOpen(true)
+          let audio = new Audio(response.data[0].phonetics[0].audio)
+          audio.play()
         })
         .catch((error) => {
           setError(true)
@@ -144,8 +146,10 @@ export default function Dictionary() {
       .then((response) => {
         setValue(0)
         setData(response.data[0])
-        console.log(response.data[0])
+        // console.log(response.data[0])
         // setOpen(true)
+        let audio = new Audio(response.data[0].phonetics[0].audio)
+        audio.play()
       })
       .catch((error) => {
         setError(true)
