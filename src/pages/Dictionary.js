@@ -20,10 +20,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
 
-// const Demo = styled('div')(({ theme }) => ({
-//   backgroundColor: theme.palette.background.paper,
-// }))
-
 let randomWords = require('random-words')
 
 function TabPanel(props) {
@@ -750,7 +746,36 @@ export default function Dictionary() {
                             }
                           >
                             <ListItemAvatar>
-                              {audios[index] ? (
+                              <IconButton
+                                onClick={() => {
+                                  window.scrollTo(0, 0)
+                                  axios
+                                    .get(
+                                      `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
+                                    )
+                                    .then((response) => {
+                                      setValue(0)
+                                      setData(response.data[0])
+                                      // setOpen(true)
+                                      // let audio = new Audio(
+                                      //   response.data[0].phonetics[0].audio
+                                      // )
+                                      // audio.play()
+                                    })
+                                    .catch((error) => {
+                                      setError(true)
+                                      setOpen(true)
+                                      console.error('THIS IS ERROR --->', error)
+                                    })
+                                  setError(false)
+                                  setSearchWord('')
+                                }}
+                                color="inherit"
+                                title="Search"
+                              >
+                                <SearchIcon />
+                              </IconButton>
+                              {/* {audios[index] ? (
                                 <IconButton
                                   // onClick={() => {
                                   //   let audio = new Audio(audios[index])
@@ -782,8 +807,9 @@ export default function Dictionary() {
                                     </Alert>
                                   </Snackbar>
                                 </IconButton>
-                              )}
+                              )} */}
                             </ListItemAvatar>
+
                             <ListItemText
                               disableTypography
                               primary={favs[index]}

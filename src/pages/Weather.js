@@ -283,7 +283,7 @@ export default function Weather() {
               </Grid>
               <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
-                  <IconButton onClick={clearData} color="inherit" title="Close">
+                  <IconButton onClick={clearData} color="inherit" title="Clear">
                     <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
                 </Box>
