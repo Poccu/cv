@@ -12,6 +12,18 @@ import HearingDisabledIcon from '@mui/icons-material/HearingDisabled'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemButton from '@mui/material/ListItemButton'
+
+// const Demo = styled('div')(({ theme }) => ({
+//   backgroundColor: theme.palette.background.paper,
+// }))
+
 let randomWords = require('random-words')
 
 function TabPanel(props) {
@@ -96,17 +108,45 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function Dictionary() {
-  const [error, setError] = useState(false)
-  const [open, setOpen] = useState(false)
-  const [open2, setOpen2] = useState(false)
+  const [error, setError] = useState(false) // catch errors
+  const [open, setOpen] = useState(false) // no input notifications
+  const [open2, setOpen2] = useState(false) // no audio notifications
 
-  const [value, setValue] = useState(0)
+  const [favs, setFavs] = useState([]) // array of favorite words
+  const [phonetics, setPhonetics] = useState([]) // array of phonetics of favorite words
+  const [audios, setAudios] = useState([]) // array of audio of favorite words
+
+  const setFavorite = () => {
+    if (favs.indexOf(data.word) === -1) {
+      setFavs((prevFavs) => [...prevFavs, data.word])
+      setPhonetics((prevPhonetics) => [...prevPhonetics, data.phonetic])
+      setAudios((prevAudios) => [...prevAudios, data.phonetics[0].audio])
+      // console.log(favs)
+      // console.log(phonetics)
+      // console.log(audios)
+    }
+  }
+
+  const setNotFavorite = () => {
+    setFavs((prevFavs) => prevFavs.filter((item) => item !== data.word))
+    setPhonetics((prevPhonetics) =>
+      prevPhonetics.filter((item) => item !== data.phonetic)
+    )
+    setAudios((prevAudios) =>
+      prevAudios.filter((item) => item !== data.phonetics[0].audio)
+    )
+    // console.log(favs)
+    // console.log(phonetics)
+    // console.log(audios)
+  }
+
+  const [value, setValue] = useState(0) // tabs state
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState({}) // response data object
   const [searchWord, setSearchWord] = useState('')
 
   const playAudio = () => {
@@ -187,6 +227,8 @@ export default function Dictionary() {
   const clearData = () => {
     setData({})
   }
+
+  let length = [...Array(favs.length).keys()]
 
   return (
     <Box sx={{ mt: 14 }}>
@@ -313,9 +355,28 @@ export default function Dictionary() {
               </Grid>
               <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
                 <Box>
-                  <IconButton onClick={clearData} color="inherit" title="Close">
+                  <IconButton onClick={clearData} color="inherit" title="Clear">
                     <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
+                </Box>
+                <Box>
+                  {favs.includes(data.word) ? (
+                    <IconButton
+                      onClick={setNotFavorite}
+                      color="inherit"
+                      title="Not Favorite"
+                    >
+                      <FavoriteIcon style={{ fontSize: 40 }} />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={setFavorite}
+                      color="inherit"
+                      title="Favorite"
+                    >
+                      <FavoriteBorderIcon style={{ fontSize: 40 }} />
+                    </IconButton>
+                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -622,6 +683,130 @@ export default function Dictionary() {
                 ) : null}
               </TabPanel>
             </Box>
+
+            {favs.length > 0 ? (
+              <Typography
+                variant="h3"
+                component="div"
+                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              >
+                <br />
+                <b>Favorites</b>
+              </Typography>
+            ) : null}
+
+            <Grid
+              container
+              // direction="row"
+              // justifyContent="center"
+              // alignItems="center"
+            >
+              <Grid item xs={3}></Grid>
+              <Grid item xs={6} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
+                <Box>
+                  <List>
+                    {length.map((index) => (
+                      <div key={index}>
+                        <ListItem
+                          secondaryAction={
+                            <IconButton
+                              onClick={() => {
+                                setFavs((prevFavs) =>
+                                  prevFavs.filter(
+                                    (item) => item !== favs[index]
+                                  )
+                                )
+                                setPhonetics((prevPhonetics) =>
+                                  prevPhonetics.filter(
+                                    (item) => item !== phonetics[index]
+                                  )
+                                )
+                                setAudios((prevAudios) =>
+                                  prevAudios.filter(
+                                    (item) => item !== audios[index]
+                                  )
+                                )
+                                // console.log(favs)
+                                // console.log(phonetics)
+                                // console.log(audios)
+                              }}
+                              edge="end"
+                              aria-label="delete"
+                              color="inherit"
+                              title="Delete"
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          }
+                        >
+                          <ListItemButton
+                            onClick={
+                              audios[index]
+                                ? () => {
+                                    let audio = new Audio(audios[index])
+                                    audio.play()
+                                  }
+                                : handleClick2
+                            }
+                          >
+                            <ListItemAvatar>
+                              {audios[index] ? (
+                                <IconButton
+                                  // onClick={() => {
+                                  //   let audio = new Audio(audios[index])
+                                  //   audio.play()
+                                  // }}
+                                  color="inherit"
+                                  title="Audio"
+                                >
+                                  <HearingIcon />
+                                </IconButton>
+                              ) : (
+                                <IconButton
+                                  onClick={handleClick2}
+                                  color="inherit"
+                                  title="No Audio"
+                                >
+                                  <HearingDisabledIcon />
+                                  <Snackbar
+                                    open={open2}
+                                    autoHideDuration={3000}
+                                    onClose={handleClose2}
+                                  >
+                                    <Alert
+                                      onClose={handleClose2}
+                                      severity="error"
+                                      sx={{ width: '100%' }}
+                                    >
+                                      Sorry, no audio :(
+                                    </Alert>
+                                  </Snackbar>
+                                </IconButton>
+                              )}
+                            </ListItemAvatar>
+                            <ListItemText
+                              disableTypography
+                              primary={favs[index]}
+                              secondary={
+                                <Typography
+                                // type="h1"
+                                // style={{ color: '#ffffff' }}
+                                >
+                                  {phonetics[index]
+                                    ? '[ ' + phonetics[index] + ' ]'
+                                    : '[   ]'}
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </div>
+                    ))}
+                  </List>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={3}></Grid>
           </Box>
         ) : (
           <Box
