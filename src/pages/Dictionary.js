@@ -19,6 +19,9 @@ import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemButton from '@mui/material/ListItemButton'
+import Divider from '@mui/material/Divider'
+import Badge from '@mui/material/Badge'
+import ClearAllIcon from '@mui/icons-material/ClearAll'
 
 let randomWords = require('random-words')
 
@@ -108,11 +111,11 @@ export default function Dictionary() {
   const [open, setOpen] = useState(false) // no input notifications
   const [open2, setOpen2] = useState(false) // no audio notifications
 
-  const [favs, setFavs] = useState([]) // array of favorite words
-  const [phonetics, setPhonetics] = useState([]) // array of phonetics of favorite words
-  const [audios, setAudios] = useState([]) // array of audio of favorite words
+  const [favs, setFavs] = useState([]) // array of favourite words
+  const [phonetics, setPhonetics] = useState([]) // array of phonetics of favourite words
+  const [audios, setAudios] = useState([]) // array of audio of favourite words
 
-  const setFavorite = () => {
+  const setFavourite = () => {
     if (favs.indexOf(data.word) === -1) {
       setFavs((prevFavs) => [...prevFavs, data.word])
       setPhonetics((prevPhonetics) => [...prevPhonetics, data.phonetic])
@@ -123,7 +126,7 @@ export default function Dictionary() {
     }
   }
 
-  const setNotFavorite = () => {
+  const setNotFavourite = () => {
     setFavs((prevFavs) => prevFavs.filter((item) => item !== data.word))
     setPhonetics((prevPhonetics) =>
       prevPhonetics.filter((item) => item !== data.phonetic)
@@ -226,6 +229,12 @@ export default function Dictionary() {
 
   let length = [...Array(favs.length).keys()]
 
+  const clearAllFavs = () => {
+    setFavs([])
+    setPhonetics([])
+    setAudios([])
+  }
+
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
@@ -251,7 +260,7 @@ export default function Dictionary() {
               size="large"
               title="Random"
             >
-              <ShuffleIcon />
+              <ShuffleIcon style={{ fontSize: 30 }} />
             </IconButton>
           </Box>
           <Search>
@@ -317,7 +326,7 @@ export default function Dictionary() {
                         severity="error"
                         sx={{ width: '100%' }}
                       >
-                        Sorry, no audio :(
+                        Sorry, no audio 😞
                       </Alert>
                     </Snackbar>
                   </IconButton>
@@ -360,17 +369,17 @@ export default function Dictionary() {
                 <Box>
                   {favs.includes(data.word) ? (
                     <IconButton
-                      onClick={setNotFavorite}
+                      onClick={setNotFavourite}
                       color="error"
-                      title="Not Favorite"
+                      title="Delete from Favourites"
                     >
                       <FavoriteIcon style={{ fontSize: 40 }} />
                     </IconButton>
                   ) : (
                     <IconButton
-                      onClick={setFavorite}
+                      onClick={setFavourite}
                       color="inherit"
-                      title="Favorite"
+                      title="Add to Favourites"
                     >
                       <FavoriteBorderIcon style={{ fontSize: 40 }} />
                     </IconButton>
@@ -701,161 +710,174 @@ export default function Dictionary() {
                 ) : null}
               </TabPanel>
             </Box>
-
+            <>
+              <br />
+              <Divider>
+                <Typography
+                  variant="h3"
+                  component="div"
+                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                >
+                  <Badge badgeContent={favs.length} color="secondary" max={99}>
+                    <b>Favourites</b>
+                  </Badge>
+                </Typography>
+              </Divider>
+              <br />
+            </>
             {favs.length > 0 ? (
-              <Typography
-                variant="h3"
-                component="div"
-                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              <Grid
+                container
+                // direction="row"
+                // justifyContent="center"
+                // alignItems="center"
               >
-                <br />
-                <b>Favorites</b>
-              </Typography>
-            ) : null}
-
-            <Grid
-              container
-              // direction="row"
-              // justifyContent="center"
-              // alignItems="center"
-            >
-              <Grid item xs={3}></Grid>
-              <Grid item xs={6} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
-                <Box>
-                  <List>
-                    {length.map((index) => (
-                      <div key={index}>
-                        <ListItem
-                          secondaryAction={
-                            <IconButton
-                              onClick={() => {
-                                setFavs((prevFavs) =>
-                                  prevFavs.filter(
-                                    (item) => item !== favs[index]
-                                  )
-                                )
-                                setPhonetics((prevPhonetics) =>
-                                  prevPhonetics.filter(
-                                    (item) => item !== phonetics[index]
-                                  )
-                                )
-                                setAudios((prevAudios) =>
-                                  prevAudios.filter(
-                                    (item) => item !== audios[index]
-                                  )
-                                )
-                                // console.log(favs)
-                                // console.log(phonetics)
-                                // console.log(audios)
-                              }}
-                              edge="end"
-                              aria-label="delete"
-                              color="inherit"
-                              title="Delete"
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          }
-                        >
-                          <ListItemButton
-                            onClick={
-                              audios[index]
-                                ? () => {
-                                    let audio = new Audio(audios[index])
-                                    audio.play()
-                                  }
-                                : handleClick2
-                            }
-                          >
-                            <ListItemAvatar>
+                <Grid item xs={3}></Grid>
+                <Grid
+                  item
+                  xs={6}
+                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                >
+                  <Box>
+                    <List>
+                      {length.map((index) => (
+                        <div key={index}>
+                          <ListItem
+                            secondaryAction={
                               <IconButton
                                 onClick={() => {
-                                  window.scrollTo(0, 0)
-                                  axios
-                                    .get(
-                                      `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
+                                  setFavs((prevFavs) =>
+                                    prevFavs.filter(
+                                      (item) => item !== favs[index]
                                     )
-                                    .then((response) => {
-                                      setValue(0)
-                                      setData(response.data[0])
-                                      // setOpen(true)
-                                      // let audio = new Audio(
-                                      //   response.data[0].phonetics[0].audio
-                                      // )
-                                      // audio.play()
-                                    })
-                                    .catch((error) => {
-                                      setError(true)
-                                      setOpen(true)
-                                      console.error('THIS IS ERROR --->', error)
-                                    })
-                                  setError(false)
-                                  setSearchWord('')
+                                  )
+                                  setPhonetics((prevPhonetics) =>
+                                    prevPhonetics.filter(
+                                      (item) => item !== phonetics[index]
+                                    )
+                                  )
+                                  setAudios((prevAudios) =>
+                                    prevAudios.filter(
+                                      (item) => item !== audios[index]
+                                    )
+                                  )
+                                  // console.log(favs)
+                                  // console.log(phonetics)
+                                  // console.log(audios)
                                 }}
+                                edge="end"
+                                aria-label="delete"
                                 color="inherit"
-                                title="Search"
+                                title="Delete"
                               >
-                                <SearchIcon />
+                                <CloseIcon style={{ fontSize: 30 }} />
                               </IconButton>
-                              {/* {audios[index] ? (
+                            }
+                          >
+                            <ListItemButton
+                              onClick={
+                                audios[index]
+                                  ? () => {
+                                      let audio = new Audio(audios[index])
+                                      audio.play()
+                                    }
+                                  : handleClick2
+                              }
+                            >
+                              <ListItemAvatar>
                                 <IconButton
-                                  // onClick={() => {
-                                  //   let audio = new Audio(audios[index])
-                                  //   audio.play()
-                                  // }}
+                                  onClick={() => {
+                                    window.scrollTo(0, 0)
+                                    axios
+                                      .get(
+                                        `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
+                                      )
+                                      .then((response) => {
+                                        setValue(0)
+                                        setData(response.data[0])
+                                        // setOpen(true)
+                                        // let audio = new Audio(
+                                        //   response.data[0].phonetics[0].audio
+                                        // )
+                                        // audio.play()
+                                      })
+                                      .catch((error) => {
+                                        setError(true)
+                                        setOpen(true)
+                                        console.error(
+                                          'THIS IS ERROR --->',
+                                          error
+                                        )
+                                      })
+                                    setError(false)
+                                    setSearchWord('')
+                                  }}
                                   color="inherit"
-                                  title="Audio"
+                                  title="Search"
                                 >
-                                  <HearingIcon />
+                                  <SearchIcon style={{ fontSize: 30 }} />
                                 </IconButton>
-                              ) : (
-                                <IconButton
-                                  onClick={handleClick2}
-                                  color="inherit"
-                                  title="No Audio"
-                                >
-                                  <HearingDisabledIcon />
-                                  <Snackbar
-                                    open={open2}
-                                    autoHideDuration={3000}
-                                    onClose={handleClose2}
-                                  >
-                                    <Alert
-                                      onClose={handleClose2}
-                                      severity="error"
-                                      sx={{ width: '100%' }}
-                                    >
-                                      Sorry, no audio :(
-                                    </Alert>
-                                  </Snackbar>
-                                </IconButton>
-                              )} */}
-                            </ListItemAvatar>
+                              </ListItemAvatar>
 
-                            <ListItemText
-                              disableTypography
-                              primary={
-                                <Typography variant="h4" color="textPrimary">
-                                  <b>{favs[index]}</b>
-                                </Typography>
-                              }
-                              secondary={
-                                <Typography variant="p" color="textSecondary">
-                                  {phonetics[index]
-                                    ? '[ ' + phonetics[index] + ' ]'
-                                    : '[   ]'}
-                                </Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </ListItem>
-                      </div>
-                    ))}
-                  </List>
-                </Box>
+                              <ListItemText
+                                disableTypography
+                                primary={
+                                  <Typography variant="h4" color="textPrimary">
+                                    <b>{favs[index]}</b>
+                                  </Typography>
+                                }
+                                secondary={
+                                  <Typography variant="p" color="textSecondary">
+                                    {phonetics[index]
+                                      ? '[ ' + phonetics[index] + ' ]'
+                                      : '[   ]'}
+                                  </Typography>
+                                }
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        </div>
+                      ))}
+                    </List>
+                  </Box>
+                  <Box sx={({ flexGrow: 1 }, { textAlign: 'right' })}>
+                    <br />
+                    <IconButton
+                      onClick={clearAllFavs}
+                      color="inherit"
+                      title="Clear All"
+                    >
+                      <Typography variant="h6">
+                        <b>Clear All</b>
+                      </Typography>
+                      <ClearAllIcon style={{ fontSize: 30 }} />
+                    </IconButton>
+                  </Box>
+                </Grid>
+                <Grid item xs={3}></Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={3}></Grid>
+            ) : (
+              <>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                  color="textSecondary"
+                >
+                  <br />
+                  <b>No favourite words yet 😞</b>
+                </Typography>
+                <Typography
+                  variant="h5"
+                  component="div"
+                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                  color="textSecondary"
+                >
+                  <b>Please, add some!</b>
+                </Typography>
+                <br />
+              </>
+            )}
           </Box>
         ) : (
           <Box

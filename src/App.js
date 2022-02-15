@@ -52,6 +52,7 @@ const themeDark = createTheme({
     search: {
       primary: '#ffffff',
     },
+    divider: '#393939',
   },
 })
 
@@ -86,7 +87,7 @@ export default function App() {
             onClick={() => setLight((prev) => !prev)}
             color="inherit"
             size="large"
-            title="Dark mode"
+            title="Dark Mode"
           >
             <DarkModeOutlinedIcon fontSize="inherit" />
           </IconButton>
@@ -95,7 +96,7 @@ export default function App() {
             onClick={() => setLight((prev) => !prev)}
             color="inherit"
             size="large"
-            title="Light mode"
+            title="Light Mode"
           >
             <LightModeOutlinedIcon fontSize="inherit" />
           </IconButton>

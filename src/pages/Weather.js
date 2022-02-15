@@ -170,7 +170,7 @@ export default function Weather() {
               size="large"
               title="My location"
             >
-              <NearMeIcon />
+              <NearMeIcon style={{ fontSize: 30 }} />
             </IconButton>
           </Box>
           <Search>
