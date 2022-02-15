@@ -66,9 +66,9 @@ const style = {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.1),
+  backgroundColor: alpha(theme.palette.search.primary, 0.1),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.14),
+    backgroundColor: alpha(theme.palette.search.primary, 0.14),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -229,13 +229,15 @@ export default function Dictionary() {
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        <Typography
-          variant="h3"
-          component="div"
-          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-        >
-          <b>Enter the word</b>
-        </Typography>
+        {!data.word ? (
+          <Typography
+            variant="h3"
+            component="div"
+            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+          >
+            <b>Enter the word</b>
+          </Typography>
+        ) : null}
         <Box
           sx={{ mt: 5 }}
           display="flex"
@@ -334,7 +336,7 @@ export default function Dictionary() {
                       {/* <b>{data.word[0].toUpperCase() + data.word.slice(1)}</b> */}
                       {data.phonetic ? (
                         <Box>
-                          <Typography variant="h5">
+                          <Typography variant="h5" color="textSecondary">
                             [ {data.phonetic} ]
                           </Typography>
                         </Box>
@@ -359,7 +361,7 @@ export default function Dictionary() {
                   {favs.includes(data.word) ? (
                     <IconButton
                       onClick={setNotFavorite}
-                      color="inherit"
+                      color="error"
                       title="Not Favorite"
                     >
                       <FavoriteIcon style={{ fontSize: 40 }} />
@@ -383,51 +385,71 @@ export default function Dictionary() {
                 onChange={handleChange}
                 aria-label="basic tabs"
                 textColor="inherit"
-                // indicatorColor="primary"
+                indicatorColor="secondary"
                 centered
               >
                 {data.meanings[0] ? (
                   <Tab
-                    label={data.meanings[0]?.partOfSpeech}
+                    label={
+                      <Typography variant="h6">
+                        <b>{data.meanings[0]?.partOfSpeech}</b>
+                      </Typography>
+                    }
                     {...a11yProps(0)}
                   />
                 ) : null}
                 {data.meanings[1] ? (
                   <Tab
-                    label={data.meanings[1]?.partOfSpeech}
-                    {...a11yProps(1)}
+                    label={
+                      <Typography variant="h6">
+                        <b>{data.meanings[1]?.partOfSpeech}</b>
+                      </Typography>
+                    }
+                    {...a11yProps(0)}
                   />
                 ) : null}
                 {data.meanings[2] ? (
                   <Tab
-                    label={data.meanings[2]?.partOfSpeech}
-                    {...a11yProps(2)}
+                    label={
+                      <Typography variant="h6">
+                        <b>{data.meanings[2]?.partOfSpeech}</b>
+                      </Typography>
+                    }
+                    {...a11yProps(0)}
                   />
                 ) : null}
                 {data.meanings[3] ? (
                   <Tab
-                    label={data.meanings[3]?.partOfSpeech}
-                    {...a11yProps(3)}
+                    label={
+                      <Typography variant="h6">
+                        <b>{data.meanings[3]?.partOfSpeech}</b>
+                      </Typography>
+                    }
+                    {...a11yProps(0)}
                   />
                 ) : null}
                 {data.meanings[4] ? (
                   <Tab
-                    label={data.meanings[4]?.partOfSpeech}
-                    {...a11yProps(4)}
+                    label={
+                      <Typography variant="h6">
+                        <b>{data.meanings[4]?.partOfSpeech}</b>
+                      </Typography>
+                    }
+                    {...a11yProps(0)}
                   />
                 ) : null}
               </Tabs>
               <TabPanel value={value} index={0}>
                 {data.meanings[0] ? (
                   <Box>
-                    <Typography variant="h4">
+                    <Typography variant="h3" color="textSecondary">
                       <b>{data.meanings[0]?.partOfSpeech}</b>
                     </Typography>
                     <br />
                     <Typography variant="h5">
                       <b>Definition</b>
                     </Typography>
-                    <Typography>
+                    <Typography color="textSecondary">
                       {data.meanings[0].definitions[0].definition[0].toUpperCase() +
                         data.meanings[0].definitions[0].definition.slice(1)}
                     </Typography>
@@ -437,7 +459,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Example</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           <i>'{data.meanings[0].definitions[0].example}'</i>
                         </Typography>
                       </Box>
@@ -448,7 +470,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Synonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[0].definitions[0].synonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -459,7 +481,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Antonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[0].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -481,14 +503,14 @@ export default function Dictionary() {
               <TabPanel value={value} index={1}>
                 {data.meanings[1] ? (
                   <Box>
-                    <Typography variant="h4">
+                    <Typography variant="h3" color="textSecondary">
                       <b>{data.meanings[1]?.partOfSpeech}</b>
                     </Typography>
                     <br />
                     <Typography variant="h5">
                       <b>Definition</b>
                     </Typography>
-                    <Typography>
+                    <Typography color="textSecondary">
                       {data.meanings[1].definitions[0].definition[0].toUpperCase() +
                         data.meanings[1].definitions[0].definition.slice(1)}
                     </Typography>
@@ -498,7 +520,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Example</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           <i>'{data.meanings[1].definitions[0].example}'</i>
                         </Typography>
                       </Box>
@@ -509,7 +531,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Synonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[1].definitions[0].synonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -520,7 +542,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Antonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[1].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -531,14 +553,14 @@ export default function Dictionary() {
               <TabPanel value={value} index={2}>
                 {data.meanings[2] ? (
                   <Box>
-                    <Typography variant="h4">
+                    <Typography variant="h3" color="textSecondary">
                       <b>{data.meanings[2]?.partOfSpeech}</b>
                     </Typography>
                     <br />
                     <Typography variant="h5">
                       <b>Definition</b>
                     </Typography>
-                    <Typography>
+                    <Typography color="textSecondary">
                       {data.meanings[2].definitions[0].definition[0].toUpperCase() +
                         data.meanings[2].definitions[0].definition.slice(1)}
                     </Typography>
@@ -548,7 +570,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Example</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           <i>'{data.meanings[2].definitions[0].example}'</i>
                         </Typography>
                       </Box>
@@ -559,7 +581,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Synonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[2].definitions[0].synonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -570,7 +592,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Antonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[2].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -581,14 +603,14 @@ export default function Dictionary() {
               <TabPanel value={value} index={3}>
                 {data.meanings[3] ? (
                   <Box>
-                    <Typography variant="h4">
+                    <Typography variant="h3" color="textSecondary">
                       <b>{data.meanings[3]?.partOfSpeech}</b>
                     </Typography>
                     <br />
                     <Typography variant="h5">
                       <b>Definition</b>
                     </Typography>
-                    <Typography>
+                    <Typography color="textSecondary">
                       {data.meanings[3].definitions[0].definition[0].toUpperCase() +
                         data.meanings[3].definitions[0].definition.slice(1)}
                     </Typography>
@@ -598,7 +620,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Example</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           <i>'{data.meanings[3].definitions[0].example}'</i>
                         </Typography>
                       </Box>
@@ -609,7 +631,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Synonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[3].definitions[0].synonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -620,7 +642,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Antonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[3].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -631,14 +653,14 @@ export default function Dictionary() {
               <TabPanel value={value} index={4}>
                 {data.meanings[4] ? (
                   <Box>
-                    <Typography variant="h4">
+                    <Typography variant="h3" color="textSecondary">
                       <b>{data.meanings[4]?.partOfSpeech}</b>
                     </Typography>
                     <br />
                     <Typography variant="h5">
                       <b>Definition</b>
                     </Typography>
-                    <Typography>
+                    <Typography color="textSecondary">
                       {data.meanings[4].definitions[0].definition[0].toUpperCase() +
                         data.meanings[4].definitions[0].definition.slice(1)}
                     </Typography>
@@ -648,7 +670,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Example</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           <i>'{data.meanings[4].definitions[0].example}'</i>
                         </Typography>
                       </Box>
@@ -659,7 +681,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Synonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[4].definitions[0].synonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -670,7 +692,7 @@ export default function Dictionary() {
                         <Typography variant="h5">
                           <b>Antonyms</b>
                         </Typography>
-                        <Typography>
+                        <Typography color="textSecondary">
                           {data.meanings[4].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
@@ -812,12 +834,13 @@ export default function Dictionary() {
 
                             <ListItemText
                               disableTypography
-                              primary={favs[index]}
+                              primary={
+                                <Typography variant="h4" color="textPrimary">
+                                  <b>{favs[index]}</b>
+                                </Typography>
+                              }
                               secondary={
-                                <Typography
-                                // type="h1"
-                                // style={{ color: '#ffffff' }}
-                                >
+                                <Typography variant="p" color="textSecondary">
                                   {phonetics[index]
                                     ? '[ ' + phonetics[index] + ' ]'
                                     : '[   ]'}

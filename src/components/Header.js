@@ -29,10 +29,10 @@ export default function Header() {
   return (
     <header>
       <AppBar
-        style={{ backgroundColor: '#212121' }}
+        // style={{ backgroundColor: '#212121' }}
         position="fixed"
         // color="transparent"
-        // color="secondary"
+        color="primary"
         elevation={0}
         sx={{ boxShadow: 7 }}
         // enableColorOnDark
