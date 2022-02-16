@@ -6,6 +6,7 @@ import {
   Grid,
   IconButton,
   Button,
+  Stack,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
@@ -82,16 +83,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-const style = {
-  // background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
-  borderRadius: 50,
-  border: 0,
-  // color: 'white',
-  height: 63,
-  padding: '0 16px',
-  // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .30)',
-}
-
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -104,7 +95,7 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    width: '400px',
   },
 }))
 
@@ -125,9 +116,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
+    width: 'auto',
+    [theme.breakpoints.up('sm')]: {
+      width: '342px',
     },
   },
 }))
@@ -330,45 +321,64 @@ export default function Dictionary() {
               justifyContent="center"
               alignItems="center"
             >
-              <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
-                {data.phonetics[0].audio ? (
-                  <IconButton onClick={playAudio} color="inherit" title="Audio">
-                    <HearingIcon style={{ fontSize: 40 }} />
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={handleClick2}
-                    color="inherit"
-                    title="No Audio"
-                  >
-                    <HearingDisabledIcon style={{ fontSize: 40 }} />
-                    <Snackbar
-                      open={open2}
-                      autoHideDuration={3000}
-                      onClose={handleClose2}
+              <Grid
+                item
+                xs={12}
+                md={3}
+                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              >
+                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                  {data.phonetics[0].audio ? (
+                    <IconButton
+                      onClick={playAudio}
+                      color="inherit"
+                      title="Audio"
                     >
-                      <Alert
+                      <HearingIcon style={{ fontSize: 40 }} />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={handleClick2}
+                      color="inherit"
+                      title="No Audio"
+                    >
+                      <HearingDisabledIcon style={{ fontSize: 40 }} />
+                      <Snackbar
+                        open={open2}
+                        autoHideDuration={3000}
                         onClose={handleClose2}
-                        severity="error"
-                        sx={{ width: '100%' }}
                       >
-                        Sorry, no audio 😞
-                      </Alert>
-                    </Snackbar>
-                  </IconButton>
-                )}
+                        <Alert
+                          onClose={handleClose2}
+                          severity="error"
+                          sx={{ width: '100%' }}
+                        >
+                          Sorry, no audio 😞
+                        </Alert>
+                      </Snackbar>
+                    </IconButton>
+                  )}
+                </Box>
               </Grid>
-              <Grid item xs={6} sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              >
                 <Box>
                   <br />
-                  <Box>
+                  <Box display="flex" justifyContent="center" width="100%">
                     <Typography
                       variant="h1"
                       component="div"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
-                      <b>{data.word}</b>
-                      {/* <b>{data.word[0].toUpperCase() + data.word.slice(1)}</b> */}
+                      {data.word.length > 16 ? (
+                        <b>{data.word.substr(-150, 13) + '…'}</b>
+                      ) : (
+                        <b>{data.word}</b>
+                      )}
                       {data.phonetic ? (
                         <Box>
                           <Typography variant="h5" color="textSecondary">
@@ -377,7 +387,10 @@ export default function Dictionary() {
                         </Box>
                       ) : (
                         <Typography variant="h5">
-                          <br />
+                          {/* <br /> */}
+                          <Typography variant="h5" color="textSecondary">
+                            [ - ]
+                          </Typography>
                         </Typography>
                       )}
                     </Typography>
@@ -386,13 +399,19 @@ export default function Dictionary() {
                   <br />
                 </Box>
               </Grid>
-              <Grid item xs sx={({ flexGrow: 1 }, { textAlign: 'center' })}>
-                <Box>
+              <Grid
+                item
+                xs={12}
+                md={3}
+                sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              >
+                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                   <IconButton onClick={clearData} color="inherit" title="Clear">
                     <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
                 </Box>
-                <Box>
+
+                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                   {favs.includes(data.word) ? (
                     <IconButton
                       onClick={setNotFavourite}
@@ -414,66 +433,123 @@ export default function Dictionary() {
               </Grid>
             </Grid>
 
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <Stack justifyContent="center" direction="row" spacing={5}>
+                {data.phonetics[0].audio ? (
+                  <IconButton onClick={playAudio} color="inherit" title="Audio">
+                    <HearingIcon style={{ fontSize: 50 }} />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    onClick={handleClick2}
+                    color="inherit"
+                    title="No Audio"
+                  >
+                    <HearingDisabledIcon style={{ fontSize: 50 }} />
+                    <Snackbar
+                      open={open2}
+                      autoHideDuration={3000}
+                      onClose={handleClose2}
+                    >
+                      <Alert
+                        onClose={handleClose2}
+                        severity="error"
+                        sx={{ width: '100%' }}
+                      >
+                        Sorry, no audio 😞
+                      </Alert>
+                    </Snackbar>
+                  </IconButton>
+                )}
+
+                {favs.includes(data.word) ? (
+                  <IconButton
+                    onClick={setNotFavourite}
+                    color="error"
+                    title="Delete from Favourites"
+                  >
+                    <FavoriteIcon style={{ fontSize: 80 }} />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    onClick={setFavourite}
+                    color="inherit"
+                    title="Add to Favourites"
+                  >
+                    <FavoriteBorderIcon style={{ fontSize: 80 }} />
+                  </IconButton>
+                )}
+                <IconButton onClick={clearData} color="inherit" title="Clear">
+                  <CloseIcon style={{ fontSize: 50 }} />
+                </IconButton>
+              </Stack>
+              <br />
+            </Box>
             <Box>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs"
-                textColor="inherit"
-                indicatorColor="secondary"
-                centered
-              >
-                {data.meanings[0] ? (
-                  <Tab
-                    label={
-                      <Typography variant="h6">
-                        <b>{data.meanings[0]?.partOfSpeech}</b>
-                      </Typography>
-                    }
-                    {...a11yProps(0)}
-                  />
-                ) : null}
-                {data.meanings[1] ? (
-                  <Tab
-                    label={
-                      <Typography variant="h6">
-                        <b>{data.meanings[1]?.partOfSpeech}</b>
-                      </Typography>
-                    }
-                    {...a11yProps(0)}
-                  />
-                ) : null}
-                {data.meanings[2] ? (
-                  <Tab
-                    label={
-                      <Typography variant="h6">
-                        <b>{data.meanings[2]?.partOfSpeech}</b>
-                      </Typography>
-                    }
-                    {...a11yProps(0)}
-                  />
-                ) : null}
-                {data.meanings[3] ? (
-                  <Tab
-                    label={
-                      <Typography variant="h6">
-                        <b>{data.meanings[3]?.partOfSpeech}</b>
-                      </Typography>
-                    }
-                    {...a11yProps(0)}
-                  />
-                ) : null}
-                {data.meanings[4] ? (
-                  <Tab
-                    label={
-                      <Typography variant="h6">
-                        <b>{data.meanings[4]?.partOfSpeech}</b>
-                      </Typography>
-                    }
-                    {...a11yProps(0)}
-                  />
-                ) : null}
-              </Tabs>
+              <Box display="flex" justifyContent="center" width="100%">
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="tabs"
+                  textColor="inherit"
+                  indicatorColor="secondary"
+                  centered
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                >
+                  {data.meanings[0] ? (
+                    <Tab
+                      label={
+                        <Typography variant="h6">
+                          <b>{data.meanings[0]?.partOfSpeech}</b>
+                        </Typography>
+                      }
+                      {...a11yProps(0)}
+                    />
+                  ) : null}
+                  {data.meanings[1] ? (
+                    <Tab
+                      label={
+                        <Typography variant="h6">
+                          <b>{data.meanings[1]?.partOfSpeech}</b>
+                        </Typography>
+                      }
+                      {...a11yProps(0)}
+                    />
+                  ) : null}
+                  {data.meanings[2] ? (
+                    <Tab
+                      label={
+                        <Typography variant="h6">
+                          <b>{data.meanings[2]?.partOfSpeech}</b>
+                        </Typography>
+                      }
+                      {...a11yProps(0)}
+                    />
+                  ) : null}
+                  {data.meanings[3] ? (
+                    <Tab
+                      label={
+                        <Typography variant="h6">
+                          <b>{data.meanings[3]?.partOfSpeech}</b>
+                        </Typography>
+                      }
+                      {...a11yProps(0)}
+                    />
+                  ) : null}
+                  {data.meanings[4] ? (
+                    <Tab
+                      label={
+                        <Typography variant="h6">
+                          <b>{data.meanings[4]?.partOfSpeech}</b>
+                        </Typography>
+                      }
+                      {...a11yProps(0)}
+                    />
+                  ) : null}
+                </Tabs>
+              </Box>
               <TabPanel value={value} index={0}>
                 {data.meanings[0] ? (
                   <Box>
@@ -758,10 +834,11 @@ export default function Dictionary() {
                 // justifyContent="center"
                 // alignItems="center"
               >
-                <Grid item xs={3}></Grid>
+                <Grid item xs={12} md={3}></Grid>
                 <Grid
                   item
-                  xs={6}
+                  xs={12}
+                  md={6}
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
                   <Box>
@@ -849,14 +926,27 @@ export default function Dictionary() {
                                 disableTypography
                                 primary={
                                   <Typography variant="h4" color="textPrimary">
-                                    <b>{favs[index]}</b>
+                                    {favs[index].length > 16 ? (
+                                      <b>
+                                        {favs[index].substr(-150, 13) + '…'}
+                                      </b>
+                                    ) : (
+                                      <b>{favs[index]}</b>
+                                    )}
                                   </Typography>
                                 }
                                 secondary={
                                   <Typography variant="p" color="textSecondary">
+                                    {/* {phonetics[index].length < 20
+                                      ? '[ ' + phonetics[index] + ' ]'
+                                      : '[ ' +
+                                        phonetics[index].substr(-150, 29) +
+                                        '…' +
+                                        ' ]'} */}
+
                                     {phonetics[index]
                                       ? '[ ' + phonetics[index] + ' ]'
-                                      : '[   ]'}
+                                      : '[ - ]'}
                                   </Typography>
                                 }
                               />
@@ -878,7 +968,7 @@ export default function Dictionary() {
                     </ThemeButton>
                   </Box>
                 </Grid>
-                <Grid item xs={3}></Grid>
+                <Grid xs={12} md={3}></Grid>
               </Grid>
             ) : (
               <>
@@ -904,17 +994,35 @@ export default function Dictionary() {
             )}
           </Box>
         ) : (
-          <Box
-            sx={{ mt: -4 }}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <img
-              src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
-              alt="dictionary"
-            />
-          </Box>
+          <>
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Box
+                sx={{ mt: -1 }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
+                  alt="dictionary"
+                />
+              </Box>
+            </Box>
+
+            <Box
+              sx={{ mt: -1, display: { md: 'none' } }}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <img
+                src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
+                alt="dictionary"
+                height="100%"
+                width="100%"
+              />
+            </Box>
+          </>
         )}
       </Container>
     </Box>
