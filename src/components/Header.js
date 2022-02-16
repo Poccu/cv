@@ -14,16 +14,24 @@ import Socials from './Socials'
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined'
 import TranslateIcon from '@mui/icons-material/Translate'
+import { styled, alpha } from '@mui/material/styles'
 
-const style = {
-  background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
+const ThemeButton = styled(Button)(({ theme }) => ({
+  fontSize: 16,
+  color: theme.palette.button.primary,
   borderRadius: 25,
-  border: 0,
-  color: 'white',
-  height: 34,
+  height: 44,
   padding: '0 16px',
-  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .30)',
-}
+  // border: '2px solid',
+  // borderColor: alpha(theme.palette.search.primary, 0.1),
+  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
+  // '&:hover': {
+  //   backgroundColor: alpha(theme.palette.search.primary, 0.1),
+  // },
+  // '&:active': {
+  //   backgroundColor: '#0062cc',
+  // },
+}))
 
 export default function Header() {
   return (
@@ -40,7 +48,7 @@ export default function Header() {
         <Container fixed>
           <Toolbar>
             <NavLink to="/">
-              <IconButton edge="start" color="inherit" to="/">
+              <IconButton edge="start" to="/">
                 <Avatar
                   alt="Avatar"
                   src="/logo7.png"
@@ -49,21 +57,30 @@ export default function Header() {
               </IconButton>
             </NavLink>
             <Box sx={{ flexGrow: 1 }}>
-              <Stack direction="row" spacing={3}>
-                <NavLink to="/" style={{ textDecoration: 'none' }}>
-                  <Button style={style} startIcon={<CottageOutlinedIcon />}>
+              <Stack direction="row" spacing={1}>
+                <NavLink
+                  to="/"
+                  style={{ textDecoration: 'none', color: '#fff' }}
+                >
+                  <ThemeButton
+                    startIcon={<CottageOutlinedIcon style={{ fontSize: 24 }} />}
+                  >
                     Home
-                  </Button>
+                  </ThemeButton>
                 </NavLink>
                 <NavLink to="/weather" style={{ textDecoration: 'none' }}>
-                  <Button style={style} startIcon={<WbSunnyOutlinedIcon />}>
+                  <ThemeButton
+                    startIcon={<WbSunnyOutlinedIcon style={{ fontSize: 24 }} />}
+                  >
                     Weather
-                  </Button>
+                  </ThemeButton>
                 </NavLink>
                 <NavLink to="/dictionary" style={{ textDecoration: 'none' }}>
-                  <Button style={style} startIcon={<TranslateIcon />}>
+                  <ThemeButton
+                    startIcon={<TranslateIcon style={{ fontSize: 24 }} />}
+                  >
                     Dictionary
-                  </Button>
+                  </ThemeButton>
                 </NavLink>
               </Stack>
             </Box>

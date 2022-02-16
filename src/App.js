@@ -31,6 +31,10 @@ const themeLight = createTheme({
     search: {
       primary: '#000000',
     },
+    button: {
+      primary: '#000000',
+    },
+    // divider: '#393939',
   },
 })
 
@@ -50,6 +54,9 @@ const themeDark = createTheme({
       secondary: '#c1c1c1',
     },
     search: {
+      primary: '#ffffff',
+    },
+    button: {
       primary: '#ffffff',
     },
     divider: '#393939',

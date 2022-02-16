@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { Typography, Container, Box, Grid, IconButton } from '@mui/material'
+import {
+  Typography,
+  Container,
+  Box,
+  Grid,
+  IconButton,
+  Button,
+} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
@@ -24,6 +31,25 @@ import Badge from '@mui/material/Badge'
 import ClearAllIcon from '@mui/icons-material/ClearAll'
 
 let randomWords = require('random-words')
+
+const ThemeButton = styled(Button)(({ theme }) => ({
+  fontSize: 16,
+  color: theme.palette.button.primary,
+  borderRadius: 25,
+  height: 44,
+  padding: '0 16px',
+  border: '2px solid',
+  borderColor: alpha(theme.palette.search.primary, 0.1),
+  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
+  '&:hover': {
+    border: '2px solid',
+    borderColor: alpha(theme.palette.search.primary, 0),
+    backgroundColor: alpha(theme.palette.search.primary, 0.1),
+  },
+  // '&:active': {
+  //   backgroundColor: '#0062cc',
+  // },
+}))
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props
@@ -842,16 +868,14 @@ export default function Dictionary() {
                   </Box>
                   <Box sx={({ flexGrow: 1 }, { textAlign: 'right' })}>
                     <br />
-                    <IconButton
+                    <ThemeButton
+                      variant="outlined"
+                      endIcon={<ClearAllIcon style={{ fontSize: 30 }} />}
                       onClick={clearAllFavs}
-                      color="inherit"
                       title="Clear All"
                     >
-                      <Typography variant="h6">
-                        <b>Clear All</b>
-                      </Typography>
-                      <ClearAllIcon style={{ fontSize: 30 }} />
-                    </IconButton>
+                      Clear All
+                    </ThemeButton>
                   </Box>
                 </Grid>
                 <Grid item xs={3}></Grid>
