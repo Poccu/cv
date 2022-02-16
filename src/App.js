@@ -8,12 +8,16 @@ import Dictionary from './pages/Dictionary'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import CssBaseline from '@mui/material/CssBaseline'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
+import {
+  ThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from '@mui/material/styles'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { IconButton, Box } from '@mui/material'
 
-const themeLight = createTheme({
+let themeLight = createTheme({
   palette: {
     primary: {
       main: '#ffffff',
@@ -37,8 +41,9 @@ const themeLight = createTheme({
     // divider: '#393939',
   },
 })
+themeLight = responsiveFontSizes(themeLight)
 
-const themeDark = createTheme({
+let themeDark = createTheme({
   palette: {
     primary: {
       main: '#191919',
@@ -62,6 +67,7 @@ const themeDark = createTheme({
     divider: '#393939',
   },
 })
+themeDark = responsiveFontSizes(themeDark)
 
 const style = {
   position: 'fixed',
