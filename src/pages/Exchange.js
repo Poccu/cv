@@ -23,6 +23,29 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee'
 import CurrencyYenIcon from '@mui/icons-material/CurrencyYen'
 import CurrencyYuanIcon from '@mui/icons-material/CurrencyYuan'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import NumberFormat from 'react-number-format'
+
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        })
+      }}
+      thousandSeparator=" "
+      isNumericString
+      // prefix="$"
+    />
+  )
+}
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -109,15 +132,15 @@ export default function Exchange() {
   }, [info])
 
   // Function to convert the currency
+  let exchangeRate = info[to]
+
   function convert() {
-    let rate = info[to]
-    setOutput(input * rate)
+    setOutput(input * exchangeRate)
   }
 
   // function convert2() {
   //   // setFrom(to)
-  //   let rate = info[to]
-  //   setOutput(output * rate)
+  //   setOutput(output * exchangeRate)
   // }
 
   // Function to switch between two currency
@@ -372,7 +395,7 @@ export default function Exchange() {
                   ) : null}
                 </SearchIconWrapperEnd>
                 <StyledInputBase
-                  type="number"
+                  // type="number"
                   placeholder={country(from)}
                   inputProps={{ 'aria-label': 'search' }}
                   value={input}
@@ -380,6 +403,7 @@ export default function Exchange() {
                   // onKeyPress={() => {
                   //   convert()
                   // }}
+                  inputComponent={NumberFormatCustom}
                 />
               </Search>
               <br />
@@ -593,7 +617,7 @@ export default function Exchange() {
                 <StyledInputBase
                   // color="secondary"
                   // disabled
-                  type="number"
+                  // type="number"
                   placeholder={country(to)}
                   inputProps={{ 'aria-label': 'search' }}
                   value={input > 0 ? output.toFixed(2) : ''}
@@ -604,6 +628,7 @@ export default function Exchange() {
                   // onKeyPress={() => {
                   //   convert()
                   // }}
+                  inputComponent={NumberFormatCustom}
                 />
               </Search>
               <br />
@@ -692,6 +717,165 @@ export default function Exchange() {
               </Stack>
             </Box>
           </Grid>
+        </Grid>
+        <br />
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="h4">
+            <b>
+              {from === 'rub' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'usd' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'eur' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'chf' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'try' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'gbp' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'inr' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'jpy' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {from === 'cny' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}{' '}
+              1 {from.toUpperCase()} ={' '}
+              {to === 'rub' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'usd' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'eur' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'chf' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'try' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'gbp' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'inr' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'jpy' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}
+              {to === 'cny' ? (
+                <img
+                  alt="flag"
+                  src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                  width="20px"
+                  height="20px"
+                />
+              ) : null}{' '}
+              {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '}
+              {to.toUpperCase()}
+            </b>
+          </Typography>
         </Grid>
 
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
