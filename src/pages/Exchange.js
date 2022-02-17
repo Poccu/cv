@@ -24,6 +24,9 @@ import CurrencyYenIcon from '@mui/icons-material/CurrencyYen'
 import CurrencyYuanIcon from '@mui/icons-material/CurrencyYuan'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import NumberFormat from 'react-number-format'
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props
@@ -106,11 +109,17 @@ export default function Exchange() {
 
   // Initializing all the state variables
   const [info, setInfo] = useState([])
+  const [yesterday, setYesterday] = useState([])
   const [input, setInput] = useState('')
   const [from, setFrom] = useState('usd')
   const [to, setTo] = useState('rub')
   const [options, setOptions] = useState([])
   const [output, setOutput] = useState(0)
+
+  let today = new Date()
+  today.setDate(today.getDate() - 2)
+
+  // today.toISOString().split('T')[0]
 
   // Calling the api whenever the dependency changes
   useEffect(() => {
@@ -124,6 +133,19 @@ export default function Exchange() {
       })
   }, [input, from, to])
 
+  useEffect(() => {
+    axios
+      .get(
+        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${
+          today.toISOString().split('T')[0]
+        }/currencies/${from}.json`
+      )
+      .then((response) => {
+        setYesterday(response.data[from])
+        // console.log(response.data[from])
+      })
+  }, [input, from, to])
+
   // Calling the convert function whenever
   // a user switches the currency
   useEffect(() => {
@@ -133,6 +155,7 @@ export default function Exchange() {
 
   // Function to convert the currency
   let exchangeRate = info[to]
+  let yesterdayRate = yesterday[to]
 
   function convert() {
     setOutput(input * exchangeRate)
@@ -874,6 +897,15 @@ export default function Exchange() {
               ) : null}{' '}
               {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '}
               {to.toUpperCase()}
+              {exchangeRate > yesterdayRate ? (
+                <KeyboardDoubleArrowUpIcon color="success" />
+              ) : null}
+              {exchangeRate < yesterdayRate ? (
+                <KeyboardDoubleArrowDownIcon color="error" />
+              ) : null}
+              {/* {exchangeRate === yesterdayRate ? (
+                <FiberManualRecordIcon />
+              ) : null} */}
             </b>
           </Typography>
         </Grid>
