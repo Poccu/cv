@@ -5,32 +5,14 @@ import {
   Box,
   Grid,
   IconButton,
-  Button,
   Stack,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
-import HearingIcon from '@mui/icons-material/Hearing'
-import HearingDisabledIcon from '@mui/icons-material/HearingDisabled'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import ShuffleIcon from '@mui/icons-material/Shuffle'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemButton from '@mui/material/ListItemButton'
-import Divider from '@mui/material/Divider'
-import Badge from '@mui/material/Badge'
-import ClearAllIcon from '@mui/icons-material/ClearAll'
-///
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import EuroIcon from '@mui/icons-material/Euro'
@@ -40,60 +22,7 @@ import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound'
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee'
 import CurrencyYenIcon from '@mui/icons-material/CurrencyYen'
 import CurrencyYuanIcon from '@mui/icons-material/CurrencyYuan'
-import CachedIcon from '@mui/icons-material/Cached'
-
-// import Dropdown from 'react-dropdown'
-import { HiSwitchHorizontal } from 'react-icons/hi'
-// import 'react-dropdown/style.css'
-// import './App.css'
-
-let randomWords = require('random-words')
-
-const ThemeButton = styled(Button)(({ theme }) => ({
-  fontSize: 16,
-  color: theme.palette.button.primary,
-  borderRadius: 25,
-  height: 44,
-  padding: '0 16px',
-  border: '2px solid',
-  borderColor: alpha(theme.palette.search.primary, 0.1),
-  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
-  '&:hover': {
-    border: '2px solid',
-    borderColor: alpha(theme.palette.search.primary, 0),
-    backgroundColor: alpha(theme.palette.search.primary, 0.1),
-  },
-  // '&:active': {
-  //   backgroundColor: '#0062cc',
-  // },
-}))
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  )
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  }
-}
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -116,7 +45,17 @@ const Search = styled('div')(({ theme }) => ({
 }))
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
+  padding: theme.spacing(0, 1.8),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
+
+const SearchIconWrapperEnd = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 45),
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
@@ -128,13 +67,13 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: theme.spacing(1, 1, 1, 1),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: 'auto',
     [theme.breakpoints.up('sm')]: {
-      width: '342px',
+      width: '300px',
     },
   },
 }))
@@ -149,7 +88,6 @@ export default function Exchange() {
   const [to, setTo] = useState('rub')
   const [options, setOptions] = useState([])
   const [output, setOutput] = useState(0)
-  const [searchCurrency, setSearchCurrency] = useState('')
 
   // Calling the api whenever the dependency changes
   useEffect(() => {
@@ -161,7 +99,7 @@ export default function Exchange() {
         setInfo(response.data[from])
         // console.log(response.data[from])
       })
-  }, [input, from])
+  }, [input, from, to])
 
   // Calling the convert function whenever
   // a user switches the currency
@@ -182,37 +120,14 @@ export default function Exchange() {
   //   setOutput(output * rate)
   // }
 
-  // const convert = (event) => {
-  //   // if (event.key === 'Enter') {
-  //   //   axios
-  //   //     .get(url)
-  //   //     .then((response) => {
-  //   //       setValue(0)
-  //   //       setData(response.data[0])
-  //   //       // console.log(response.data[0])
-  //   //       // setOpen(true)
-  //   //       let audio = new Audio(response.data[0].phonetics[0].audio)
-  //   //       audio.play()
-  //   //     })
-  //   //     .catch((error) => {
-  //   //       setError(true)
-  //   //       setOpen(true)
-  //   //       console.error('THIS IS ERROR --->', error)
-  //   //     })
-  //   //   setError(false)
-  //   //   setSearchWord('test')
-  //   // }
-  //   var rate = info[to]
-  //   setOutput(input * rate)
-  //   // setInput('')
-  // }
-
   // Function to switch between two currency
   function flip() {
     let temp = from
     setFrom(to)
     setTo(temp)
-    setInput(output.toFixed(2))
+    if (output === 0) {
+      setInput('')
+    } else setInput(output.toFixed(2))
   }
 
   function country(from) {
@@ -283,24 +198,15 @@ export default function Exchange() {
     }
   }
 
+  const clearInput = () => {
+    setInput('')
+  }
+
   ////////////////////////////////////// end //////////////////////////////////////
 
   const [error, setError] = useState(false) // catch errors
   const [open, setOpen] = useState(false) // no input notifications
   const [open2, setOpen2] = useState(false) // no audio notifications
-
-  const [favs, setFavs] = useState([]) // array of favourite words
-  const [phonetics, setPhonetics] = useState([]) // array of phonetics of favourite words
-  const [audios, setAudios] = useState([]) // array of audio of favourite words
-
-  const [value, setValue] = useState(0) // tabs state
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-  }
-
-  const [data, setData] = useState({}) // response data object
-  const [searchWord, setSearchWord] = useState('')
 
   const handleClick2 = () => {
     setOpen2(true)
@@ -326,14 +232,9 @@ export default function Exchange() {
     setOpen(false)
   }
 
-  const clearData = () => {
-    setData({})
-  }
-
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        {/* {!data.word ? ( */}
         <Typography
           variant="h3"
           component="div"
@@ -380,8 +281,8 @@ export default function Exchange() {
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
-              <Typography variant="h5">
-                <b>{'From: '}</b>
+              <Typography variant="h4">
+                <b>FROM</b>
               </Typography>
               <br />
               <Search>
@@ -396,6 +297,80 @@ export default function Exchange() {
                   {from === 'jpy' ? <CurrencyYenIcon /> : null}
                   {from === 'cny' ? <CurrencyYuanIcon /> : null}
                 </SearchIconWrapper>
+                <SearchIconWrapperEnd>
+                  {from === 'rub' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'usd' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'eur' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'chf' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'try' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'gbp' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'inr' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'jpy' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {from === 'cny' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                </SearchIconWrapperEnd>
                 <StyledInputBase
                   type="number"
                   placeholder={country(from)}
@@ -409,32 +384,86 @@ export default function Exchange() {
               </Search>
               <br />
               <Stack justifyContent="center" direction="row" spacing={0}>
-                <IconButton color="inherit" title="Russian Ruble">
-                  <CurrencyRubleIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('rub')
+                  }}
+                  color="inherit"
+                  title="Russian Ruble"
+                >
+                  <CurrencyRubleIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <AttachMoneyIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('usd')
+                  }}
+                  color="inherit"
+                  title="United States Dollar"
+                >
+                  <AttachMoneyIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <EuroIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('eur')
+                  }}
+                  color="inherit"
+                  title="Euro"
+                >
+                  <EuroIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyFrancIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('gbp')
+                  }}
+                  color="inherit"
+                  title="Pound Sterling"
+                >
+                  <CurrencyPoundIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyLiraIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('chf')
+                  }}
+                  color="inherit"
+                  title="Swiss Franc"
+                >
+                  <CurrencyFrancIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyPoundIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('try')
+                  }}
+                  color="inherit"
+                  title="Turkish Lira"
+                >
+                  <CurrencyLiraIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyRupeeIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('inr')
+                  }}
+                  color="inherit"
+                  title="Indian Rupee"
+                >
+                  <CurrencyRupeeIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyYenIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('jpy')
+                  }}
+                  color="inherit"
+                  title="Japanese Yen"
+                >
+                  <CurrencyYenIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyYuanIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setFrom('cny')
+                  }}
+                  color="inherit"
+                  title="Chinese Yuan"
+                >
+                  <CurrencyYuanIcon />
                 </IconButton>
               </Stack>
             </Box>
@@ -446,15 +475,20 @@ export default function Exchange() {
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
+              <br />
+              <br />
               <IconButton
                 onClick={flip}
                 color="inherit"
                 // size="large"
                 title="Switch"
               >
-                <CachedIcon style={{ fontSize: 60 }} />
+                <SwapHorizIcon style={{ fontSize: 40 }} />
               </IconButton>
-              {/* <br /> */}
+              <br />
+              <IconButton onClick={clearInput} color="inherit" title="Clear">
+                <CloseIcon style={{ fontSize: 40 }} />
+              </IconButton>
             </Box>
           </Grid>
           <Grid
@@ -464,8 +498,8 @@ export default function Exchange() {
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
-              <Typography variant="h5">
-                <b>{'To: '}</b>
+              <Typography variant="h4">
+                <b>TO</b>
               </Typography>
               <br />
               <Search>
@@ -482,6 +516,80 @@ export default function Exchange() {
                   {to === 'jpy' ? <CurrencyYenIcon /> : null}
                   {to === 'cny' ? <CurrencyYuanIcon /> : null}
                 </SearchIconWrapper>
+                <SearchIconWrapperEnd>
+                  {to === 'rub' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'usd' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'eur' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'chf' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'try' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'gbp' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'inr' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'jpy' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                  {to === 'cny' ? (
+                    <img
+                      alt="flag"
+                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                      width="20px"
+                      height="20px"
+                    />
+                  ) : null}
+                </SearchIconWrapperEnd>
                 <StyledInputBase
                   // color="secondary"
                   // disabled
@@ -500,39 +608,91 @@ export default function Exchange() {
               </Search>
               <br />
               <Stack justifyContent="center" direction="row" spacing={0}>
-                <IconButton color="inherit" title="Russian Ruble">
-                  <CurrencyRubleIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('rub')
+                  }}
+                  color="inherit"
+                  title="Russian Ruble"
+                >
+                  <CurrencyRubleIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <AttachMoneyIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('usd')
+                  }}
+                  color="inherit"
+                  title="United States Dollar"
+                >
+                  <AttachMoneyIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <EuroIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('eur')
+                  }}
+                  color="inherit"
+                  title="Euro"
+                >
+                  <EuroIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyFrancIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('gbp')
+                  }}
+                  color="inherit"
+                  title="Pound Sterling"
+                >
+                  <CurrencyPoundIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyLiraIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('chf')
+                  }}
+                  color="inherit"
+                  title="Swiss Franc"
+                >
+                  <CurrencyFrancIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyPoundIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('try')
+                  }}
+                  color="inherit"
+                  title="Turkish Lira"
+                >
+                  <CurrencyLiraIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyRupeeIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('inr')
+                  }}
+                  color="inherit"
+                  title="Indian Rupee"
+                >
+                  <CurrencyRupeeIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyYenIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('jpy')
+                  }}
+                  color="inherit"
+                  title="Japanese Yen"
+                >
+                  <CurrencyYenIcon />
                 </IconButton>
-                <IconButton color="inherit" title="Audio">
-                  <CurrencyYuanIcon style={{ fontSize: 30 }} />
+                <IconButton
+                  onClick={() => {
+                    setTo('cny')
+                  }}
+                  color="inherit"
+                  title="Chinese Yuan"
+                >
+                  <CurrencyYuanIcon />
                 </IconButton>
               </Stack>
             </Box>
           </Grid>
         </Grid>
-
-        {/* ///////////////////////////////////////// */}
 
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Box
@@ -542,8 +702,8 @@ export default function Exchange() {
             alignItems="center"
           >
             <img
-              src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
-              alt="dictionary"
+              src={`${process.env.PUBLIC_URL}/assets/images/exchange-bg.png`}
+              alt="exchange"
             />
           </Box>
         </Box>
@@ -555,8 +715,8 @@ export default function Exchange() {
           alignItems="center"
         >
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
-            alt="dictionary"
+            src={`${process.env.PUBLIC_URL}/assets/images/exchange-bg.png`}
+            alt="exchange"
             height="100%"
             width="100%"
           />
