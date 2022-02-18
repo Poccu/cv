@@ -6,6 +6,7 @@ import Weather from './pages/Weather'
 import Home from './pages/Home'
 import Dictionary from './pages/Dictionary'
 import Exchange from './pages/Exchange'
+import NotFound from './pages/NotFound'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -84,14 +85,49 @@ export default function App() {
     <ThemeProvider theme={light ? themeLight : themeDark}>
       <CssBaseline />
       <Router>
-        <Header />
+        {/* {window.location.pathname === '/404' ? null : <Header />} */}
         <main>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/weather" element={<Weather />} />
-            <Route path="/dictionary" element={<Dictionary />} />
-            <Route path="/exchange" element={<Exchange />} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <Header />
+                  <Home />
+                </>
+              }
+            />
+            <Route
+              path="/weather"
+              element={
+                <>
+                  <Header />
+                  <Weather />
+                </>
+              }
+            />
+            <Route
+              path="/dictionary"
+              element={
+                <>
+                  <Header />
+                  <Dictionary />
+                </>
+              }
+            />
+            <Route
+              path="/exchange"
+              element={
+                <>
+                  <Header />
+                  <Exchange />
+                </>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+            {/* <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<Navigate replace to="/404" />} /> */}
           </Routes>
         </main>
         <Footer />
