@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -79,57 +79,80 @@ const style = {
 }
 
 export default function App() {
-  const [light, setLight] = useState(false)
+  const [light, setLight] = useState(false) // set light/dark theme
+
+  // localStorage
+  useEffect(() => {
+    setLight(JSON.parse(window.localStorage.getItem('light')))
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('light', JSON.stringify(light))
+  }, [light])
 
   return (
     <ThemeProvider theme={light ? themeLight : themeDark}>
       <CssBaseline />
       <Router>
         {/* {window.location.pathname === '/404' ? null : <Header />} */}
-        <main>
-          <ScrollToTop />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <Header />
+
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Header />
+                <main>
                   <Home />
-                </>
-              }
-            />
-            <Route
-              path="/weather"
-              element={
-                <>
-                  <Header />
+                </main>
+              </>
+            }
+          />
+          <Route
+            path="/weather"
+            element={
+              <>
+                <Header />
+                <main>
                   <Weather />
-                </>
-              }
-            />
-            <Route
-              path="/dictionary"
-              element={
-                <>
-                  <Header />
+                </main>
+              </>
+            }
+          />
+          <Route
+            path="/dictionary"
+            element={
+              <>
+                <Header />
+                <main>
                   <Dictionary />
-                </>
-              }
-            />
-            <Route
-              path="/exchange"
-              element={
-                <>
-                  <Header />
+                </main>
+              </>
+            }
+          />
+          <Route
+            path="/exchange"
+            element={
+              <>
+                <Header />
+                <main>
                   <Exchange />
-                </>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-            {/* <Route path="/404" element={<NotFound />} />
+                </main>
+              </>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <main>
+                <NotFound />
+              </main>
+            }
+          />
+          {/* <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate replace to="/404" />} /> */}
-          </Routes>
-        </main>
+        </Routes>
         <Footer />
       </Router>
       <Box style={style}>

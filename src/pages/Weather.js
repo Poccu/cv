@@ -37,9 +37,9 @@ const style = {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.1),
+  backgroundColor: alpha(theme.palette.search.primary, 0.1),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.14),
+    backgroundColor: alpha(theme.palette.search.primary, 0.14),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -648,6 +648,7 @@ export default function Weather() {
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/weather-bg.svg`}
                   alt="weather"
+                  draggable={false}
                 />
               </Box>
             </Box>
@@ -664,6 +665,7 @@ export default function Weather() {
                   alt="weather"
                   height="100%"
                   width="100%"
+                  draggable={false}
                 />
               </Box>
             </Box>

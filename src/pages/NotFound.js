@@ -60,6 +60,7 @@ export default function NotFound() {
                 alt="dictionary"
                 height="100%"
                 width="100%"
+                draggable={false}
               />
             </Box>
           </Grid>
