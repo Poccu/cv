@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Typography,
   Container,
@@ -30,13 +30,15 @@ import ListItemButton from '@mui/material/ListItemButton'
 import Divider from '@mui/material/Divider'
 import Badge from '@mui/material/Badge'
 import ClearAllIcon from '@mui/icons-material/ClearAll'
+import { TransitionGroup } from 'react-transition-group'
+import Collapse from '@mui/material/Collapse'
 
 let randomWords = require('random-words')
 
 const ThemeButton = styled(Button)(({ theme }) => ({
   fontSize: 16,
   color: theme.palette.button.primary,
-  borderRadius: 25,
+  borderRadius: 50,
   height: 44,
   padding: '0 16px',
   border: '2px solid',
@@ -132,11 +134,32 @@ export default function Dictionary() {
   const [phonetics, setPhonetics] = useState([]) // array of phonetics of favourite words
   const [audios, setAudios] = useState([]) // array of audio of favourite words
 
+  // localStorage
+  useEffect(() => {
+    setFavs(JSON.parse(window.localStorage.getItem('favs')))
+    setPhonetics(JSON.parse(window.localStorage.getItem('phonetics')))
+    setAudios(JSON.parse(window.localStorage.getItem('audios')))
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('favs', JSON.stringify(favs))
+    window.localStorage.setItem('phonetics', JSON.stringify(phonetics))
+    window.localStorage.setItem('audios', JSON.stringify(audios))
+  }, [favs])
+
   const setFavourite = () => {
     if (favs.indexOf(data.word) === -1) {
       setFavs((prevFavs) => [...prevFavs, data.word])
-      setPhonetics((prevPhonetics) => [...prevPhonetics, data.phonetic])
-      setAudios((prevAudios) => [...prevAudios, data.phonetics[0].audio])
+      if (data.phonetic) {
+        setPhonetics((prevPhonetics) => [
+          ...prevPhonetics,
+          data.phonetic.replace(/[\/\]\[]/g, ''),
+        ])
+      } else setPhonetics((prevPhonetics) => [...prevPhonetics, undefined])
+      setAudios((prevAudios) => [
+        ...prevAudios,
+        `//ssl.gstatic.com/dictionary/static/sounds/oxford/${data.word}--_gb_1.mp3`,
+      ])
       // console.log(favs)
       // console.log(phonetics)
       // console.log(audios)
@@ -146,7 +169,9 @@ export default function Dictionary() {
   const setNotFavourite = () => {
     setFavs((prevFavs) => prevFavs.filter((item) => item !== data.word))
     setPhonetics((prevPhonetics) =>
-      prevPhonetics.filter((item) => item !== data.phonetic)
+      prevPhonetics.filter(
+        (item) => item !== data.phonetic.replace(/[\/\]\[]/g, '')
+      )
     )
     setAudios((prevAudios) =>
       prevAudios.filter((item) => item !== data.phonetics[0].audio)
@@ -164,25 +189,49 @@ export default function Dictionary() {
 
   const [data, setData] = useState({}) // response data object
   const [searchWord, setSearchWord] = useState('')
+  const [audioWord, setAudioWord] = useState('')
+
+  // localStorage
+  useEffect(() => {
+    setData(JSON.parse(window.localStorage.getItem('data')))
+    setAudioWord(JSON.parse(window.localStorage.getItem('audioWord')))
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('data', JSON.stringify(data))
+  }, [data])
+
+  useEffect(() => {
+    window.localStorage.setItem('audioWord', JSON.stringify(audioWord))
+  }, [audioWord])
 
   const playAudio = () => {
-    let audio = new Audio(data.phonetics[0].audio)
+    let audio = new Audio(audioWord)
     audio.play()
+
+    // todo
+    // try {
+    // } catch (err) {
+    //   console.log('oops')
+    // }
   }
 
-  const url = `https://api.dictionaryapi.dev/api/v2/entries/en_US/${searchWord}`
-
   const getMeaning = (event) => {
+    const urlSearchWord = `https://api.dictionaryapi.dev/api/v2/entries/en_US/${searchWord}`
+
     if (event.key === 'Enter') {
       axios
-        .get(url)
+        .get(urlSearchWord)
         .then((response) => {
           setValue(0)
           setData(response.data[0])
-          // console.log(response.data[0])
+          console.log(response.data[0])
           // setOpen(true)
-          let audio = new Audio(response.data[0].phonetics[0].audio)
+          let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${searchWord}--_gb_1.mp3`
+          let audio = new Audio(url)
           audio.play()
+          setAudioWord(url)
+          // console.log(audioWord)
         })
         .catch((error) => {
           setError(true)
@@ -202,10 +251,13 @@ export default function Dictionary() {
       .then((response) => {
         setValue(0)
         setData(response.data[0])
-        // console.log(response.data[0])
+        console.log(response.data[0])
         // setOpen(true)
-        let audio = new Audio(response.data[0].phonetics[0].audio)
+        let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${random}--_gb_1.mp3`
+        let audio = new Audio(url)
         audio.play()
+        setAudioWord(url)
+        // console.log(audioWord)
       })
       .catch((error) => {
         setError(true)
@@ -252,6 +304,21 @@ export default function Dictionary() {
     setAudios([])
   }
 
+  // todo
+  // const [localValue, setLocalValue] = useState('')
+
+  // const onInputBlur = () => {
+  //   // changeValue(localValue) // fixme
+  //   setSearchWord(localValue)
+  // }
+  // const onInputChange = (e) => {
+  //   setLocalValue(e.target.value)
+  // }
+
+  // onChange={(event) => setSearchWord(event.target.value)}
+  // onBlur = { onInputBlur }
+  // onChange = { onInputChange }
+
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
@@ -289,6 +356,8 @@ export default function Dictionary() {
               inputProps={{ 'aria-label': 'search' }}
               value={searchWord}
               onChange={(event) => setSearchWord(event.target.value)}
+              // onBlur={onInputBlur} // todo
+              // onChange={onInputChange}
               onKeyPress={getMeaning}
             />
           </Search>
@@ -328,7 +397,8 @@ export default function Dictionary() {
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {data.phonetics[0].audio ? (
+                  {/* {data.phonetics[0].audio ? ( */}
+                  {true ? (
                     <IconButton
                       onClick={playAudio}
                       color="inherit"
@@ -382,17 +452,32 @@ export default function Dictionary() {
                       {data.phonetic ? (
                         <Box>
                           <Typography variant="h5" color="textSecondary">
-                            [ {data.phonetic} ]
+                            [ {data.phonetic.replace(/[\/\]\[]/g, '')} ]
                           </Typography>
                         </Box>
                       ) : (
-                        <Typography variant="h5">
-                          {/* <br /> */}
+                        <Box>
                           <Typography variant="h5" color="textSecondary">
                             [ - ]
+                            {/* {data.phonetics[1].text.replace(/[\/\]\[]/g, '')} ] */}
                           </Typography>
-                        </Typography>
+                        </Box>
                       )}
+                      {/* {data.phonetics[0].text ? (
+                        <Box>
+                          <Typography variant="h5" color="textSecondary">
+                            [ {data.phonetics[0].text.replace(/[\/\]\[]/g, '')}{' '}
+                            ]
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box>
+                          <Typography variant="h5" color="textSecondary">
+                            [ {data.phonetics[1].text.replace(/[\/\]\[]/g, '')}{' '}
+                            ]
+                          </Typography>
+                        </Box>
+                      )} */}
                     </Typography>
                   </Box>
                   <br />
@@ -435,7 +520,8 @@ export default function Dictionary() {
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Stack justifyContent="center" direction="row" spacing={5}>
-                {data.phonetics[0].audio ? (
+                {/* {data.phonetics[0].audio ? ( */}
+                {true ? (
                   <IconButton onClick={playAudio} color="inherit" title="Audio">
                     <HearingIcon style={{ fontSize: 50 }} />
                   </IconButton>
@@ -493,7 +579,7 @@ export default function Dictionary() {
                   aria-label="tabs"
                   textColor="inherit"
                   indicatorColor="secondary"
-                  centered
+                  // centered
                   variant="scrollable"
                   scrollButtons="auto"
                   allowScrollButtonsMobile
@@ -575,7 +661,7 @@ export default function Dictionary() {
                         </Typography>
                       </Box>
                     ) : null}
-                    {data.meanings[0].definitions[0].synonyms.length > 0 ? (
+                    {/* {data.meanings[0].definitions[0].synonyms.length > 0 ? (
                       <Box>
                         <br />
                         <Typography variant="h5">
@@ -596,7 +682,7 @@ export default function Dictionary() {
                           {data.meanings[0].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
-                    ) : null}
+                    ) : null} */}
                     {/* {data.origin ? (
                       <Box>
                         <br />
@@ -636,7 +722,7 @@ export default function Dictionary() {
                         </Typography>
                       </Box>
                     ) : null}
-                    {data.meanings[1].definitions[0].synonyms.length > 0 ? (
+                    {/* {data.meanings[1].definitions[0].synonyms.length > 0 ? (
                       <Box>
                         <br />
                         <Typography variant="h5">
@@ -657,7 +743,7 @@ export default function Dictionary() {
                           {data.meanings[1].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
-                    ) : null}
+                    ) : null} */}
                   </Box>
                 ) : null}
               </TabPanel>
@@ -686,7 +772,7 @@ export default function Dictionary() {
                         </Typography>
                       </Box>
                     ) : null}
-                    {data.meanings[2].definitions[0].synonyms.length > 0 ? (
+                    {/* {data.meanings[2].definitions[0].synonyms.length > 0 ? (
                       <Box>
                         <br />
                         <Typography variant="h5">
@@ -707,7 +793,7 @@ export default function Dictionary() {
                           {data.meanings[2].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
-                    ) : null}
+                    ) : null} */}
                   </Box>
                 ) : null}
               </TabPanel>
@@ -736,7 +822,7 @@ export default function Dictionary() {
                         </Typography>
                       </Box>
                     ) : null}
-                    {data.meanings[3].definitions[0].synonyms.length > 0 ? (
+                    {/* {data.meanings[3].definitions[0].synonyms.length > 0 ? (
                       <Box>
                         <br />
                         <Typography variant="h5">
@@ -757,7 +843,7 @@ export default function Dictionary() {
                           {data.meanings[3].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
-                    ) : null}
+                    ) : null} */}
                   </Box>
                 ) : null}
               </TabPanel>
@@ -786,7 +872,7 @@ export default function Dictionary() {
                         </Typography>
                       </Box>
                     ) : null}
-                    {data.meanings[4].definitions[0].synonyms.length > 0 ? (
+                    {/* {data.meanings[4].definitions[0].synonyms.length > 0 ? (
                       <Box>
                         <br />
                         <Typography variant="h5">
@@ -807,7 +893,7 @@ export default function Dictionary() {
                           {data.meanings[4].definitions[0].antonyms.join(', ')}
                         </Typography>
                       </Box>
-                    ) : null}
+                    ) : null} */}
                   </Box>
                 ) : null}
               </TabPanel>
@@ -843,117 +929,130 @@ export default function Dictionary() {
                 >
                   <Box>
                     <List>
-                      {length.map((index) => (
-                        <div key={index}>
-                          <ListItem
-                            secondaryAction={
-                              <IconButton
-                                onClick={() => {
-                                  setFavs((prevFavs) =>
-                                    prevFavs.filter(
-                                      (item) => item !== favs[index]
-                                    )
-                                  )
-                                  setPhonetics((prevPhonetics) =>
-                                    prevPhonetics.filter(
-                                      (item) => item !== phonetics[index]
-                                    )
-                                  )
-                                  setAudios((prevAudios) =>
-                                    prevAudios.filter(
-                                      (item) => item !== audios[index]
-                                    )
-                                  )
-                                  // console.log(favs)
-                                  // console.log(phonetics)
-                                  // console.log(audios)
-                                }}
-                                edge="end"
-                                aria-label="delete"
-                                color="inherit"
-                                title="Delete"
-                              >
-                                <CloseIcon style={{ fontSize: 30 }} />
-                              </IconButton>
-                            }
-                          >
-                            <ListItemButton
-                              onClick={
-                                audios[index]
-                                  ? () => {
-                                      let audio = new Audio(audios[index])
-                                      audio.play()
-                                    }
-                                  : handleClick2
-                              }
-                            >
-                              <ListItemAvatar>
+                      <TransitionGroup>
+                        {length.map((index) => (
+                          <Collapse key={index}>
+                            <ListItem
+                              secondaryAction={
                                 <IconButton
                                   onClick={() => {
-                                    window.scrollTo(0, 0)
-                                    axios
-                                      .get(
-                                        `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
+                                    setFavs((prevFavs) =>
+                                      prevFavs.filter(
+                                        (item) => item !== favs[index]
                                       )
-                                      .then((response) => {
-                                        setValue(0)
-                                        setData(response.data[0])
-                                        // setOpen(true)
-                                        // let audio = new Audio(
-                                        //   response.data[0].phonetics[0].audio
-                                        // )
-                                        // audio.play()
-                                      })
-                                      .catch((error) => {
-                                        setError(true)
-                                        setOpen(true)
-                                        console.error(
-                                          'THIS IS ERROR --->',
-                                          error
-                                        )
-                                      })
-                                    setError(false)
-                                    setSearchWord('')
+                                    )
+                                    setPhonetics((prevPhonetics) =>
+                                      prevPhonetics.filter(
+                                        (item) => item !== phonetics[index]
+                                      )
+                                    )
+                                    setAudios((prevAudios) =>
+                                      prevAudios.filter(
+                                        (item) => item !== audios[index]
+                                      )
+                                    )
+                                    // console.log(favs)
+                                    // console.log(phonetics)
+                                    // console.log(audios)
                                   }}
+                                  edge="end"
+                                  aria-label="delete"
                                   color="inherit"
-                                  title="Search"
+                                  title="Delete"
                                 >
-                                  <SearchIcon style={{ fontSize: 30 }} />
+                                  <CloseIcon style={{ fontSize: 30 }} />
                                 </IconButton>
-                              </ListItemAvatar>
-
-                              <ListItemText
-                                disableTypography
-                                primary={
-                                  <Typography variant="h4" color="textPrimary">
-                                    {favs[index].length > 16 ? (
-                                      <b>
-                                        {favs[index].substr(-150, 13) + '…'}
-                                      </b>
-                                    ) : (
-                                      <b>{favs[index]}</b>
-                                    )}
-                                  </Typography>
+                              }
+                            >
+                              <ListItemButton
+                                onClick={
+                                  audios[index]
+                                    ? () => {
+                                        let audio = new Audio(audios[index])
+                                        audio.play()
+                                      }
+                                    : handleClick2
                                 }
-                                secondary={
-                                  <Typography variant="p" color="textSecondary">
-                                    {/* {phonetics[index].length < 20
+                              >
+                                <ListItemAvatar>
+                                  <IconButton
+                                    onClick={() => {
+                                      window.scrollTo(0, 0)
+                                      axios
+                                        .get(
+                                          `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
+                                        )
+                                        .then((response) => {
+                                          setValue(0)
+                                          setData(response.data[0])
+                                          // setOpen(true)
+                                          // let audio = new Audio(
+                                          //   response.data[0].phonetics[0].audio
+                                          // )
+                                          // audio.play()
+
+                                          let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${favs[index]}--_gb_1.mp3`
+                                          let audio = new Audio(url)
+                                          // audio.play()
+                                          setAudioWord(url)
+                                        })
+                                        .catch((error) => {
+                                          setError(true)
+                                          setOpen(true)
+                                          console.error(
+                                            'THIS IS ERROR --->',
+                                            error
+                                          )
+                                        })
+                                      setError(false)
+                                      setSearchWord('')
+                                    }}
+                                    color="inherit"
+                                    title="Search"
+                                  >
+                                    <SearchIcon style={{ fontSize: 30 }} />
+                                  </IconButton>
+                                </ListItemAvatar>
+
+                                <ListItemText
+                                  disableTypography
+                                  primary={
+                                    <Typography
+                                      variant="h4"
+                                      color="textPrimary"
+                                    >
+                                      {favs[index].length > 16 ? (
+                                        <b>
+                                          {favs[index].substr(-150, 13) + '…'}
+                                        </b>
+                                      ) : (
+                                        <b>{favs[index]}</b>
+                                      )}
+                                    </Typography>
+                                  }
+                                  secondary={
+                                    <Typography
+                                      variant="p"
+                                      color="textSecondary"
+                                    >
+                                      {/* {phonetics[index].length < 20
                                       ? '[ ' + phonetics[index] + ' ]'
                                       : '[ ' +
                                         phonetics[index].substr(-150, 29) +
                                         '…' +
                                         ' ]'} */}
 
-                                    {phonetics[index]
-                                      ? '[ ' + phonetics[index] + ' ]'
-                                      : '[ - ]'}
-                                  </Typography>
-                                }
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        </div>
-                      ))}
+                                      {phonetics[index]
+                                        ? '[ ' + phonetics[index] + ' ]'
+                                        : '[ - ]'}
+                                    </Typography>
+                                  }
+                                />
+                              </ListItemButton>
+                            </ListItem>
+                          </Collapse>
+                        ))}
+                      </TransitionGroup>
                     </List>
                   </Box>
                   <Box sx={({ flexGrow: 1 }, { textAlign: 'right' })}>
@@ -968,7 +1067,7 @@ export default function Dictionary() {
                     </ThemeButton>
                   </Box>
                 </Grid>
-                <Grid xs={12} md={3}></Grid>
+                <Grid item xs={12} md={3}></Grid>
               </Grid>
             ) : (
               <>
@@ -1005,6 +1104,7 @@ export default function Dictionary() {
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/dictionary-bg.png`}
                   alt="dictionary"
+                  draggable={false}
                 />
               </Box>
             </Box>
@@ -1020,6 +1120,7 @@ export default function Dictionary() {
                 alt="dictionary"
                 height="100%"
                 width="100%"
+                draggable={false}
               />
             </Box>
           </>
