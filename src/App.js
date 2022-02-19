@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import Loading from './components/Loading'
 import Weather from './pages/Weather'
 import Home from './pages/Home'
-import Dictionary from './pages/Dictionary'
-import Exchange from './pages/Exchange'
+// import Dictionary from './pages/Dictionary'
+// import Exchange from './pages/Exchange'
 import NotFound from './pages/NotFound'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
@@ -18,6 +19,38 @@ import {
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { IconButton, Box } from '@mui/material'
+
+// const Home = lazy(() => import('./pages/Home'))
+
+// const Home = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/Home')), 500)
+//   })
+// })
+
+const Dictionary = lazy(() => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(import('./pages/Dictionary')), 500)
+  })
+})
+
+// const Weather = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/Weather')), 500)
+//   })
+// })
+
+const Exchange = lazy(() => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(import('./pages/Exchange')), 500)
+  })
+})
+
+// const NotFound = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/NotFound')), 500)
+//   })
+// })
 
 let themeLight = createTheme({
   palette: {
@@ -94,88 +127,95 @@ export default function App() {
     <ThemeProvider theme={light ? themeLight : themeDark}>
       <CssBaseline />
       <Router>
-        {/* {window.location.pathname === '/404' ? null : <Header />} */}
+        <Suspense fallback={<Loading />}>
+          {/* {window.location.pathname === '/404' ? null : <Header />} */}
 
-        <ScrollToTop />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Header />
+          <ScrollToTop />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Home />
+                  </main>
+                </>
+              }
+            />
+            <Route
+              path="/weather"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Weather />
+                  </main>
+                </>
+              }
+            />
+            <Route
+              path="/dictionary"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Dictionary />
+                  </main>
+                </>
+              }
+            />
+            <Route
+              path="/exchange"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Exchange />
+                  </main>
+                </>
+              }
+            />
+            <Route
+              path="*"
+              element={
                 <main>
-                  <Home />
+                  <NotFound />
                 </main>
-              </>
-            }
-          />
-          <Route
-            path="/weather"
-            element={
-              <>
-                <Header />
-                <main>
-                  <Weather />
-                </main>
-              </>
-            }
-          />
-          <Route
-            path="/dictionary"
-            element={
-              <>
-                <Header />
-                <main>
-                  <Dictionary />
-                </main>
-              </>
-            }
-          />
-          <Route
-            path="/exchange"
-            element={
-              <>
-                <Header />
-                <main>
-                  <Exchange />
-                </main>
-              </>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <main>
-                <NotFound />
-              </main>
-            }
-          />
-          {/* <Route path="/404" element={<NotFound />} />
+              }
+            />
+            {/* <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate replace to="/404" />} /> */}
-        </Routes>
-        <Footer />
+          </Routes>
+          <Box
+            style={style}
+            // sx={{
+            //   display: { xs: 'none', md: 'none', lg: 'block' },
+            // }}
+          >
+            {light ? (
+              <IconButton
+                onClick={() => setLight((prev) => !prev)}
+                color="inherit"
+                size="large"
+                title="Dark Mode"
+              >
+                <DarkModeOutlinedIcon fontSize="inherit" />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => setLight((prev) => !prev)}
+                color="inherit"
+                size="large"
+                title="Light Mode"
+              >
+                <LightModeOutlinedIcon fontSize="inherit" />
+              </IconButton>
+            )}
+          </Box>
+          <Footer />
+        </Suspense>
       </Router>
-      <Box style={style}>
-        {light ? (
-          <IconButton
-            onClick={() => setLight((prev) => !prev)}
-            color="inherit"
-            size="large"
-            title="Dark Mode"
-          >
-            <DarkModeOutlinedIcon fontSize="inherit" />
-          </IconButton>
-        ) : (
-          <IconButton
-            onClick={() => setLight((prev) => !prev)}
-            color="inherit"
-            size="large"
-            title="Light Mode"
-          >
-            <LightModeOutlinedIcon fontSize="inherit" />
-          </IconButton>
-        )}
-      </Box>
     </ThemeProvider>
   )
 }
