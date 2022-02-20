@@ -25,7 +25,6 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import NumberFormat from 'react-number-format'
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props
@@ -116,33 +115,34 @@ export default function Exchange() {
   const [options, setOptions] = useState([])
   const [output, setOutput] = useState(0)
 
-  let today = new Date()
-  today.setDate(today.getDate() - 3)
+  const getYesterdayDate = () => {
+    let date = new Date()
+    date.setDate(date.getDate() - 1)
+    return date.toISOString().split('T')[0]
+  }
 
-  // today.toISOString().split('T')[0]
+  const todayDate = new Date().toISOString().split('T')[0] // 2022-02-19 today date
 
   // Calling the api whenever the dependency changes
   useEffect(() => {
     axios
       .get(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${from}.min.json`
+        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${from}.json?d=${todayDate}`
       )
       .then((response) => {
         setInfo(response.data[from])
-        // console.log(response.data)
+        // console.log('today :', response.data)
       })
   }, [input, from, to])
 
   useEffect(() => {
     axios
       .get(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${
-          today.toISOString().split('T')[0]
-        }/currencies/${from}.min.json`
+        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${getYesterdayDate()}/currencies/${from}.json?d=${todayDate}`
       )
       .then((response) => {
         setYesterday(response.data[from])
-        // console.log(response.data)
+        // console.log('yesterday :', response.data)
       })
   }, [input, from, to])
 
@@ -251,12 +251,6 @@ export default function Exchange() {
   return (
     <Box sx={{ mt: 12 }}>
       <Container maxwidth="sm">
-        <Typography
-          variant="h3"
-          component="div"
-          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-        ></Typography>
-
         <Grid
           container
           direction="row"
@@ -387,7 +381,7 @@ export default function Exchange() {
                   // onKeyPress={() => {
                   //   convert()
                   // }}
-                  inputComponent={NumberFormatCustom}
+                  inputComponent={NumberFormatCustom} // todo error
                 />
               </Search>
               <br />
@@ -715,7 +709,7 @@ export default function Exchange() {
                   // onKeyPress={() => {
                   //   convert()
                   // }}
-                  inputComponent={NumberFormatCustom}
+                  inputComponent={NumberFormatCustom} // todo error
                 />
               </Search>
               <br />
@@ -894,9 +888,6 @@ export default function Exchange() {
                       {exchangeRate < yesterdayRate ? (
                         <KeyboardDoubleArrowDownIcon color="error" />
                       ) : null}
-                      {/* {exchangeRate === yesterdayRate ? (
-                <FiberManualRecordIcon />
-              ) : null} */}
                     </b>
                   </Typography>
                 </Grid>
@@ -1069,9 +1060,6 @@ export default function Exchange() {
                 {exchangeRate < yesterdayRate ? (
                   <KeyboardDoubleArrowDownIcon color="error" />
                 ) : null}
-                {/* {exchangeRate === yesterdayRate ? (
-                <FiberManualRecordIcon />
-              ) : null} */}
               </b>
             </Typography>
           </Grid>

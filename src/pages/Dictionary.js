@@ -325,7 +325,6 @@ export default function Dictionary() {
         {!data.word ? (
           <Typography
             variant="h3"
-            component="div"
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <b>Enter the word</b>
@@ -441,7 +440,6 @@ export default function Dictionary() {
                   <Box display="flex" justifyContent="center" width="100%">
                     <Typography
                       variant="h1"
-                      component="div"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
                       {data.word.length > 16 ? (
@@ -903,7 +901,6 @@ export default function Dictionary() {
               <Divider>
                 <Typography
                   variant="h3"
-                  component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
                   <Badge badgeContent={favs.length} color="secondary" max={99}>
@@ -1073,7 +1070,6 @@ export default function Dictionary() {
               <>
                 <Typography
                   variant="h4"
-                  component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                   color="textSecondary"
                 >
@@ -1082,7 +1078,6 @@ export default function Dictionary() {
                 </Typography>
                 <Typography
                   variant="h5"
-                  component="div"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                   color="textSecondary"
                 >
