@@ -25,6 +25,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import NumberFormat from 'react-number-format'
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
+import Divider from '@mui/material/Divider'
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props
@@ -60,11 +61,8 @@ const Search = styled('div')(({ theme }) => ({
   '&:hover': {
     backgroundColor: alpha(theme.palette.search.primary, 0.14),
   },
-  // marginRight: theme.spacing(2),
-  // marginLeft: 0,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
-    // marginLeft: theme.spacing(3),
     width: '450px',
   },
 }))
@@ -80,7 +78,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 }))
 
 const SearchIconWrapperEnd = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 48),
+  paddingLeft: `calc(100% - ${theme.spacing(8)})`,
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
@@ -91,14 +89,14 @@ const SearchIconWrapperEnd = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   fontSize: '36px',
-  // fontWeight: 'bold',
-  color: 'inherit',
+  fontWeight: 'bold',
+  // color: theme.palette.text.secondary,
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 3, 1, 1),
-    // vertical padding + font size from searchIcon
-    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
-    // width: 'auto',
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(7),
+    width: '100%',
     [theme.breakpoints.up('sm')]: {
       width: '295px',
     },
@@ -117,11 +115,14 @@ export default function Exchange() {
 
   const getYesterdayDate = () => {
     let date = new Date()
-    date.setDate(date.getDate() - 1)
+    date.setDate(date.getDate() - 3)
     return date.toISOString().split('T')[0]
   }
 
   const todayDate = new Date().toISOString().split('T')[0] // 2022-02-19 today date
+
+  const rndInt = Math.floor(Math.random() * 99999) + 10000 // random number from 10000 to 99999
+  // console.log(rndInt)
 
   // Calling the api whenever the dependency changes
   useEffect(() => {
@@ -260,7 +261,8 @@ export default function Exchange() {
           <Grid
             item
             xs={12}
-            md={5}
+            md={12}
+            lg={5}
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
@@ -468,8 +470,36 @@ export default function Exchange() {
                   <CurrencyYuanIcon />
                 </IconButton>
               </Stack>
-              <br />
-              <Box>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '450px' }} />
+                </Grid>
+              </Box>
+              <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
+                </Grid>
+              </Box>
+              <Box
+                sx={{
+                  display: { xs: 'none', sm: 'none', nd: 'none', lg: 'block' },
+                }}
+              >
+                <br />
                 <Grid
                   container
                   direction="row"
@@ -560,10 +590,11 @@ export default function Exchange() {
           <Grid
             item
             xs={12}
-            md={2}
+            md={12}
+            lg={2}
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
-            <Box>
+            <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
               <br />
               <br />
               <IconButton
@@ -579,11 +610,60 @@ export default function Exchange() {
                 <CloseIcon style={{ fontSize: 40 }} />
               </IconButton>
             </Box>
+
+            <Box sx={{ display: { md: 'block', lg: 'none' } }}>
+              <br />
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                // alignItems="center"
+              >
+                <IconButton
+                  onClick={flip}
+                  color="inherit"
+                  // size="large"
+                  title="Switch"
+                >
+                  <SwapHorizIcon style={{ fontSize: 70 }} />
+                </IconButton>
+                <br />
+                <IconButton onClick={clearInput} color="inherit" title="Clear">
+                  <CloseIcon style={{ fontSize: 70 }} />
+                </IconButton>
+              </Grid>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '450px' }} />
+                </Grid>
+              </Box>
+              <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
+                </Grid>
+              </Box>
+              <br />
+            </Box>
           </Grid>
           <Grid
             item
             xs={12}
-            md={5}
+            md={12}
+            lg={5}
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
@@ -796,8 +876,36 @@ export default function Exchange() {
                   <CurrencyYuanIcon />
                 </IconButton>
               </Stack>
-              <br />
-              <Box sx={{ ml: 0 }}>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '450px' }} />
+                </Grid>
+              </Box>
+              <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                <br />
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
+                </Grid>
+              </Box>
+              <Box
+                sx={{
+                  display: { xs: 'none', sm: 'none', nd: 'none', lg: 'block' },
+                }}
+              >
+                <br />
                 <Grid
                   container
                   direction="row"
@@ -1064,10 +1172,180 @@ export default function Exchange() {
             </Typography>
           </Grid>
         </Box>
-
-        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <Box sx={{ display: { lg: 'none' } }}>
+          <br />
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h4">
+              <b>
+                {from === 'rub' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'usd' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'eur' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'chf' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'try' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'gbp' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'inr' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'jpy' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {from === 'cny' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}{' '}
+                1 {from.toUpperCase()} ={' '}
+                {to === 'rub' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'usd' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'eur' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'chf' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'try' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'gbp' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'inr' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'jpy' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}
+                {to === 'cny' ? (
+                  <img
+                    alt="flag"
+                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    width="20px"
+                    height="20px"
+                  />
+                ) : null}{' '}
+                {exchangeRate}{' '}
+                {/* {exchangeRate != 1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
+                {/* {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
+                {to.toUpperCase()}
+                {exchangeRate > yesterdayRate ? (
+                  <KeyboardDoubleArrowUpIcon color="success" />
+                ) : null}
+                {exchangeRate < yesterdayRate ? (
+                  <KeyboardDoubleArrowDownIcon color="error" />
+                ) : null}
+              </b>
+            </Typography>
+          </Grid>
+        </Box>
+        <Box
+          sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' } }}
+        >
           <Box
-            sx={{ mt: -1 }}
+            sx={{ mt: -1, mb: -3 }}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -1078,21 +1356,6 @@ export default function Exchange() {
               draggable={false}
             />
           </Box>
-        </Box>
-
-        <Box
-          sx={{ mt: -1, display: { md: 'none' } }}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/exchange-bg.png`}
-            alt="exchange"
-            height="100%"
-            width="100%"
-            draggable={false}
-          />
         </Box>
       </Container>
     </Box>
