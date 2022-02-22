@@ -65,7 +65,8 @@ let themeLight = createTheme({
     },
     text: {
       primary: '#000000',
-      secondary: '#595959',
+      // secondary: '#595959',
+      secondary: '#858585',
     },
     search: {
       primary: '#000000',
@@ -91,7 +92,8 @@ let themeDark = createTheme({
     },
     text: {
       primary: '#ffffff',
-      secondary: '#c1c1c1',
+      // secondary: '#c1c1c1',
+      secondary: '#858585',
     },
     search: {
       primary: '#ffffff',

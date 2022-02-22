@@ -53,7 +53,7 @@ const StyledMenu = styled((props) => (
     },
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
-        fontSize: 18,
+        fontSize: 24,
         color: theme.palette.text.secondary,
         marginRight: theme.spacing(1.5),
       },
@@ -115,7 +115,7 @@ export default function Header() {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                <MenuIcon />
+                <MenuIcon style={{ fontSize: 30 }} />
               </IconButton>
               <StyledMenu
                 id="basic-menu"

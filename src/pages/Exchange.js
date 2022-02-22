@@ -266,7 +266,7 @@ export default function Exchange() {
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
-              <Typography variant="h4">
+              <Typography variant="h4" color="textSecondary">
                 <b>FROM</b>
               </Typography>
               <br />
@@ -667,7 +667,7 @@ export default function Exchange() {
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <Box>
-              <Typography variant="h4">
+              <Typography variant="h4" color="textSecondary">
                 <b>TO</b>
               </Typography>
               <br />

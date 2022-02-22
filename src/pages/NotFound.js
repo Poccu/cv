@@ -12,15 +12,11 @@ const ThemeButton = styled(Button)(({ theme }) => ({
   padding: '0 24px',
   border: '2px solid',
   borderColor: alpha(theme.palette.search.primary, 0.1),
-  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
   '&:hover': {
     border: '2px solid',
     borderColor: alpha(theme.palette.search.primary, 0),
     backgroundColor: alpha(theme.palette.search.primary, 0.1),
   },
-  // '&:active': {
-  //   backgroundColor: '#0062cc',
-  // },
 }))
 
 export default function NotFound() {
@@ -42,27 +38,43 @@ export default function NotFound() {
             <ThemeButton
               variant="outlined"
               startIcon={<CottageOutlinedIcon style={{ fontSize: 30 }} />}
-              title="Home"
               component={Link}
               to="/"
             >
               Home
             </ThemeButton>
-            {/* <Link to="/">Go Home</Link> */}
-            <Box
-              // sx={{ mt: -1, display: { md: 'none' } }}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <img
-                src={`${process.env.PUBLIC_URL}/assets/images/404-bg.png`}
-                alt="dictionary"
-                height="100%"
-                width="100%"
-                draggable={false}
-              />
-            </Box>
+            <>
+              <Box
+                sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/images/404-bg.png`}
+                  alt="dictionary"
+                  height="100%"
+                  width="100%"
+                  draggable={false}
+                />
+              </Box>
+              <Box
+                sx={{ mt: 9, mb: 4, display: { md: 'none' } }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <img
+                    src={`${process.env.PUBLIC_URL}/assets/images/404-bg.png`}
+                    alt="weather"
+                    height="85%"
+                    width="85%"
+                    draggable={false}
+                  />
+                </Box>
+              </Box>
+            </>
           </Grid>
         </Box>
       </Container>

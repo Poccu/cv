@@ -18,6 +18,9 @@ import { WiHumidity, WiThermometer } from 'react-icons/wi'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
 import NearMeIcon from '@mui/icons-material/NearMe'
+import Badge from '@mui/material/Badge'
+import Divider from '@mui/material/Divider'
+import NavigationIcon from '@mui/icons-material/Navigation'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -81,15 +84,16 @@ export default function Weather() {
   const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const [lat, setLat] = useState(null)
-  const [lng, setLng] = useState(null)
+  const [lat, setLat] = useState(0)
+  const [lon, setLon] = useState(0)
 
-  const urlGeo = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=895284fb2d2c50a520ea537456963d9c`
+  const [forecast, setForecast] = useState({})
+  const [degree, setDegree] = useState(0)
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       setLat(position.coords.latitude)
-      setLng(position.coords.longitude)
+      setLon(position.coords.longitude)
     })
   }, [])
 
@@ -97,12 +101,14 @@ export default function Weather() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLat(position.coords.latitude)
-        setLng(position.coords.longitude)
+        setLon(position.coords.longitude)
+        const urlGeo = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=895284fb2d2c50a520ea537456963d9c`
         axios
           .get(urlGeo)
           .then((response) => {
             setData(response.data)
-            // console.log(response.data)
+            // console.log('getLocation:', response.data)
+            setDegree(response.data.wind.deg)
             // setOpen(true)
           })
           .catch((error) => {
@@ -116,23 +122,39 @@ export default function Weather() {
     }
   }
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
-
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=895284fb2d2c50a520ea537456963d9c`
+  useEffect(() => {
+    const urlForecast = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=895284fb2d2c50a520ea537456963d9c`
+    axios
+      .get(urlForecast)
+      .then((response) => {
+        setForecast(response.data)
+        // console.log('useEffect getForecast:', response.data)
+        // setDegree(response.data.current.wind_deg)
+        // console.log(response.data.current.wind_deg)
+        // setOpen(true)
+      })
+      .catch((error) => {
+        setError(true)
+        setOpen(true)
+        console.error('THIS IS ERROR --->', error)
+      })
+    setError(false)
+    setLocation('')
+  }, [data])
 
   const searchLocation = (event) => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=895284fb2d2c50a520ea537456963d9c`
     if (event.key === 'Enter') {
       axios
         .get(url)
         .then((response) => {
+          setLat(response.data.coord.lat)
+          setLon(response.data.coord.lon)
+          // console.log(response.data.coord.lat)
+          // console.log(response.data.coord.lon)
+          setDegree(response.data.wind.deg)
           setData(response.data)
-          // console.log(response.data)
+          // console.log('searchLocation:', response.data)
           // setOpen(true)
         })
         .catch((error) => {
@@ -145,20 +167,41 @@ export default function Weather() {
     }
   }
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpen(false)
+  }
+
   const clearData = () => {
     setData({})
+  }
+
+  let date = new Date()
+  let options = { weekday: 'long', month: 'long', day: 'numeric' }
+  let todayDate = new Intl.DateTimeFormat('en-GB', options).format(date)
+  // console.log(todayDate)
+
+  const getDateFromUnix = (i) => {
+    let unixTimestamp = forecast.daily[i].dt
+    let dateFromUnix = new Date(unixTimestamp * 1000)
+    let options = { weekday: 'short', month: 'short', day: 'numeric' }
+    return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
   }
 
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        <Typography
-          variant="h3"
-          component="div"
-          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-        >
-          <b>Enter the name of the city</b>
-        </Typography>
+        {!data.main ? (
+          <Typography
+            variant="h3"
+            component="div"
+            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+          >
+            <b>Enter the name of the city</b>
+          </Typography>
+        ) : null}
         <Box
           sx={{ mt: 5 }}
           display="flex"
@@ -210,6 +253,28 @@ export default function Weather() {
 
         {data.main ? (
           <Box>
+            <Typography
+              variant="p"
+              component="div"
+              sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              color="textSecondary"
+            >
+              {todayDate}
+            </Typography>
+            <br />
+            {/* <NavigationIcon
+              style={{
+                fontSize: 60,
+                transform: `rotate(${degree + 180}deg`,
+              }}
+            />
+            <Typography variant="h4" color="textSecondary">
+              {data.wind ? <b>{data.wind.speed.toFixed(1)} m/s</b> : null}
+            </Typography>
+            <Typography variant="h4" color="textSecondary">
+              {forecast.timezone}
+            </Typography> */}
+            <br />
             <Grid
               container
               direction="row"
@@ -261,40 +326,93 @@ export default function Weather() {
                       component="div"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
-                      {/* - {data.sys?.country} */}
-                      <b>{data.name}</b>{' '}
-                      {data.main ? (
-                        <img
-                          alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${data.sys?.country}.svg`}
-                          width="30px"
-                          height="30px"
-                          title={data.sys?.country}
-                        />
-                      ) : null}
+                      <Badge
+                        badgeContent={
+                          data.main ? (
+                            <img
+                              alt="flag"
+                              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${data.sys?.country}.svg`}
+                              width="30px"
+                              height="30px"
+                              title={data.sys?.country}
+                            />
+                          ) : null
+                        }
+                        color="primary"
+                        max={99}
+                      >
+                        <Box sx={{ letterSpacing: 5 }}>
+                          <b>{data.name.toUpperCase()}</b>
+                        </Box>
+                      </Badge>
+                    </Typography>
+                    <Typography
+                      variant="p"
+                      component="div"
+                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                      color="textSecondary"
+                    >
+                      <Box sx={{ letterSpacing: 5 }}>
+                        {data.weather[0].description.toUpperCase()}
+                      </Box>
                     </Typography>
                   </Box>
-                  <br />
-
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Typography
+                      variant="h1"
+                      component="div"
+                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                    >
+                      {celsius ? (
+                        <>{data.main.temp.toFixed() - 273}°</>
+                      ) : (
+                        <>
+                          {(
+                            ((data.main.temp.toFixed() - 273) * 9) / 5 +
+                            32
+                          ).toFixed()}
+                          °
+                        </>
+                      )}
+                    </Typography>
+                    <Box sx={{ ml: -4, mr: -8 }}>
+                      {data.main ? (
+                        <img
+                          src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`}
+                          //@2x
+                          alt="weather icon"
+                          width="70%"
+                          height="70%"
+                        />
+                      ) : null}
+                    </Box>
+                  </Grid>
                   <Typography
-                    variant="h1"
+                    variant="h5"
                     component="div"
                     sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                    color="textSecondary"
                   >
-                    {celsius ? (
-                      <b>{data.main.temp.toFixed() - 273}°C</b>
-                    ) : (
-                      <b>
-                        {(
-                          ((data.main.temp.toFixed() - 273) * 9) / 5 +
-                          32
-                        ).toFixed()}
-                        °F
-                      </b>
-                    )}
+                    <Box>
+                      Feels like{' '}
+                      {celsius ? (
+                        <>{data.main.feels_like.toFixed() - 273}°</>
+                      ) : (
+                        <>
+                          {(
+                            ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
+                            32
+                          ).toFixed()}
+                          °
+                        </>
+                      )}
+                    </Box>
                   </Typography>
-                  <br />
-                  <br />
                 </Box>
               </Grid>
               <Grid
@@ -342,6 +460,74 @@ export default function Weather() {
               </Stack>
               <br />
             </Box>
+            <br />
+            <br />
+
+            <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
+
+            <br />
+            <br />
+
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Stack justifyContent="center" direction="row" spacing={5}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Typography variant="h6" color="textSecondary">
+                      {getDateFromUnix(i)}
+                    </Typography>
+                    <img
+                      src={`http://openweathermap.org/img/wn/${forecast.daily[i].weather[0].icon}@2x.png`}
+                      //@2x
+                      alt="weather icon"
+                      // width="70%"
+                      // height="70%"
+                    />
+                    <Stack justifyContent="center" direction="row" spacing={2}>
+                      <Typography variant="h5">
+                        {celsius ? (
+                          <b>{forecast.daily[i].temp.day.toFixed() - 273}°</b>
+                        ) : (
+                          <b>
+                            {(
+                              ((forecast.daily[i].temp.day.toFixed() - 273) *
+                                9) /
+                                5 +
+                              32
+                            ).toFixed()}
+                            °
+                          </b>
+                        )}
+                      </Typography>
+                      <Typography variant="h5" color="textSecondary">
+                        {celsius ? (
+                          <>{forecast.daily[i].temp.night.toFixed() - 273}°</>
+                        ) : (
+                          <>
+                            {(
+                              ((forecast.daily[i].temp.night.toFixed() - 273) *
+                                9) /
+                                5 +
+                              32
+                            ).toFixed()}
+                            °
+                          </>
+                        )}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                ))}
+              </Stack>
+            </Box>
+            <br />
+            <br />
+            <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
+            <br />
+            <br />
 
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <Grid
@@ -663,8 +849,8 @@ export default function Weather() {
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/weather-bg.svg`}
                   alt="weather"
-                  height="100%"
-                  width="100%"
+                  height="80%"
+                  width="80%"
                   draggable={false}
                 />
               </Box>

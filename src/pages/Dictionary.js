@@ -225,7 +225,7 @@ export default function Dictionary() {
         .then((response) => {
           setValue(0)
           setData(response.data[0])
-          console.log(response.data[0])
+          // console.log(response.data[0])
           // setOpen(true)
           let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${searchWord}--_gb_1.mp3`
           let audio = new Audio(url)
@@ -251,7 +251,7 @@ export default function Dictionary() {
       .then((response) => {
         setValue(0)
         setData(response.data[0])
-        console.log(response.data[0])
+        // console.log(response.data[0])
         // setOpen(true)
         let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${random}--_gb_1.mp3`
         let audio = new Audio(url)
@@ -1058,7 +1058,6 @@ export default function Dictionary() {
                       variant="outlined"
                       endIcon={<ClearAllIcon style={{ fontSize: 30 }} />}
                       onClick={clearAllFavs}
-                      title="Clear All"
                     >
                       Clear All
                     </ThemeButton>
