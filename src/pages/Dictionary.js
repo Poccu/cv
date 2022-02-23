@@ -35,6 +35,9 @@ import Collapse from '@mui/material/Collapse'
 
 let randomWords = require('random-words')
 
+const urlAudio = process.env.REACT_APP_AUDIO_URL
+const urlDictionary = process.env.REACT_APP_DICTIONARY_URL
+
 const ThemeButton = styled(Button)(({ theme }) => ({
   fontSize: 16,
   color: theme.palette.button.primary,
@@ -158,7 +161,7 @@ export default function Dictionary() {
       } else setPhonetics((prevPhonetics) => [...prevPhonetics, undefined])
       setAudios((prevAudios) => [
         ...prevAudios,
-        `//ssl.gstatic.com/dictionary/static/sounds/oxford/${data.word}--_gb_1.mp3`,
+        `${urlAudio}/${data.word}--_gb_1.mp3`,
       ])
       // console.log(favs)
       // console.log(phonetics)
@@ -217,7 +220,7 @@ export default function Dictionary() {
   }
 
   const getMeaning = (event) => {
-    const urlSearchWord = `https://api.dictionaryapi.dev/api/v2/entries/en_US/${searchWord}`
+    const urlSearchWord = `${urlDictionary}/${searchWord}`
 
     if (event.key === 'Enter') {
       axios
@@ -227,7 +230,7 @@ export default function Dictionary() {
           setData(response.data[0])
           // console.log(response.data[0])
           // setOpen(true)
-          let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${searchWord}--_gb_1.mp3`
+          let url = `${urlAudio}/${searchWord.toLowerCase()}--_gb_1.mp3`
           let audio = new Audio(url)
           audio.play()
           setAudioWord(url)
@@ -247,13 +250,13 @@ export default function Dictionary() {
     const random = randomWords()
     // console.log(random)
     axios
-      .get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${random}`)
+      .get(`${urlDictionary}/${random}`)
       .then((response) => {
         setValue(0)
         setData(response.data[0])
         // console.log(response.data[0])
         // setOpen(true)
-        let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${random}--_gb_1.mp3`
+        let url = `${urlAudio}/${random}--_gb_1.mp3`
         let audio = new Audio(url)
         audio.play()
         setAudioWord(url)
@@ -582,319 +585,52 @@ export default function Dictionary() {
                   scrollButtons="auto"
                   allowScrollButtonsMobile
                 >
-                  {data.meanings[0] ? (
-                    <Tab
-                      label={
-                        <Typography variant="h6">
-                          <b>{data.meanings[0]?.partOfSpeech}</b>
-                        </Typography>
-                      }
-                      {...a11yProps(0)}
-                    />
-                  ) : null}
-                  {data.meanings[1] ? (
-                    <Tab
-                      label={
-                        <Typography variant="h6">
-                          <b>{data.meanings[1]?.partOfSpeech}</b>
-                        </Typography>
-                      }
-                      {...a11yProps(0)}
-                    />
-                  ) : null}
-                  {data.meanings[2] ? (
-                    <Tab
-                      label={
-                        <Typography variant="h6">
-                          <b>{data.meanings[2]?.partOfSpeech}</b>
-                        </Typography>
-                      }
-                      {...a11yProps(0)}
-                    />
-                  ) : null}
-                  {data.meanings[3] ? (
-                    <Tab
-                      label={
-                        <Typography variant="h6">
-                          <b>{data.meanings[3]?.partOfSpeech}</b>
-                        </Typography>
-                      }
-                      {...a11yProps(0)}
-                    />
-                  ) : null}
-                  {data.meanings[4] ? (
-                    <Tab
-                      label={
-                        <Typography variant="h6">
-                          <b>{data.meanings[4]?.partOfSpeech}</b>
-                        </Typography>
-                      }
-                      {...a11yProps(0)}
-                    />
-                  ) : null}
+                  {[0, 1, 2, 3, 4].map((i) =>
+                    data.meanings[i] ? (
+                      <Tab
+                        label={
+                          <Typography variant="h6">
+                            <b>{data.meanings[i]?.partOfSpeech}</b>
+                          </Typography>
+                        }
+                        {...a11yProps(0)}
+                      />
+                    ) : null
+                  )}
                 </Tabs>
               </Box>
-              <TabPanel value={value} index={0}>
-                {data.meanings[0] ? (
-                  <Box>
-                    <Typography variant="h3" color="textSecondary">
-                      <b>{data.meanings[0]?.partOfSpeech}</b>
-                    </Typography>
-                    <br />
-                    <Typography variant="h5">
-                      <b>Definition</b>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {data.meanings[0].definitions[0].definition[0].toUpperCase() +
-                        data.meanings[0].definitions[0].definition.slice(1)}
-                    </Typography>
-                    {data.meanings[0].definitions[0].example ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Example</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          <i>'{data.meanings[0].definitions[0].example}'</i>
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {/* {data.meanings[0].definitions[0].synonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Synonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[0].definitions[0].synonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {data.meanings[0].definitions[0].antonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Antonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[0].definitions[0].antonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                    {/* {data.origin ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Origin</b>
-                        </Typography>
-                        <Typography>
-                          {data.origin[0].toUpperCase() + data.origin.slice(1)}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                  </Box>
-                ) : null}
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                {data.meanings[1] ? (
-                  <Box>
-                    <Typography variant="h3" color="textSecondary">
-                      <b>{data.meanings[1]?.partOfSpeech}</b>
-                    </Typography>
-                    <br />
-                    <Typography variant="h5">
-                      <b>Definition</b>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {data.meanings[1].definitions[0].definition[0].toUpperCase() +
-                        data.meanings[1].definitions[0].definition.slice(1)}
-                    </Typography>
-                    {data.meanings[1].definitions[0].example ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Example</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          <i>'{data.meanings[1].definitions[0].example}'</i>
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {/* {data.meanings[1].definitions[0].synonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Synonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[1].definitions[0].synonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {data.meanings[1].definitions[0].antonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Antonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[1].definitions[0].antonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                  </Box>
-                ) : null}
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                {data.meanings[2] ? (
-                  <Box>
-                    <Typography variant="h3" color="textSecondary">
-                      <b>{data.meanings[2]?.partOfSpeech}</b>
-                    </Typography>
-                    <br />
-                    <Typography variant="h5">
-                      <b>Definition</b>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {data.meanings[2].definitions[0].definition[0].toUpperCase() +
-                        data.meanings[2].definitions[0].definition.slice(1)}
-                    </Typography>
-                    {data.meanings[2].definitions[0].example ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Example</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          <i>'{data.meanings[2].definitions[0].example}'</i>
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {/* {data.meanings[2].definitions[0].synonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Synonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[2].definitions[0].synonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {data.meanings[2].definitions[0].antonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Antonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[2].definitions[0].antonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                  </Box>
-                ) : null}
-              </TabPanel>
-              <TabPanel value={value} index={3}>
-                {data.meanings[3] ? (
-                  <Box>
-                    <Typography variant="h3" color="textSecondary">
-                      <b>{data.meanings[3]?.partOfSpeech}</b>
-                    </Typography>
-                    <br />
-                    <Typography variant="h5">
-                      <b>Definition</b>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {data.meanings[3].definitions[0].definition[0].toUpperCase() +
-                        data.meanings[3].definitions[0].definition.slice(1)}
-                    </Typography>
-                    {data.meanings[3].definitions[0].example ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Example</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          <i>'{data.meanings[3].definitions[0].example}'</i>
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {/* {data.meanings[3].definitions[0].synonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Synonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[3].definitions[0].synonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {data.meanings[3].definitions[0].antonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Antonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[3].definitions[0].antonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                  </Box>
-                ) : null}
-              </TabPanel>
-              <TabPanel value={value} index={4}>
-                {data.meanings[4] ? (
-                  <Box>
-                    <Typography variant="h3" color="textSecondary">
-                      <b>{data.meanings[4]?.partOfSpeech}</b>
-                    </Typography>
-                    <br />
-                    <Typography variant="h5">
-                      <b>Definition</b>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {data.meanings[4].definitions[0].definition[0].toUpperCase() +
-                        data.meanings[4].definitions[0].definition.slice(1)}
-                    </Typography>
-                    {data.meanings[4].definitions[0].example ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Example</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          <i>'{data.meanings[4].definitions[0].example}'</i>
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {/* {data.meanings[4].definitions[0].synonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Synonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[4].definitions[0].synonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null}
-                    {data.meanings[4].definitions[0].antonyms.length > 0 ? (
-                      <Box>
-                        <br />
-                        <Typography variant="h5">
-                          <b>Antonyms</b>
-                        </Typography>
-                        <Typography color="textSecondary">
-                          {data.meanings[4].definitions[0].antonyms.join(', ')}
-                        </Typography>
-                      </Box>
-                    ) : null} */}
-                  </Box>
-                ) : null}
-              </TabPanel>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <TabPanel value={value} index={i}>
+                  {data.meanings[i] ? (
+                    <Box>
+                      <Typography variant="h3" color="textSecondary">
+                        <b>{data.meanings[i]?.partOfSpeech}</b>
+                      </Typography>
+                      <br />
+                      <Typography variant="h5">
+                        <b>Definition</b>
+                      </Typography>
+                      <Typography color="textSecondary">
+                        {data.meanings[
+                          i
+                        ].definitions[0].definition[0].toUpperCase() +
+                          data.meanings[i].definitions[0].definition.slice(1)}
+                      </Typography>
+                      {data.meanings[i].definitions[0].example ? (
+                        <Box>
+                          <br />
+                          <Typography variant="h5">
+                            <b>Example</b>
+                          </Typography>
+                          <Typography color="textSecondary">
+                            <i>'{data.meanings[i].definitions[0].example}'</i>
+                          </Typography>
+                        </Box>
+                      ) : null}
+                    </Box>
+                  ) : null}
+                </TabPanel>
+              ))}
             </Box>
             <>
               <br />
@@ -976,9 +712,7 @@ export default function Dictionary() {
                                     onClick={() => {
                                       window.scrollTo(0, 0)
                                       axios
-                                        .get(
-                                          `https://api.dictionaryapi.dev/api/v2/entries/en_US/${favs[index]}`
-                                        )
+                                        .get(`${urlDictionary}/${favs[index]}`)
                                         .then((response) => {
                                           setValue(0)
                                           setData(response.data[0])
@@ -988,7 +722,7 @@ export default function Dictionary() {
                                           // )
                                           // audio.play()
 
-                                          let url = `//ssl.gstatic.com/dictionary/static/sounds/oxford/${favs[index]}--_gb_1.mp3`
+                                          let url = `${urlAudio}/${favs[index]}--_gb_1.mp3`
                                           let audio = new Audio(url)
                                           // audio.play()
                                           setAudioWord(url)
