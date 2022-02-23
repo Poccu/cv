@@ -27,6 +27,9 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
 import Divider from '@mui/material/Divider'
 
+const apiUrl = process.env.REACT_APP_EXCHANGE_URL
+const flagsUrl = process.env.REACT_APP_COUNTRY_FLAG_ICONS_URL
+
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props
 
@@ -127,9 +130,7 @@ export default function Exchange() {
   // Calling the api whenever the dependency changes
   useEffect(() => {
     axios
-      .get(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${from}.json?d=${todayDate}`
-      )
+      .get(`${apiUrl}/latest/currencies/${from}.json?d=${todayDate}`)
       .then((response) => {
         setInfo(response.data[from])
         // console.log('today :', response.data)
@@ -139,7 +140,7 @@ export default function Exchange() {
   useEffect(() => {
     axios
       .get(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${getYesterdayDate()}/currencies/${from}.json?d=${todayDate}`
+        `${apiUrl}/${getYesterdayDate()}/currencies/${from}.json?d=${todayDate}`
       )
       .then((response) => {
         setYesterday(response.data[from])
@@ -304,7 +305,7 @@ export default function Exchange() {
                   {from === 'rub' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                      src={`${flagsUrl}/RU.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -312,7 +313,7 @@ export default function Exchange() {
                   {from === 'usd' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                      src={`${flagsUrl}/US.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -320,7 +321,7 @@ export default function Exchange() {
                   {from === 'eur' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                      src={`${flagsUrl}/EU.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -328,7 +329,7 @@ export default function Exchange() {
                   {from === 'chf' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                      src={`${flagsUrl}/CH.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -336,7 +337,7 @@ export default function Exchange() {
                   {from === 'try' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                      src={`${flagsUrl}/TR.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -344,7 +345,7 @@ export default function Exchange() {
                   {from === 'gbp' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                      src={`${flagsUrl}/GB.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -352,7 +353,7 @@ export default function Exchange() {
                   {from === 'inr' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                      src={`${flagsUrl}/IN.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -360,7 +361,7 @@ export default function Exchange() {
                   {from === 'jpy' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                      src={`${flagsUrl}/JP.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -368,7 +369,7 @@ export default function Exchange() {
                   {from === 'cny' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                      src={`${flagsUrl}/CN.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -511,7 +512,7 @@ export default function Exchange() {
                       {from === 'rub' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                          src={`${flagsUrl}/RU.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -519,7 +520,7 @@ export default function Exchange() {
                       {from === 'usd' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                          src={`${flagsUrl}/US.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -527,7 +528,7 @@ export default function Exchange() {
                       {from === 'eur' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                          src={`${flagsUrl}/EU.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -535,7 +536,7 @@ export default function Exchange() {
                       {from === 'chf' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                          src={`${flagsUrl}/CH.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -543,7 +544,7 @@ export default function Exchange() {
                       {from === 'try' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                          src={`${flagsUrl}/TR.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -551,7 +552,7 @@ export default function Exchange() {
                       {from === 'gbp' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                          src={`${flagsUrl}/GB.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -559,7 +560,7 @@ export default function Exchange() {
                       {from === 'inr' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                          src={`${flagsUrl}/IN.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -567,7 +568,7 @@ export default function Exchange() {
                       {from === 'jpy' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                          src={`${flagsUrl}/JP.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -575,7 +576,7 @@ export default function Exchange() {
                       {from === 'cny' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                          src={`${flagsUrl}/CN.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -705,7 +706,7 @@ export default function Exchange() {
                   {to === 'rub' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                      src={`${flagsUrl}/RU.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -713,7 +714,7 @@ export default function Exchange() {
                   {to === 'usd' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                      src={`${flagsUrl}/US.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -721,7 +722,7 @@ export default function Exchange() {
                   {to === 'eur' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                      src={`${flagsUrl}/EU.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -729,7 +730,7 @@ export default function Exchange() {
                   {to === 'chf' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                      src={`${flagsUrl}/CH.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -737,7 +738,7 @@ export default function Exchange() {
                   {to === 'try' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                      src={`${flagsUrl}/TR.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -745,7 +746,7 @@ export default function Exchange() {
                   {to === 'gbp' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                      src={`${flagsUrl}/GB.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -753,7 +754,7 @@ export default function Exchange() {
                   {to === 'inr' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                      src={`${flagsUrl}/IN.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -761,7 +762,7 @@ export default function Exchange() {
                   {to === 'jpy' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                      src={`${flagsUrl}/JP.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -769,7 +770,7 @@ export default function Exchange() {
                   {to === 'cny' ? (
                     <img
                       alt="flag"
-                      src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                      src={`${flagsUrl}/CN.svg`}
                       width="40px"
                       height="40px"
                     />
@@ -917,7 +918,7 @@ export default function Exchange() {
                       {to === 'rub' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                          src={`${flagsUrl}/RU.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -925,7 +926,7 @@ export default function Exchange() {
                       {to === 'usd' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                          src={`${flagsUrl}/US.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -933,7 +934,7 @@ export default function Exchange() {
                       {to === 'eur' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                          src={`${flagsUrl}/EU.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -941,7 +942,7 @@ export default function Exchange() {
                       {to === 'chf' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                          src={`${flagsUrl}/CH.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -949,7 +950,7 @@ export default function Exchange() {
                       {to === 'try' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                          src={`${flagsUrl}/TR.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -957,7 +958,7 @@ export default function Exchange() {
                       {to === 'gbp' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                          src={`${flagsUrl}/GB.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -965,7 +966,7 @@ export default function Exchange() {
                       {to === 'inr' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                          src={`${flagsUrl}/IN.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -973,7 +974,7 @@ export default function Exchange() {
                       {to === 'jpy' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                          src={`${flagsUrl}/JP.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -981,7 +982,7 @@ export default function Exchange() {
                       {to === 'cny' ? (
                         <img
                           alt="flag"
-                          src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                          src={`${flagsUrl}/CN.svg`}
                           width="20px"
                           height="20px"
                         />
@@ -1016,7 +1017,7 @@ export default function Exchange() {
                 {from === 'rub' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    src={`${flagsUrl}/RU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1024,7 +1025,7 @@ export default function Exchange() {
                 {from === 'usd' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    src={`${flagsUrl}/US.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1032,7 +1033,7 @@ export default function Exchange() {
                 {from === 'eur' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    src={`${flagsUrl}/EU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1040,7 +1041,7 @@ export default function Exchange() {
                 {from === 'chf' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    src={`${flagsUrl}/CH.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1048,7 +1049,7 @@ export default function Exchange() {
                 {from === 'try' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    src={`${flagsUrl}/TR.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1056,7 +1057,7 @@ export default function Exchange() {
                 {from === 'gbp' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    src={`${flagsUrl}/GB.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1064,7 +1065,7 @@ export default function Exchange() {
                 {from === 'inr' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    src={`${flagsUrl}/IN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1072,7 +1073,7 @@ export default function Exchange() {
                 {from === 'jpy' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    src={`${flagsUrl}/JP.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1080,7 +1081,7 @@ export default function Exchange() {
                 {from === 'cny' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    src={`${flagsUrl}/CN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1089,7 +1090,7 @@ export default function Exchange() {
                 {to === 'rub' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    src={`${flagsUrl}/RU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1097,7 +1098,7 @@ export default function Exchange() {
                 {to === 'usd' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    src={`${flagsUrl}/US.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1105,7 +1106,7 @@ export default function Exchange() {
                 {to === 'eur' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    src={`${flagsUrl}/EU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1113,7 +1114,7 @@ export default function Exchange() {
                 {to === 'chf' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    src={`${flagsUrl}/CH.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1121,7 +1122,7 @@ export default function Exchange() {
                 {to === 'try' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    src={`${flagsUrl}/TR.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1129,7 +1130,7 @@ export default function Exchange() {
                 {to === 'gbp' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    src={`${flagsUrl}/GB.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1137,7 +1138,7 @@ export default function Exchange() {
                 {to === 'inr' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    src={`${flagsUrl}/IN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1145,7 +1146,7 @@ export default function Exchange() {
                 {to === 'jpy' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    src={`${flagsUrl}/JP.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1153,7 +1154,7 @@ export default function Exchange() {
                 {to === 'cny' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    src={`${flagsUrl}/CN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1185,7 +1186,7 @@ export default function Exchange() {
                 {from === 'rub' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    src={`${flagsUrl}/RU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1193,7 +1194,7 @@ export default function Exchange() {
                 {from === 'usd' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    src={`${flagsUrl}/US.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1201,7 +1202,7 @@ export default function Exchange() {
                 {from === 'eur' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    src={`${flagsUrl}/EU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1209,7 +1210,7 @@ export default function Exchange() {
                 {from === 'chf' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    src={`${flagsUrl}/CH.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1217,7 +1218,7 @@ export default function Exchange() {
                 {from === 'try' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    src={`${flagsUrl}/TR.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1225,7 +1226,7 @@ export default function Exchange() {
                 {from === 'gbp' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    src={`${flagsUrl}/GB.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1233,7 +1234,7 @@ export default function Exchange() {
                 {from === 'inr' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    src={`${flagsUrl}/IN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1241,7 +1242,7 @@ export default function Exchange() {
                 {from === 'jpy' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    src={`${flagsUrl}/JP.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1249,7 +1250,7 @@ export default function Exchange() {
                 {from === 'cny' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    src={`${flagsUrl}/CN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1258,7 +1259,7 @@ export default function Exchange() {
                 {to === 'rub' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/RU.svg`}
+                    src={`${flagsUrl}/RU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1266,7 +1267,7 @@ export default function Exchange() {
                 {to === 'usd' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg`}
+                    src={`${flagsUrl}/US.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1274,7 +1275,7 @@ export default function Exchange() {
                 {to === 'eur' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/EU.svg`}
+                    src={`${flagsUrl}/EU.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1282,7 +1283,7 @@ export default function Exchange() {
                 {to === 'chf' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CH.svg`}
+                    src={`${flagsUrl}/CH.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1290,7 +1291,7 @@ export default function Exchange() {
                 {to === 'try' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg`}
+                    src={`${flagsUrl}/TR.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1298,7 +1299,7 @@ export default function Exchange() {
                 {to === 'gbp' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/GB.svg`}
+                    src={`${flagsUrl}/GB.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1306,7 +1307,7 @@ export default function Exchange() {
                 {to === 'inr' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/IN.svg`}
+                    src={`${flagsUrl}/IN.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1314,7 +1315,7 @@ export default function Exchange() {
                 {to === 'jpy' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg`}
+                    src={`${flagsUrl}/JP.svg`}
                     width="20px"
                     height="20px"
                   />
@@ -1322,7 +1323,7 @@ export default function Exchange() {
                 {to === 'cny' ? (
                   <img
                     alt="flag"
-                    src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg`}
+                    src={`${flagsUrl}/CN.svg`}
                     width="20px"
                     height="20px"
                   />
