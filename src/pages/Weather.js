@@ -17,10 +17,18 @@ import AirIcon from '@mui/icons-material/Air'
 import { WiHumidity, WiThermometer } from 'react-icons/wi'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
-import NearMeIcon from '@mui/icons-material/NearMe'
-import Badge from '@mui/material/Badge'
 import Divider from '@mui/material/Divider'
-import NavigationIcon from '@mui/icons-material/Navigation'
+import GpsFixedIcon from '@mui/icons-material/GpsFixed'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import Carousel from 'react-elastic-carousel'
+
+const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY
+const apiUrl = process.env.REACT_APP_OPENWEATHER_URL
+const apiIconsUrl = process.env.REACT_APP_OPENWEATHER_ICONS_URL
+const flagsUrl = process.env.REACT_APP_COUNTRY_FLAG_ICONS_URL
+const weatherIconsUrl = process.env.REACT_APP_ANIMATED_WEATHER_ICONS_URL
+const weatherFillIconsUrl =
+  process.env.REACT_APP_ANIMATED_WEATHER_FILL_ICONS_URL
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -90,19 +98,65 @@ export default function Weather() {
   const [forecast, setForecast] = useState({})
   const [degree, setDegree] = useState(0)
 
+  const [hourlyForecast, setHourlyForecast] = useState([])
+
+  // localStorage
   useEffect(() => {
+    setData(JSON.parse(window.localStorage.getItem('dataWeather')))
+    setLocation(JSON.parse(window.localStorage.getItem('location')))
+    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
+    setLat(JSON.parse(window.localStorage.getItem('lat')))
+    setLon(JSON.parse(window.localStorage.getItem('lon')))
+    setForecast(JSON.parse(window.localStorage.getItem('forecast')))
+    setDegree(JSON.parse(window.localStorage.getItem('degree')))
+    setHourlyForecast(JSON.parse(window.localStorage.getItem('hourlyForecast')))
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('dataWeather', JSON.stringify(data))
+  }, [data])
+
+  useEffect(() => {
+    window.localStorage.setItem('location', JSON.stringify(location))
+  }, [location])
+
+  useEffect(() => {
+    window.localStorage.setItem('celsius', JSON.stringify(celsius))
+  }, [celsius])
+
+  useEffect(() => {
+    window.localStorage.setItem('lat', JSON.stringify(lat))
+  }, [lat])
+
+  useEffect(() => {
+    window.localStorage.setItem('lon', JSON.stringify(lon))
+  }, [lon])
+
+  useEffect(() => {
+    window.localStorage.setItem('forecast', JSON.stringify(forecast))
+  }, [forecast])
+
+  useEffect(() => {
+    window.localStorage.setItem('degree', JSON.stringify(degree))
+  }, [degree])
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      'hourlyForecast',
+      JSON.stringify(hourlyForecast)
+    )
+  }, [hourlyForecast])
+
+  const getLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       setLat(position.coords.latitude)
       setLon(position.coords.longitude)
     })
-  }, [])
-
-  const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLat(position.coords.latitude)
         setLon(position.coords.longitude)
-        const urlGeo = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=895284fb2d2c50a520ea537456963d9c`
+        const urlGeo = `${apiUrl}/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}`
         axios
           .get(urlGeo)
           .then((response) => {
@@ -123,15 +177,58 @@ export default function Weather() {
   }
 
   useEffect(() => {
-    const urlForecast = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=895284fb2d2c50a520ea537456963d9c`
+    const urlForecast = `${apiUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
     axios
       .get(urlForecast)
       .then((response) => {
         setForecast(response.data)
-        // console.log('useEffect getForecast:', response.data)
-        // setDegree(response.data.current.wind_deg)
-        // console.log(response.data.current.wind_deg)
-        // setOpen(true)
+        console.log('useEffect getForecast:', response.data)
+
+        let sun = [
+          {
+            dt: response.data.daily[0].sunrise,
+            temp: 995,
+            weather: [{ id: 995 }],
+          },
+          {
+            dt: response.data.daily[1].sunrise,
+            temp: 995,
+            weather: [{ id: 995 }],
+          },
+          {
+            dt: response.data.daily[2].sunrise,
+            temp: 995,
+            weather: [{ id: 995 }],
+          },
+          {
+            dt: response.data.daily[0].sunset,
+            temp: 999,
+            weather: [{ id: 999 }],
+          },
+          {
+            dt: response.data.daily[1].sunset,
+            temp: 999,
+            weather: [{ id: 999 }],
+          },
+          {
+            dt: response.data.daily[2].sunset,
+            temp: 999,
+            weather: [{ id: 999 }],
+          },
+        ]
+
+        setHourlyForecast(
+          [...response.data.hourly, ...sun]
+            .sort((a, b) => a.dt - b.dt)
+            .filter((i) => i.dt > response.data.current.dt)
+        )
+
+        console.log(
+          'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
+          [...response.data.hourly, ...sun]
+            .sort((a, b) => a.dt - b.dt)
+            .filter((i) => i.dt > response.data.current.dt)
+        )
       })
       .catch((error) => {
         setError(true)
@@ -143,7 +240,7 @@ export default function Weather() {
   }, [data])
 
   const searchLocation = (event) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=895284fb2d2c50a520ea537456963d9c`
+    const url = `${apiUrl}/weather?q=${location}&appid=${apiKey}`
     if (event.key === 'Enter') {
       axios
         .get(url)
@@ -154,7 +251,7 @@ export default function Weather() {
           // console.log(response.data.coord.lon)
           setDegree(response.data.wind.deg)
           setData(response.data)
-          // console.log('searchLocation:', response.data)
+          console.log('searchLocation:', response.data)
           // setOpen(true)
         })
         .catch((error) => {
@@ -166,6 +263,29 @@ export default function Weather() {
       setLocation('')
     }
   }
+
+  // const refreshLocation = () => {
+  //   const url = `${apiUrl}/weather?q=${data.name}&appid=${apiKey}`
+  //   axios
+  //     .get(url)
+  //     .then((response) => {
+  //       setLat(response.data.coord.lat)
+  //       setLon(response.data.coord.lon)
+  //       // console.log(response.data.coord.lat)
+  //       // console.log(response.data.coord.lon)
+  //       setDegree(response.data.wind.deg)
+  //       setData(response.data)
+  //       console.log('searchLocation:', response.data)
+  //       // setOpen(true)
+  //     })
+  //     .catch((error) => {
+  //       setError(true)
+  //       setOpen(true)
+  //       console.error('THIS IS ERROR --->', error)
+  //     })
+  //   setError(false)
+  //   setLocation('')
+  // }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -181,13 +301,737 @@ export default function Weather() {
   let date = new Date()
   let options = { weekday: 'long', month: 'long', day: 'numeric' }
   let todayDate = new Intl.DateTimeFormat('en-GB', options).format(date)
-  // console.log(todayDate)
 
   const getDateFromUnix = (i) => {
     let unixTimestamp = forecast.daily[i].dt
     let dateFromUnix = new Date(unixTimestamp * 1000)
-    let options = { weekday: 'short', month: 'short', day: 'numeric' }
+    let options = { month: 'long', day: 'numeric' }
     return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
+  }
+
+  const getWeekdayFromUnix = (i) => {
+    let unixTimestamp = forecast.daily[i].dt
+    let dateFromUnix = new Date(unixTimestamp * 1000)
+    let options = { weekday: 'long' }
+    return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
+  }
+
+  const getTimeFromUnix = (i, timezone) => {
+    let unixTimestamp = hourlyForecast[i].dt
+    let dateFromUnix = new Date(unixTimestamp * 1000)
+    let options = { timeStyle: 'short', timeZone: timezone }
+    return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
+  }
+
+  const getDirection = (degrees) => {
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+
+    degrees = (degrees * 8) / 360
+    degrees = Math.round(degrees, 0)
+    degrees = (degrees + 8) % 8
+
+    return directions[degrees]
+  }
+
+  function getCurrentIconUrl(id) {
+    let dayOrNight = forecast?.current?.weather[0]?.icon // 13d / 02n ...
+    let result = dayOrNight.slice(dayOrNight.length - 1) // 'd'= day / 'n'= night
+    // console.log(result)
+
+    if (result === 'd') {
+      switch (id) {
+        case 200:
+          return '/thunderstorms-day-rain.svg'
+          break
+        case 201:
+        case 202:
+          return '/thunderstorms-rain.svg'
+          break
+        case 210:
+          return '/thunderstorms-day.svg'
+          break
+        case 211:
+        case 212:
+        case 221:
+        case 230:
+        case 231:
+        case 232:
+          return '/thunderstorms.svg'
+          break
+        case 300:
+          return '/partly-cloudy-day-drizzle.svg'
+          break
+        case 301:
+        case 302:
+          return '/drizzle.svg'
+          break
+        case 310:
+        case 311:
+        case 312:
+        case 313:
+        case 314:
+        case 321:
+          return '/rain.svg'
+          break
+        case 500:
+        case 501:
+        case 502:
+        case 503:
+        case 504:
+          return '/partly-cloudy-day-rain.svg'
+          break
+        case 511:
+          return '/snow.svg'
+          break
+        case 520:
+        case 521:
+        case 522:
+        case 531:
+          return '/rain.svg'
+          break
+        case 600:
+        case 601:
+          return '/partly-cloudy-day-snow.svg'
+          break
+        case 602:
+        case 611:
+        case 612:
+        case 613:
+        case 615:
+        case 616:
+        case 620:
+        case 621:
+        case 622:
+          return '/snow.svg'
+          break
+        case 701:
+          return '/mist.svg'
+          break
+        case 711:
+          return '/partly-cloudy-day-smoke.svg'
+          break
+        case 721:
+          return '/haze-day.svg'
+          break
+        case 731:
+          return '/dust-day.svg'
+          break
+        case 741:
+          return '/fog-day.svg'
+          break
+        case 751:
+        case 761:
+        case 762:
+          return '/dust-day.svg'
+          break
+        case 771:
+          return '/wind.svg'
+          break
+        case 781:
+          return '/tornado.svg'
+          break
+        case 800:
+          return '/clear-day.svg'
+          break
+        case 801:
+          return '/partly-cloudy-day.svg'
+          break
+        case 802:
+          return '/cloudy.svg'
+          break
+        case 803:
+        case 804:
+          return '/overcast-day.svg'
+          break
+        default:
+          return '/not-available.svg'
+      }
+    } else {
+      switch (id) {
+        case 200:
+          return '/thunderstorms-night-rain.svg'
+          break
+        case 201:
+        case 202:
+          return '/thunderstorms-rain.svg'
+          break
+        case 210:
+          return '/thunderstorms-night.svg'
+          break
+        case 211:
+        case 212:
+        case 221:
+        case 230:
+        case 231:
+        case 232:
+          return '/thunderstorms.svg'
+          break
+        case 300:
+          return '/partly-cloudy-night-drizzle.svg'
+          break
+        case 301:
+        case 302:
+          return '/drizzle.svg'
+          break
+        case 310:
+        case 311:
+        case 312:
+        case 313:
+        case 314:
+        case 321:
+          return '/rain.svg'
+          break
+        case 500:
+        case 501:
+        case 502:
+        case 503:
+        case 504:
+          return '/partly-cloudy-night-rain.svg'
+          break
+        case 511:
+          return '/snow.svg'
+          break
+        case 520:
+        case 521:
+        case 522:
+        case 531:
+          return '/rain.svg'
+          break
+        case 600:
+        case 601:
+          return '/partly-cloudy-night-snow.svg'
+          break
+        case 602:
+        case 611:
+        case 612:
+        case 613:
+        case 615:
+        case 616:
+        case 620:
+        case 621:
+        case 622:
+          return '/snow.svg'
+          break
+        case 701:
+          return '/mist.svg'
+          break
+        case 711:
+          return '/partly-cloudy-night-smoke.svg'
+          break
+        case 721:
+          return '/haze-night.svg'
+          break
+        case 731:
+          return '/dust-night.svg'
+          break
+        case 741:
+          return '/fog-night.svg'
+          break
+        case 751:
+        case 761:
+        case 762:
+          return '/dust-night.svg'
+          break
+        case 771:
+          return '/wind.svg'
+          break
+        case 781:
+          return '/tornado.svg'
+          break
+        case 800:
+          return '/clear-night.svg'
+          // return '/starry-night.svg'
+          break
+        case 801:
+          return '/partly-cloudy-night.svg'
+          break
+        case 802:
+          return '/cloudy.svg'
+          break
+        case 803:
+        case 804:
+          return '/overcast-night.svg'
+          break
+        default:
+          return '/not-available.svg'
+      }
+    }
+  }
+
+  function getHourlyIconUrl(id, i) {
+    let isDay =
+      hourlyForecast[i]?.dt > forecast?.daily[0]?.sunrise &&
+      hourlyForecast[i]?.dt < forecast?.daily[0]?.sunset
+
+    let isDay2 =
+      hourlyForecast[i]?.dt > forecast?.daily[1]?.sunrise &&
+      hourlyForecast[i]?.dt < forecast?.daily[1]?.sunset
+
+    let isSunrise = hourlyForecast[i]?.dt === forecast?.current?.sunrise
+    let isSunset = hourlyForecast[i]?.dt === forecast?.current?.sunset
+
+    if (isSunrise) {
+      switch (id) {
+        case 995:
+          return '/sunrise.svg'
+        default:
+          return '/not-available.svg'
+      }
+    } else if (isSunset) {
+      switch (id) {
+        case 999:
+          return '/sunset.svg'
+        default:
+          return '/not-available.svg'
+      }
+    } else if (isDay) {
+      switch (id) {
+        case 995:
+          return '/sunrise.svg'
+        case 999:
+          return '/sunset.svg'
+        case 200:
+          return '/thunderstorms-day-rain.svg'
+          break
+        case 201:
+        case 202:
+          return '/thunderstorms-rain.svg'
+          break
+        case 210:
+          return '/thunderstorms-day.svg'
+          break
+        case 211:
+        case 212:
+        case 221:
+        case 230:
+        case 231:
+        case 232:
+          return '/thunderstorms.svg'
+          break
+        case 300:
+          return '/partly-cloudy-day-drizzle.svg'
+          break
+        case 301:
+        case 302:
+          return '/drizzle.svg'
+          break
+        case 310:
+        case 311:
+        case 312:
+        case 313:
+        case 314:
+        case 321:
+          return '/rain.svg'
+          break
+        case 500:
+        case 501:
+        case 502:
+        case 503:
+        case 504:
+          return '/partly-cloudy-day-rain.svg'
+          break
+        case 511:
+          return '/snow.svg'
+          break
+        case 520:
+        case 521:
+        case 522:
+        case 531:
+          return '/rain.svg'
+          break
+        case 600:
+        case 601:
+          return '/partly-cloudy-day-snow.svg'
+          break
+        case 602:
+        case 611:
+        case 612:
+        case 613:
+        case 615:
+        case 616:
+        case 620:
+        case 621:
+        case 622:
+          return '/snow.svg'
+          break
+        case 701:
+          return '/mist.svg'
+          break
+        case 711:
+          return '/partly-cloudy-day-smoke.svg'
+          break
+        case 721:
+          return '/haze-day.svg'
+          break
+        case 731:
+          return '/dust-day.svg'
+          break
+        case 741:
+          return '/fog-day.svg'
+          break
+        case 751:
+        case 761:
+        case 762:
+          return '/dust-day.svg'
+          break
+        case 771:
+          return '/wind.svg'
+          break
+        case 781:
+          return '/tornado.svg'
+          break
+        case 800:
+          return '/clear-day.svg'
+          break
+        case 801:
+          return '/partly-cloudy-day.svg'
+          break
+        case 802:
+          return '/cloudy.svg'
+          break
+        case 803:
+        case 804:
+          return '/overcast-day.svg'
+          break
+        default:
+          return '/not-available.svg'
+      }
+    } else if (isDay2) {
+      switch (id) {
+        case 995:
+          return '/sunrise.svg'
+        case 999:
+          return '/sunset.svg'
+        case 200:
+          return '/thunderstorms-day-rain.svg'
+          break
+        case 201:
+        case 202:
+          return '/thunderstorms-rain.svg'
+          break
+        case 210:
+          return '/thunderstorms-day.svg'
+          break
+        case 211:
+        case 212:
+        case 221:
+        case 230:
+        case 231:
+        case 232:
+          return '/thunderstorms.svg'
+          break
+        case 300:
+          return '/partly-cloudy-day-drizzle.svg'
+          break
+        case 301:
+        case 302:
+          return '/drizzle.svg'
+          break
+        case 310:
+        case 311:
+        case 312:
+        case 313:
+        case 314:
+        case 321:
+          return '/rain.svg'
+          break
+        case 500:
+        case 501:
+        case 502:
+        case 503:
+        case 504:
+          return '/partly-cloudy-day-rain.svg'
+          break
+        case 511:
+          return '/snow.svg'
+          break
+        case 520:
+        case 521:
+        case 522:
+        case 531:
+          return '/rain.svg'
+          break
+        case 600:
+        case 601:
+          return '/partly-cloudy-day-snow.svg'
+          break
+        case 602:
+        case 611:
+        case 612:
+        case 613:
+        case 615:
+        case 616:
+        case 620:
+        case 621:
+        case 622:
+          return '/snow.svg'
+          break
+        case 701:
+          return '/mist.svg'
+          break
+        case 711:
+          return '/partly-cloudy-day-smoke.svg'
+          break
+        case 721:
+          return '/haze-day.svg'
+          break
+        case 731:
+          return '/dust-day.svg'
+          break
+        case 741:
+          return '/fog-day.svg'
+          break
+        case 751:
+        case 761:
+        case 762:
+          return '/dust-day.svg'
+          break
+        case 771:
+          return '/wind.svg'
+          break
+        case 781:
+          return '/tornado.svg'
+          break
+        case 800:
+          return '/clear-day.svg'
+          break
+        case 801:
+          return '/partly-cloudy-day.svg'
+          break
+        case 802:
+          return '/cloudy.svg'
+          break
+        case 803:
+        case 804:
+          return '/overcast-day.svg'
+          break
+        default:
+          return '/not-available.svg'
+      }
+    } else {
+      switch (id) {
+        case 995:
+          return '/sunrise.svg'
+        case 999:
+          return '/sunset.svg'
+        case 200:
+          return '/thunderstorms-night-rain.svg'
+          break
+        case 201:
+        case 202:
+          return '/thunderstorms-rain.svg'
+          break
+        case 210:
+          return '/thunderstorms-night.svg'
+          break
+        case 211:
+        case 212:
+        case 221:
+        case 230:
+        case 231:
+        case 232:
+          return '/thunderstorms.svg'
+          break
+        case 300:
+          return '/partly-cloudy-night-drizzle.svg'
+          break
+        case 301:
+        case 302:
+          return '/drizzle.svg'
+          break
+        case 310:
+        case 311:
+        case 312:
+        case 313:
+        case 314:
+        case 321:
+          return '/rain.svg'
+          break
+        case 500:
+        case 501:
+        case 502:
+        case 503:
+        case 504:
+          return '/partly-cloudy-night-rain.svg'
+          break
+        case 511:
+          return '/snow.svg'
+          break
+        case 520:
+        case 521:
+        case 522:
+        case 531:
+          return '/rain.svg'
+          break
+        case 600:
+        case 601:
+          return '/partly-cloudy-night-snow.svg'
+          break
+        case 602:
+        case 611:
+        case 612:
+        case 613:
+        case 615:
+        case 616:
+        case 620:
+        case 621:
+        case 622:
+          return '/snow.svg'
+          break
+        case 701:
+          return '/mist.svg'
+          break
+        case 711:
+          return '/partly-cloudy-night-smoke.svg'
+          break
+        case 721:
+          return '/haze-night.svg'
+          break
+        case 731:
+          return '/dust-night.svg'
+          break
+        case 741:
+          return '/fog-night.svg'
+          break
+        case 751:
+        case 761:
+        case 762:
+          return '/dust-night.svg'
+          break
+        case 771:
+          return '/wind.svg'
+          break
+        case 781:
+          return '/tornado.svg'
+          break
+        case 800:
+          return '/clear-night.svg'
+          // return '/starry-night.svg'
+          break
+        case 801:
+          return '/partly-cloudy-night.svg'
+          break
+        case 802:
+          return '/cloudy.svg'
+          break
+        case 803:
+        case 804:
+          return '/overcast-night.svg'
+          break
+        default:
+          return '/not-available.svg'
+      }
+    }
+  }
+
+  function getIconUrl(id) {
+    switch (id) {
+      case 200:
+        return '/thunderstorms-day-rain.svg'
+        break
+      case 201:
+      case 202:
+        return '/thunderstorms-rain.svg'
+        break
+      case 210:
+        return '/thunderstorms-day.svg'
+        break
+      case 211:
+      case 212:
+      case 221:
+      case 230:
+      case 231:
+      case 232:
+        return '/thunderstorms.svg'
+        break
+      case 300:
+        return '/partly-cloudy-day-drizzle.svg'
+        break
+      case 301:
+      case 302:
+        return '/drizzle.svg'
+        break
+      case 310:
+      case 311:
+      case 312:
+      case 313:
+      case 314:
+      case 321:
+        return '/rain.svg'
+        break
+      case 500:
+      case 501:
+      case 502:
+      case 503:
+      case 504:
+        return '/partly-cloudy-day-rain.svg'
+        break
+      case 511:
+        return '/snow.svg'
+        break
+      case 520:
+      case 521:
+      case 522:
+      case 531:
+        return '/rain.svg'
+        break
+      case 600:
+      case 601:
+        return '/partly-cloudy-day-snow.svg'
+        break
+      case 602:
+      case 611:
+      case 612:
+      case 613:
+      case 615:
+      case 616:
+      case 620:
+      case 621:
+      case 622:
+        return '/snow.svg'
+        break
+      case 701:
+        return '/mist.svg'
+        break
+      case 711:
+        return '/partly-cloudy-day-smoke.svg'
+        break
+      case 721:
+        return '/haze-day.svg'
+        break
+      case 731:
+        return '/dust-day.svg'
+        break
+      case 741:
+        return '/fog-day.svg'
+        break
+      case 751:
+      case 761:
+      case 762:
+        return '/dust-day.svg'
+        break
+      case 771:
+        return '/wind.svg'
+        break
+      case 781:
+        return '/tornado.svg'
+        break
+      case 800:
+        return '/clear-day.svg'
+        break
+      case 801:
+        return '/partly-cloudy-day.svg'
+        break
+      case 802:
+        return '/cloudy.svg'
+        break
+      case 803:
+      case 804:
+        return '/overcast-day.svg'
+        break
+      default:
+        return '/not-available.svg'
+    }
   }
 
   return (
@@ -215,7 +1059,7 @@ export default function Weather() {
               size="large"
               title="My location"
             >
-              <NearMeIcon style={{ fontSize: 30 }} />
+              <GpsFixedIcon style={{ fontSize: 30 }} />
             </IconButton>
           </Box>
           <Search>
@@ -254,26 +1098,14 @@ export default function Weather() {
         {data.main ? (
           <Box>
             <Typography
-              variant="p"
+              variant="h6"
               component="div"
               sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               color="textSecondary"
             >
-              {todayDate}
+              <b>{todayDate}</b>
             </Typography>
             <br />
-            {/* <NavigationIcon
-              style={{
-                fontSize: 60,
-                transform: `rotate(${degree + 180}deg`,
-              }}
-            />
-            <Typography variant="h4" color="textSecondary">
-              {data.wind ? <b>{data.wind.speed.toFixed(1)} m/s</b> : null}
-            </Typography>
-            <Typography variant="h4" color="textSecondary">
-              {forecast.timezone}
-            </Typography> */}
             <br />
             <Grid
               container
@@ -321,30 +1153,43 @@ export default function Weather() {
               >
                 <Box>
                   <Box>
+                    <Box>
+                      {data.main ? (
+                        <Grid
+                          container
+                          direction="row"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Box
+                            sx={{
+                              width: '30px',
+                              height: '20px',
+                              // boxShadow: 5,
+                              boxShadow:
+                                '0px 0px 15px 5px rgba(34, 60, 80, 0.15)',
+                            }}
+                          >
+                            <img
+                              alt="flag"
+                              src={`${flagsUrl}/${data.sys?.country}.svg`}
+                              width="30px"
+                              height="20px"
+                              title={data.sys?.country}
+                              draggable={false}
+                            />
+                          </Box>
+                        </Grid>
+                      ) : null}
+                    </Box>
                     <Typography
                       variant="h2"
                       component="div"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
-                      <Badge
-                        badgeContent={
-                          data.main ? (
-                            <img
-                              alt="flag"
-                              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${data.sys?.country}.svg`}
-                              width="30px"
-                              height="30px"
-                              title={data.sys?.country}
-                            />
-                          ) : null
-                        }
-                        color="primary"
-                        max={99}
-                      >
-                        <Box sx={{ letterSpacing: 5 }}>
-                          <b>{data.name.toUpperCase()}</b>
-                        </Box>
-                      </Badge>
+                      <Box sx={{ letterSpacing: 5 }}>
+                        <b>{data.name.toUpperCase()}</b>
+                      </Box>
                     </Typography>
                     <Typography
                       variant="p"
@@ -355,8 +1200,12 @@ export default function Weather() {
                       <Box sx={{ letterSpacing: 5 }}>
                         {data.weather[0].description.toUpperCase()}
                       </Box>
+                      {/* <Box sx={{ letterSpacing: 5 }}>
+                        {forecast.current.weather[0].description.toUpperCase()}
+                      </Box> */}
                     </Typography>
                   </Box>
+                  <br />
                   <Grid
                     container
                     direction="row"
@@ -380,37 +1229,39 @@ export default function Weather() {
                         </>
                       )}
                     </Typography>
-                    <Box sx={{ ml: -4, mr: -8 }}>
-                      {data.main ? (
-                        <img
-                          src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`}
-                          //@2x
-                          alt="weather icon"
-                          width="70%"
-                          height="70%"
-                        />
-                      ) : null}
+                    <Box sx={{ ml: -10, mr: -12 }}>
+                      <img
+                        src={`${weatherIconsUrl}${getCurrentIconUrl(
+                          forecast?.current?.weather[0]?.id
+                        )}`}
+                        alt="weather"
+                        height="40%"
+                        width="40%"
+                        draggable={false}
+                      />
                     </Box>
                   </Grid>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     component="div"
                     sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     color="textSecondary"
                   >
                     <Box>
-                      Feels like{' '}
-                      {celsius ? (
-                        <>{data.main.feels_like.toFixed() - 273}°</>
-                      ) : (
-                        <>
-                          {(
-                            ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
-                            32
-                          ).toFixed()}
-                          °
-                        </>
-                      )}
+                      <b>
+                        Feels like{' '}
+                        {celsius ? (
+                          <>{data.main.feels_like.toFixed() - 273}°</>
+                        ) : (
+                          <>
+                            {(
+                              ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
+                              32
+                            ).toFixed()}
+                            °
+                          </>
+                        )}
+                      </b>
                     </Box>
                   </Typography>
                 </Box>
@@ -425,6 +1276,13 @@ export default function Weather() {
                   <IconButton onClick={clearData} color="inherit" title="Clear">
                     <CloseIcon style={{ fontSize: 40 }} />
                   </IconButton>
+                  {/* <IconButton
+                    // onClick={refreshLocation}
+                    color="inherit"
+                    title="Refresh"
+                  >
+                    <RefreshIcon style={{ fontSize: 40 }} />
+                  </IconButton> */}
                 </Box>
               </Grid>
             </Grid>
@@ -462,31 +1320,235 @@ export default function Weather() {
             </Box>
             <br />
             <br />
-
             <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
-
             <br />
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                textAlign="center"
+              >
+                <Grid item xs={2}>
+                  <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    textAlign="center"
+                  >
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      textAlign="center"
+                    >
+                      <img
+                        src={`${weatherFillIconsUrl}/wind.svg`}
+                        // src={`${weatherIconsUrl}/wind.svg`}
+                        alt="weather"
+                        height="40px"
+                        width="40px"
+                        draggable={false}
+                      />
+                      <Typography variant="p" color="textSecondary">
+                        {data.wind.speed.toFixed()} m/s ,{' '}
+                        {getDirection(data.wind.deg)}
+                      </Typography>{' '}
+                      <img
+                        src={`${weatherIconsUrl}/compass.svg`}
+                        alt="weather"
+                        height="40px"
+                        width="40px"
+                        draggable={false}
+                        style={{ transform: `rotate(${degree + 180}deg` }}
+                      />
+                    </Grid>
+
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      textAlign="center"
+                    >
+                      <img
+                        src={`${weatherIconsUrl}/barometer.svg`}
+                        alt="weather"
+                        height="40px"
+                        width="40px"
+                        draggable={false}
+                      />
+                      <Typography variant="p" color="textSecondary">
+                        {data.main ? <>{data.main.pressure} hPa</> : null}
+                      </Typography>
+                    </Grid>
+
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="left"
+                      alignItems="center"
+                      textAlign="center"
+                    >
+                      <img
+                        src={`${weatherFillIconsUrl}/raindrops.svg`}
+                        alt="weather"
+                        height="40px"
+                        width="40px"
+                        draggable={false}
+                      />
+                      <Typography variant="p" color="textSecondary">
+                        {data.main ? <>{data.main.humidity} %</> : null}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={10}>
+                  <Carousel
+                    // easing="cubic-bezier(1,.15,.55,1.54)"
+                    // tiltEasing="cubic-bezier(0.110, 1, 1.000, 0.210)"
+                    // transitionMs={700}
+                    initialActiveIndex={0}
+                    itemsToScroll={2}
+                    itemsToShow={8}
+                  >
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <Typography variant="p" color="textSecondary">
+                        Now
+                      </Typography>
+                      <img
+                        src={`${weatherIconsUrl}${getCurrentIconUrl(
+                          forecast?.current?.weather[0]?.id
+                        )}`}
+                        alt="weather"
+                        height="40%"
+                        width="40%"
+                        draggable={false}
+                      />
+                      {/* <br /> */}
+                      <Typography variant="h6">
+                        {celsius ? (
+                          <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
+                        ) : (
+                          <b>
+                            {(
+                              ((forecast.hourly[0].temp.toFixed() - 273) * 9) /
+                                5 +
+                              32
+                            ).toFixed()}
+                            °
+                          </b>
+                        )}
+                      </Typography>
+                    </Grid>
+                    {[
+                      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                      17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                    ].map((i) => (
+                      <Grid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        key={hourlyForecast[i].dt}
+                      >
+                        <Typography variant="p" color="textSecondary">
+                          <>{getTimeFromUnix(i, forecast.timezone)}</>
+                        </Typography>
+                        <img
+                          src={`${weatherIconsUrl}${getHourlyIconUrl(
+                            hourlyForecast[i]?.weather[0]?.id,
+                            i
+                          )}`}
+                          alt="weather"
+                          height="40%"
+                          width="40%"
+                          draggable={false}
+                        />
+                        {/* <br /> */}
+                        <Stack
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h6">
+                            {hourlyForecast[i]?.temp === 995 ? (
+                              <Typography variant="h6" color="textSecondary">
+                                Sunrise
+                              </Typography>
+                            ) : null}
+                            {hourlyForecast[i]?.temp === 999 ? (
+                              <Typography variant="h6" color="textSecondary">
+                                Sunset
+                              </Typography>
+                            ) : null}
+                            {hourlyForecast[i]?.temp < 990 ? (
+                              <>
+                                {celsius ? (
+                                  <b>
+                                    {hourlyForecast[i]?.temp?.toFixed() - 273}°
+                                  </b>
+                                ) : (
+                                  <b>
+                                    {(
+                                      ((hourlyForecast[i]?.temp?.toFixed() -
+                                        273) *
+                                        9) /
+                                        5 +
+                                      32
+                                    ).toFixed()}
+                                    °
+                                  </b>
+                                )}
+                              </>
+                            ) : null}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    ))}
+                  </Carousel>
+                </Grid>
+              </Grid>
+            </Box>
+            <br />
+            <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
             <br />
 
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Stack justifyContent="center" direction="row" spacing={5}>
-                {[1, 2, 3, 4, 5].map((i) => (
+              <Stack justifyContent="center" direction="row" spacing={0}>
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                   <Grid
                     container
                     direction="column"
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Typography variant="h6" color="textSecondary">
-                      {getDateFromUnix(i)}
+                    <Typography variant="h6" color="textPrimary">
+                      <b>{getWeekdayFromUnix(i)}</b>
                     </Typography>
+                    <Typography variant="p" color="textSecondary">
+                      <>{getDateFromUnix(i)}</>
+                    </Typography>
+                    {/* <br /> */}
                     <img
-                      src={`http://openweathermap.org/img/wn/${forecast.daily[i].weather[0].icon}@2x.png`}
-                      //@2x
-                      alt="weather icon"
-                      // width="70%"
-                      // height="70%"
+                      src={`${weatherIconsUrl}${getIconUrl(
+                        forecast?.daily[i]?.weather[0]?.id
+                      )}`}
+                      alt="weather"
+                      height="40%"
+                      width="40%"
+                      draggable={false}
                     />
+                    {/* <br /> */}
                     <Stack justifyContent="center" direction="row" spacing={2}>
                       <Typography variant="h5">
                         {celsius ? (
@@ -505,9 +1567,9 @@ export default function Weather() {
                       </Typography>
                       <Typography variant="h5" color="textSecondary">
                         {celsius ? (
-                          <>{forecast.daily[i].temp.night.toFixed() - 273}°</>
+                          <b>{forecast.daily[i].temp.night.toFixed() - 273}°</b>
                         ) : (
-                          <>
+                          <b>
                             {(
                               ((forecast.daily[i].temp.night.toFixed() - 273) *
                                 9) /
@@ -515,7 +1577,7 @@ export default function Weather() {
                               32
                             ).toFixed()}
                             °
-                          </>
+                          </b>
                         )}
                       </Typography>
                     </Stack>
@@ -524,130 +1586,8 @@ export default function Weather() {
               </Stack>
             </Box>
             <br />
-            <br />
             <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
             <br />
-            <br />
-
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Grid
-                  item
-                  md={3}
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                >
-                  <Typography variant="h4" color="textSecondary">
-                    <b>Conditions</b>
-                  </Typography>
-                  <br />
-                  <Typography
-                    variant="p"
-                    component="div"
-                    sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                  >
-                    {data.main ? (
-                      <img
-                        src={`http://openweathermap.org/img/wn/${data.weather[0].icon}.png`}
-                        //@2x
-                        alt="weather icon"
-                        // height="100"
-                      />
-                    ) : null}
-                    <br />
-                    <br />
-                    <Typography variant="h4" color="textSecondary">
-                      {data.weather ? (
-                        <b>
-                          {data.weather[0].description
-                            .toLowerCase()
-                            .split(' ')
-                            .map(
-                              (word) =>
-                                word.charAt(0).toUpperCase() + word.substring(1)
-                            )
-                            .join(' ')}
-                        </b>
-                      ) : null}
-                    </Typography>
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  md={3}
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                >
-                  <Typography variant="h4" color="textSecondary">
-                    <b>Feels Like</b>
-                  </Typography>
-                  <br />
-                  <Typography
-                    variant="p"
-                    component="div"
-                    sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                  >
-                    <WiThermometer style={{ fontSize: 50 }} />
-                    <br />
-                    <br />
-                    <Typography variant="h4" color="textSecondary">
-                      {celsius ? (
-                        <b>{data.main.feels_like.toFixed() - 273}°C</b>
-                      ) : (
-                        <b>
-                          {(
-                            ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
-                            32
-                          ).toFixed()}
-                          °F
-                        </b>
-                      )}
-                    </Typography>
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  md={3}
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                >
-                  <Typography variant="h4" color="textSecondary">
-                    <b>Humidity</b>
-                  </Typography>
-                  <br />
-                  <WiHumidity style={{ fontSize: 50 }} />
-                  <br />
-                  <br />
-                  <Typography variant="h4" color="textSecondary">
-                    {data.main ? <b>{data.main.humidity} %</b> : null}
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  md={3}
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                >
-                  <Typography variant="h4" color="textSecondary">
-                    <b>Wind Speed</b>
-                  </Typography>
-                  <br />
-                  <AirIcon style={{ fontSize: 50 }} />
-                  {/* <Typography
-                    variant="p"
-                    component="div"
-                    sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                  > */}
-                  <br />
-                  <br />
-                  <Typography variant="h4" color="textSecondary">
-                    {data.wind ? <b>{data.wind.speed.toFixed(1)} m/s</b> : null}
-                  </Typography>
-                  {/* </Typography> */}
-                </Grid>
-              </Grid>
-            </Box>
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Stack justifyContent="center" direction="column" spacing={0}>
@@ -673,10 +1613,8 @@ export default function Weather() {
                   >
                     {data.main ? (
                       <img
-                        src={`http://openweathermap.org/img/wn/${data.weather[0].icon}.png`}
-                        //@2x
+                        src={`${apiIconsUrl}/${data.weather[0].icon}.png`}
                         alt="weather icon"
-                        // height="100"
                       />
                     ) : null}
                   </Grid>

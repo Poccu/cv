@@ -48,3 +48,24 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.rec.rec-arrow {
+  /* border-radius: 0; */
+  display: none;
+}
+
+.rec.rec-pagination {
+  display: none;
+}
+
+button.rec-dot {
+  background-color: rgb(68, 68, 68);
+  box-shadow: 0 0 1px 3px rgba(26, 26, 26, 0.5);
+  display: none;
+}
+
+button.rec-dot:hover,
+button.rec-dot:active,
+button.rec-dot:focus {
+  box-shadow: 0 0 1px 3px rgba(97, 97, 97, 0.5);
+}
