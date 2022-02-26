@@ -1411,14 +1411,7 @@ export default function Weather() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Box
-                            sx={{
-                              width: '30px',
-                              height: '20px',
-                              boxShadow:
-                                '0px 0px 15px 5px rgba(34, 60, 80, 0.15)',
-                            }}
-                          >
+                          <Box sx={{ width: '30px', height: '20px' }}>
                             <img
                               alt="flag"
                               src={`${flagsUrl}/${data.sys?.country}.svg`}
@@ -1426,6 +1419,7 @@ export default function Weather() {
                               height="20px"
                               title={data.sys?.country}
                               draggable={false}
+                              class="shadow"
                             />
                           </Box>
                         </Grid>
@@ -1491,6 +1485,7 @@ export default function Weather() {
                         height="40%"
                         width="40%"
                         draggable={false}
+                        class="shadow"
                       />
                     </Box>
                   </Grid>
@@ -1611,6 +1606,7 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
+                        class="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
                         &nbsp;{data.wind.speed.toFixed()} m/s,{' '}
@@ -1622,6 +1618,7 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
+                        class="shadow"
                         style={{ transform: `rotate(${degree + 180}deg` }}
                       />
                     </Grid>
@@ -1639,6 +1636,7 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
+                        class="shadow"
                       />
 
                       <Typography variant="p" color="textSecondary">
@@ -1659,6 +1657,7 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
+                        class="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
                         {data.main ? <>&nbsp;{data.main.humidity} %</> : null}
@@ -1697,6 +1696,7 @@ export default function Weather() {
                         height="42%"
                         width="42%"
                         draggable={false}
+                        class="shadow"
                       />
                       {/* <br /> */}
                       <Typography variant="h5">
@@ -1741,6 +1741,7 @@ export default function Weather() {
                           height="42%"
                           width="42%"
                           draggable={false}
+                          class="shadow"
                         />
                         {/* <br /> */}
                         <Stack
@@ -1853,6 +1854,7 @@ export default function Weather() {
                           height="60px"
                           width="60px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -1940,6 +1942,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -1966,6 +1969,7 @@ export default function Weather() {
                           height="40px"
                           width="40px"
                           draggable={false}
+                          class="shadow"
                           style={{
                             transform: `rotate(${
                               forecast.daily[0].wind_deg + 180
@@ -2058,6 +2062,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2159,6 +2164,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2261,6 +2267,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2366,6 +2373,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2430,6 +2438,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -2458,6 +2467,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -2533,6 +2543,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -2561,6 +2572,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -2655,6 +2667,7 @@ export default function Weather() {
                           height="60px"
                           width="60px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2742,6 +2755,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2768,6 +2782,7 @@ export default function Weather() {
                           height="40px"
                           width="40px"
                           draggable={false}
+                          class="shadow"
                           style={{
                             transform: `rotate(${
                               forecast.daily[1].wind_deg + 180
@@ -2860,6 +2875,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2961,6 +2977,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3063,6 +3080,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3168,6 +3186,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
+                          class="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3232,6 +3251,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -3260,6 +3280,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -3335,6 +3356,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -3363,6 +3385,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Box>
                         <Typography
@@ -3459,6 +3482,7 @@ export default function Weather() {
                             height="60px"
                             width="60px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3549,6 +3573,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3575,6 +3600,7 @@ export default function Weather() {
                             height="40px"
                             width="40px"
                             draggable={false}
+                            class="shadow"
                             style={{
                               transform: `rotate(${
                                 forecast.daily[i].wind_deg + 180
@@ -3668,6 +3694,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3772,6 +3799,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3877,6 +3905,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3982,6 +4011,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
+                            class="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -4046,6 +4076,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
+                              class="shadow"
                             />
                           </Box>
                           <Typography
@@ -4074,6 +4105,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
+                              class="shadow"
                             />
                           </Box>
                           <Typography
@@ -4149,6 +4181,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
+                              class="shadow"
                             />
                           </Box>
                           <Typography
@@ -4177,6 +4210,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
+                              class="shadow"
                             />
                           </Box>
                           <Typography
