@@ -21,6 +21,10 @@ import Divider from '@mui/material/Divider'
 import GpsFixedIcon from '@mui/icons-material/GpsFixed'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import Carousel from 'react-elastic-carousel'
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
+import MuiAccordion from '@mui/material/Accordion'
+import MuiAccordionSummary from '@mui/material/AccordionSummary'
+import MuiAccordionDetails from '@mui/material/AccordionDetails'
 
 const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY
 const apiUrl = process.env.REACT_APP_OPENWEATHER_URL
@@ -29,6 +33,35 @@ const flagsUrl = process.env.REACT_APP_COUNTRY_FLAG_ICONS_URL
 const weatherIconsUrl = process.env.REACT_APP_ANIMATED_WEATHER_ICONS_URL
 const weatherFillIconsUrl =
   process.env.REACT_APP_ANIMATED_WEATHER_FILL_ICONS_URL
+
+const Accordion = styled((props) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  borderBottom: `2px solid ${theme.palette.divider}`,
+}))
+
+const AccordionSummary = styled((props) => (
+  <MuiAccordionSummary
+    expandIcon={
+      <ArrowForwardIosSharpIcon sx={{ fontSize: '26px' }} color="secondary" />
+    }
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)',
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+}))
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  padding: theme.spacing(2),
+}))
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -146,6 +179,12 @@ export default function Weather() {
       JSON.stringify(hourlyForecast)
     )
   }, [hourlyForecast])
+
+  const [expanded, setExpanded] = useState('') //'panel0'
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false)
+  }
 
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -323,6 +362,12 @@ export default function Weather() {
     return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
   }
 
+  const getTimeFromDailyUnix = (unix, timezone) => {
+    let dateFromUnix = new Date(unix * 1000)
+    let options = { timeStyle: 'short', timeZone: timezone }
+    return new Intl.DateTimeFormat('en-GB', options).format(dateFromUnix)
+  }
+
   const getDirection = (degrees) => {
     const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
 
@@ -336,7 +381,6 @@ export default function Weather() {
   function getCurrentIconUrl(id) {
     let dayOrNight = forecast?.current?.weather[0]?.icon // 13d / 02n ...
     let result = dayOrNight.slice(dayOrNight.length - 1) // 'd'= day / 'n'= night
-    // console.log(result)
 
     if (result === 'd') {
       switch (id) {
@@ -1034,6 +1078,100 @@ export default function Weather() {
     }
   }
 
+  function getMoonPhaseSvg(phase) {
+    if (phase >= 0 && phase < 0.0625) {
+      return 'moon-new.svg'
+    } else if (phase >= 0.0625 && phase < 0.1875) {
+      return 'moon-waxing-crescent.svg'
+    } else if (phase >= 0.1875 && phase < 0.3125) {
+      return 'moon-first-quarter.svg'
+    } else if (phase >= 0.3125 && phase < 0.4375) {
+      return 'moon-waxing-gibbous.svg'
+    } else if (phase >= 0.4375 && phase < 0.5625) {
+      return 'moon-full.svg'
+    } else if (phase >= 0.5625 && phase < 0.6875) {
+      return 'moon-waning-gibbous.svg'
+    } else if (phase >= 0.6875 && phase < 0.8125) {
+      return 'moon-last-quarter.svg'
+    } else if (phase >= 0.8125 && phase < 0.9375) {
+      return 'moon-waning-crescent.svg'
+    } else if (phase >= 0.9375 && phase <= 1) {
+      return 'moon-new.svg'
+    } else return 'not-available.svg'
+  }
+
+  function getMoonPhase(phase) {
+    if (phase >= 0 && phase < 0.0625) {
+      return 'New Moon'
+    } else if (phase >= 0.0625 && phase < 0.1875) {
+      return 'Waxing Crescent'
+    } else if (phase >= 0.1875 && phase < 0.3125) {
+      return 'First Quarter'
+    } else if (phase >= 0.3125 && phase < 0.4375) {
+      return 'Waxing Gibbous'
+    } else if (phase >= 0.4375 && phase < 0.5625) {
+      return 'Full Moon'
+    } else if (phase >= 0.5625 && phase < 0.6875) {
+      return 'Waning Gibbous'
+    } else if (phase >= 0.6875 && phase < 0.8125) {
+      return 'Last Quarter'
+    } else if (phase >= 0.8125 && phase < 0.9375) {
+      return 'Waning Crescent'
+    } else if (phase >= 0.9375 && phase <= 1) {
+      return 'New Moon'
+    } else return ''
+  }
+
+  function getUVindexSVG(index) {
+    // let fixed = index.toFixed()
+    switch (index) {
+      case 1:
+        return 'uv-index-1.svg'
+        break
+      case 2:
+        return 'uv-index-2.svg'
+        break
+      case 3:
+        return 'uv-index-3.svg'
+        break
+      case 4:
+        return 'uv-index-4.svg'
+        break
+      case 5:
+        return 'uv-index-5.svg'
+        break
+      case 6:
+        return 'uv-index-6.svg'
+        break
+      case 7:
+        return 'uv-index-7.svg'
+        break
+      case 8:
+        return 'uv-index-8.svg'
+        break
+      case 9:
+        return 'uv-index-9.svg'
+        break
+      case 10:
+        return 'uv-index-10.svg'
+        break
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
+      case 16:
+      case 17:
+      case 18:
+      case 19:
+      case 20:
+        return 'uv-index-11.svg'
+        break
+      default:
+        return 'not-available.svg'
+    }
+  }
+
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
@@ -1100,10 +1238,12 @@ export default function Weather() {
             <Typography
               variant="h6"
               component="div"
-              sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+              sx={
+                ({ flexGrow: 1 }, { textAlign: 'center', fontWeight: 'light' })
+              }
               color="textSecondary"
             >
-              <b>{todayDate}</b>
+              {todayDate}
             </Typography>
             <br />
             <br />
@@ -1165,7 +1305,6 @@ export default function Weather() {
                             sx={{
                               width: '30px',
                               height: '20px',
-                              // boxShadow: 5,
                               boxShadow:
                                 '0px 0px 15px 5px rgba(34, 60, 80, 0.15)',
                             }}
@@ -1185,16 +1324,20 @@ export default function Weather() {
                     <Typography
                       variant="h2"
                       component="div"
-                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                      sx={{ flexGrow: 1, textAlign: 'center' }}
                     >
                       <Box sx={{ letterSpacing: 5 }}>
                         <b>{data.name.toUpperCase()}</b>
                       </Box>
                     </Typography>
                     <Typography
-                      variant="p"
+                      variant="h6"
                       component="div"
-                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                      sx={{
+                        flexGrow: 1,
+                        textAlign: 'center',
+                        fontWeight: 'regular',
+                      }}
                       color="textSecondary"
                     >
                       <Box sx={{ letterSpacing: 5 }}>
@@ -1244,11 +1387,15 @@ export default function Weather() {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                    sx={{
+                      flexGrow: 1,
+                      textAlign: 'center',
+                      fontWeight: 'regular',
+                    }}
                     color="textSecondary"
                   >
                     <Box>
-                      <b>
+                      <>
                         Feels like{' '}
                         {celsius ? (
                           <>{data.main.feels_like.toFixed() - 273}°</>
@@ -1261,7 +1408,7 @@ export default function Weather() {
                             °
                           </>
                         )}
-                      </b>
+                      </>
                     </Box>
                   </Typography>
                 </Box>
@@ -1273,9 +1420,9 @@ export default function Weather() {
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  <IconButton onClick={clearData} color="inherit" title="Clear">
+                  {/* <IconButton onClick={clearData} color="inherit" title="Clear">
                     <CloseIcon style={{ fontSize: 40 }} />
-                  </IconButton>
+                  </IconButton> */}
                   {/* <IconButton
                     // onClick={refreshLocation}
                     color="inherit"
@@ -1329,6 +1476,7 @@ export default function Weather() {
                 justifyContent="center"
                 alignItems="center"
                 textAlign="center"
+                columns={14}
               >
                 <Grid item xs={2}>
                   <Grid
@@ -1347,14 +1495,13 @@ export default function Weather() {
                     >
                       <img
                         src={`${weatherFillIconsUrl}/wind.svg`}
-                        // src={`${weatherIconsUrl}/wind.svg`}
                         alt="weather"
                         height="40px"
                         width="40px"
                         draggable={false}
                       />
                       <Typography variant="p" color="textSecondary">
-                        {data.wind.speed.toFixed()} m/s ,{' '}
+                        &nbsp;{data.wind.speed.toFixed()} m/s ,{' '}
                         {getDirection(data.wind.deg)}
                       </Typography>{' '}
                       <img
@@ -1381,8 +1528,9 @@ export default function Weather() {
                         width="40px"
                         draggable={false}
                       />
+
                       <Typography variant="p" color="textSecondary">
-                        {data.main ? <>{data.main.pressure} hPa</> : null}
+                        {data.main ? <>&nbsp;{data.main.pressure} hPa</> : null}
                       </Typography>
                     </Grid>
 
@@ -1401,13 +1549,13 @@ export default function Weather() {
                         draggable={false}
                       />
                       <Typography variant="p" color="textSecondary">
-                        {data.main ? <>{data.main.humidity} %</> : null}
+                        {data.main ? <>&nbsp;{data.main.humidity} %</> : null}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
 
-                <Grid item xs={10}>
+                <Grid item xs={12}>
                   <Carousel
                     // easing="cubic-bezier(1,.15,.55,1.54)"
                     // tiltEasing="cubic-bezier(0.110, 1, 1.000, 0.210)"
@@ -1422,7 +1570,11 @@ export default function Weather() {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Typography variant="p" color="textSecondary">
+                      <Typography
+                        variant="h6"
+                        color="textSecondary"
+                        sx={{ fontWeight: 'regular' }}
+                      >
                         Now
                       </Typography>
                       <img
@@ -1430,12 +1582,12 @@ export default function Weather() {
                           forecast?.current?.weather[0]?.id
                         )}`}
                         alt="weather"
-                        height="40%"
-                        width="40%"
+                        height="42%"
+                        width="42%"
                         draggable={false}
                       />
                       {/* <br /> */}
-                      <Typography variant="h6">
+                      <Typography variant="h5">
                         {celsius ? (
                           <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
                         ) : (
@@ -1461,7 +1613,11 @@ export default function Weather() {
                         alignItems="center"
                         key={hourlyForecast[i].dt}
                       >
-                        <Typography variant="p" color="textSecondary">
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'regular' }}
+                        >
                           <>{getTimeFromUnix(i, forecast.timezone)}</>
                         </Typography>
                         <img
@@ -1470,8 +1626,8 @@ export default function Weather() {
                             i
                           )}`}
                           alt="weather"
-                          height="40%"
-                          width="40%"
+                          height="42%"
+                          width="42%"
                           draggable={false}
                         />
                         {/* <br /> */}
@@ -1480,14 +1636,22 @@ export default function Weather() {
                           direction="row"
                           spacing={2}
                         >
-                          <Typography variant="h6">
+                          <Typography variant="h5">
                             {hourlyForecast[i]?.temp === 995 ? (
-                              <Typography variant="h6" color="textSecondary">
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                sx={{ fontWeight: 'regular' }}
+                              >
                                 Sunrise
                               </Typography>
                             ) : null}
                             {hourlyForecast[i]?.temp === 999 ? (
-                              <Typography variant="h6" color="textSecondary">
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                sx={{ fontWeight: 'regular' }}
+                              >
                                 Sunset
                               </Typography>
                             ) : null}
@@ -1521,73 +1685,1774 @@ export default function Weather() {
             </Box>
             <br />
             <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
-            <br />
-
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Stack justifyContent="center" direction="row" spacing={0}>
-                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+            <div>
+              <Accordion
+                expanded={expanded === 'panel0'}
+                onChange={handleChange('panel0')}
+              >
+                <AccordionSummary
+                  aria-controls="panel0d-content"
+                  id="panel0d-header"
+                >
                   <Grid
                     container
-                    direction="column"
+                    direction="row"
                     justifyContent="center"
                     alignItems="center"
+                    columns={9}
                   >
-                    <Typography variant="h6" color="textPrimary">
-                      <b>{getWeekdayFromUnix(i)}</b>
-                    </Typography>
-                    <Typography variant="p" color="textSecondary">
-                      <>{getDateFromUnix(i)}</>
-                    </Typography>
-                    {/* <br /> */}
-                    <img
-                      src={`${weatherIconsUrl}${getIconUrl(
-                        forecast?.daily[i]?.weather[0]?.id
-                      )}`}
-                      alt="weather"
-                      height="40%"
-                      width="40%"
-                      draggable={false}
-                    />
-                    {/* <br /> */}
-                    <Stack justifyContent="center" direction="row" spacing={2}>
-                      <Typography variant="h5">
-                        {celsius ? (
-                          <b>{forecast.daily[i].temp.day.toFixed() - 273}°</b>
-                        ) : (
-                          <b>
-                            {(
-                              ((forecast.daily[i].temp.day.toFixed() - 273) *
-                                9) /
-                                5 +
-                              32
-                            ).toFixed()}
-                            °
-                          </b>
-                        )}
-                      </Typography>
-                      <Typography variant="h5" color="textSecondary">
-                        {celsius ? (
-                          <b>{forecast.daily[i].temp.night.toFixed() - 273}°</b>
-                        ) : (
-                          <b>
-                            {(
-                              ((forecast.daily[i].temp.night.toFixed() - 273) *
-                                9) /
-                                5 +
-                              32
-                            ).toFixed()}
-                            °
-                          </b>
-                        )}
-                      </Typography>
-                    </Stack>
+                    <Grid item xs={7}>
+                      <Box sx={{ ml: 3 }}>
+                        <Grid
+                          container
+                          direction="column"
+                          justifyContent="center"
+                          alignItems="left"
+                        >
+                          <Grid item>
+                            <Typography variant="h5" color="textPrimary">
+                              <b>Today</b>
+                              {/* <b>{getWeekdayFromUnix(0)}</b> */}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography
+                              variant="h6"
+                              color="textSecondary"
+                              sx={{ fontWeight: 'light' }}
+                            >
+                              <>{getDateFromUnix(0)}</>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <img
+                          src={`${weatherIconsUrl}${getIconUrl(
+                            forecast?.daily[0]?.weather[0]?.id
+                          )}`}
+                          alt="weather"
+                          height="60px"
+                          width="60px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[0].temp.day.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[0].temp.day.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                        <Typography variant="h5" color="textSecondary">
+                          {celsius ? (
+                            <>{forecast.daily[0].temp.night.toFixed() - 273}°</>
+                          ) : (
+                            <>
+                              {(
+                                ((forecast.daily[0].temp.night.toFixed() -
+                                  273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
                   </Grid>
-                ))}
-              </Stack>
-            </Box>
-            <br />
-            <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
-            <br />
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4 }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Sunrise
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/sunrise.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[0].sunrise,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/sunset.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[0].sunset,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Sunset
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Morning
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>
+                              {forecast.daily[0].temp.morn.toFixed() - 273}°
+                            </b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[0].temp.morn.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4 }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moonrise
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/moonrise.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[0].moonrise,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/moonset.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[0].moonset,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moonset
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Day
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[0].temp.day.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[0].temp.day.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4, height: '65px' }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          UV index
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <img
+                          src={`${weatherIconsUrl}/${getUVindexSVG(
+                            +forecast.daily[0].uvi.toFixed()
+                          )}`}
+                          alt="weather"
+                          height="50px"
+                          width="50px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Evening
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[0].temp.eve.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[0].temp.eve.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4, height: '65px' }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moon Phase
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <img
+                          src={`${weatherFillIconsUrl}/${getMoonPhaseSvg(
+                            forecast.daily[0].moon_phase
+                          )}`}
+                          alt="weather"
+                          height="50px"
+                          width="50px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="left"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          {getMoonPhase(forecast.daily[0].moon_phase)}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Night
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>
+                              {forecast.daily[0].temp.night.toFixed() - 273}°
+                            </b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[0].temp.night.toFixed() -
+                                  273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={expanded === 'panel1'}
+                onChange={handleChange('panel1')}
+              >
+                <AccordionSummary
+                  aria-controls="panel1d-content"
+                  id="panel1d-header"
+                >
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                  >
+                    <Grid item xs={7}>
+                      <Box sx={{ ml: 3 }}>
+                        <Grid
+                          container
+                          direction="column"
+                          justifyContent="center"
+                          alignItems="left"
+                        >
+                          <Grid item>
+                            <Typography variant="h5" color="textPrimary">
+                              <b>Tomorrow</b>
+                              {/* <b>{getWeekdayFromUnix(1)}</b> */}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography
+                              variant="h6"
+                              color="textSecondary"
+                              sx={{ fontWeight: 'light' }}
+                            >
+                              <>{getDateFromUnix(1)}</>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <img
+                          src={`${weatherIconsUrl}${getIconUrl(
+                            forecast?.daily[1]?.weather[0]?.id
+                          )}`}
+                          alt="weather"
+                          height="60px"
+                          width="60px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[1].temp.day.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.day.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                        <Typography variant="h5" color="textSecondary">
+                          {celsius ? (
+                            <b>
+                              {forecast.daily[1].temp.night.toFixed() - 273}°
+                            </b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.night.toFixed() -
+                                  273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4 }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Sunrise
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/sunrise.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[1].sunrise,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/sunset.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[1].sunset,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Sunset
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Morning
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>
+                              {forecast.daily[1].temp.morn.toFixed() - 273}°
+                            </b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.morn.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4 }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moonrise
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/moonrise.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[1].moonrise,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Box sx={{ mb: -2 }}>
+                          <img
+                            src={`${weatherIconsUrl}/moonset.svg`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Box>
+                        <Typography
+                          variant="p"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
+                          {getTimeFromDailyUnix(
+                            forecast.daily[1].moonset,
+                            forecast.timezone
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        // direction="row"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moonset
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Day
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[1].temp.day.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.day.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4, height: '65px' }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          UV index
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <img
+                          src={`${weatherIconsUrl}/${getUVindexSVG(
+                            +forecast.daily[1].uvi.toFixed()
+                          )}`}
+                          alt="weather"
+                          height="50px"
+                          width="50px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Evening
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>{forecast.daily[1].temp.eve.toFixed() - 273}°</b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.eve.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    columns={9}
+                    sx={{ pl: 4, height: '65px' }}
+                  >
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Moon Phase
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="column"
+                        spacing={0}
+                      >
+                        <img
+                          src={`${weatherFillIconsUrl}/${getMoonPhaseSvg(
+                            forecast.daily[1].moon_phase
+                          )}`}
+                          alt="weather"
+                          height="50px"
+                          width="50px"
+                          draggable={false}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="left"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          {getMoonPhase(forecast.daily[1].moon_phase)}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'light' }}
+                        >
+                          Night
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <Typography variant="h5">
+                          {celsius ? (
+                            <b>
+                              {forecast.daily[1].temp.night.toFixed() - 273}°
+                            </b>
+                          ) : (
+                            <b>
+                              {(
+                                ((forecast.daily[1].temp.night.toFixed() -
+                                  273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </b>
+                          )}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+              {[2, 3, 4, 5, 6, 7].map((i) => (
+                <Accordion
+                  expanded={expanded === `panel${i}`}
+                  onChange={handleChange(`panel${i}`)}
+                >
+                  <AccordionSummary
+                    aria-controls={`panel${i}d-content`}
+                    id={`panel${i}d-header`}
+                  >
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      columns={9}
+                    >
+                      <Grid item xs={7}>
+                        <Box sx={{ ml: 3 }}>
+                          <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="left"
+                          >
+                            <Grid item>
+                              <Typography variant="h5" color="textPrimary">
+                                <b>{getWeekdayFromUnix(i)}</b>
+                              </Typography>
+                            </Grid>
+                            <Grid item>
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                sx={{ fontWeight: 'light' }}
+                              >
+                                <>{getDateFromUnix(i)}</>
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <img
+                            src={`${weatherIconsUrl}${getIconUrl(
+                              forecast?.daily[i]?.weather[0]?.id
+                            )}`}
+                            alt="weather"
+                            height="60px"
+                            width="60px"
+                            draggable={false}
+                          />
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h5">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.day.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.day.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                          <Typography variant="h5" color="textSecondary">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.night.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.night.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      columns={9}
+                      sx={{ pl: 4 }}
+                    >
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          // direction="row"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Sunrise
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Box sx={{ mb: -2 }}>
+                            <img
+                              src={`${weatherIconsUrl}/sunrise.svg`}
+                              alt="weather"
+                              height="50px"
+                              width="50px"
+                              draggable={false}
+                            />
+                          </Box>
+                          <Typography
+                            variant="p"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'medium' }}
+                          >
+                            {getTimeFromDailyUnix(
+                              forecast.daily[i].sunrise,
+                              forecast.timezone
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Box sx={{ mb: -2 }}>
+                            <img
+                              src={`${weatherIconsUrl}/sunset.svg`}
+                              alt="weather"
+                              height="50px"
+                              width="50px"
+                              draggable={false}
+                            />
+                          </Box>
+                          <Typography
+                            variant="p"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'medium' }}
+                          >
+                            {getTimeFromDailyUnix(
+                              forecast.daily[i].sunset,
+                              forecast.timezone
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          // direction="row"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Sunset
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Morning
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h5">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.morn.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.morn.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      columns={9}
+                      sx={{ pl: 4 }}
+                    >
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Moonrise
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Box sx={{ mb: -2 }}>
+                            <img
+                              src={`${weatherIconsUrl}/moonrise.svg`}
+                              alt="weather"
+                              height="50px"
+                              width="50px"
+                              draggable={false}
+                            />
+                          </Box>
+                          <Typography
+                            variant="p"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'medium' }}
+                          >
+                            {getTimeFromDailyUnix(
+                              forecast.daily[i].moonrise,
+                              forecast.timezone
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Box sx={{ mb: -2 }}>
+                            <img
+                              src={`${weatherIconsUrl}/moonset.svg`}
+                              alt="weather"
+                              height="50px"
+                              width="50px"
+                              draggable={false}
+                            />
+                          </Box>
+                          <Typography
+                            variant="p"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'medium' }}
+                          >
+                            {getTimeFromDailyUnix(
+                              forecast.daily[i].moonset,
+                              forecast.timezone
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          // direction="row"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Moonset
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Day
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h5">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.day.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.day.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      columns={9}
+                      sx={{ pl: 4, height: '65px' }}
+                    >
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            UV index
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <img
+                            src={`${weatherIconsUrl}/${getUVindexSVG(
+                              +forecast.daily[i].uvi.toFixed()
+                            )}`}
+                            alt="weather"
+                            height="50px"
+                            width="50px"
+                            draggable={false}
+                          />
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Evening
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h5">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.eve.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.eve.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      columns={9}
+                      sx={{ pl: 4, height: '65px' }}
+                    >
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Moon Phase
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="column"
+                          spacing={0}
+                        >
+                          <Box>
+                            <img
+                              src={`${weatherFillIconsUrl}/${getMoonPhaseSvg(
+                                forecast.daily[i].moon_phase
+                              )}`}
+                              alt="weather"
+                              height="50px"
+                              width="50px"
+                              draggable={false}
+                            />
+                          </Box>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="left"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            {getMoonPhase(forecast.daily[i].moon_phase)}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}></Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'light' }}
+                          >
+                            Night
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <Typography variant="h5">
+                            {celsius ? (
+                              <b>
+                                {forecast.daily[i].temp.night.toFixed() - 273}°
+                              </b>
+                            ) : (
+                              <b>
+                                {(
+                                  ((forecast.daily[i].temp.night.toFixed() -
+                                    273) *
+                                    9) /
+                                    5 +
+                                  32
+                                ).toFixed()}
+                                °
+                              </b>
+                            )}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </div>
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Stack justifyContent="center" direction="column" spacing={0}>
