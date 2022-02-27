@@ -71,5 +71,5 @@ button.rec-dot:focus {
 }
 
 .shadow {
-  filter: drop-shadow(0 0 1px rgba(100, 100, 100, 1));
+  filter: drop-shadow(0 0 1px rgba(12, 12, 12, 1));
 }

@@ -122,34 +122,32 @@ export default function Exchange() {
     return date.toISOString().split('T')[0]
   }
 
-  const todayDate = new Date().toISOString().split('T')[0] // 2022-02-19 today date
+  const todayDate = new Date().toISOString().split('T')[0] // 2022-mm-dd today date
 
-  const rndInt = Math.floor(Math.random() * 99999) + 10000 // random number from 10000 to 99999
-  // console.log(rndInt)
+  const rndInt = Math.floor(Math.random() * 9999) + 1000 // random number from 1000 to 9999
 
   // Calling the api whenever the dependency changes
   useEffect(() => {
     axios
-      .get(`${apiUrl}/latest/currencies/${from}.json?d=${todayDate}`)
+      .get(`${apiUrl}/latest/currencies/${from}.json?rand=${rndInt}`)
       .then((response) => {
         setInfo(response.data[from])
-        // console.log('today :', response.data)
+        console.log('today :', response.data)
       })
   }, [input, from, to])
 
   useEffect(() => {
     axios
       .get(
-        `${apiUrl}/${getYesterdayDate()}/currencies/${from}.json?d=${todayDate}`
+        `${apiUrl}/${getYesterdayDate()}/currencies/${from}.json?rand=${rndInt}`
       )
       .then((response) => {
         setYesterday(response.data[from])
-        // console.log('yesterday :', response.data)
+        console.log('yesterday :', response.data)
       })
   }, [input, from, to])
 
-  // Calling the convert function whenever
-  // a user switches the currency
+  // Calling the convert function whenever a user switches the currency
   useEffect(() => {
     setOptions(Object.keys(info))
     convert()
@@ -162,11 +160,6 @@ export default function Exchange() {
   function convert() {
     setOutput(input * exchangeRate)
   }
-
-  // function convert2() {
-  //   // setFrom(to)
-  //   setOutput(output * exchangeRate)
-  // }
 
   // Function to switch between two currency
   function flip() {

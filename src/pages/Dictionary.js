@@ -594,13 +594,14 @@ export default function Dictionary() {
                           </Typography>
                         }
                         {...a11yProps(0)}
+                        key={i}
                       />
                     ) : null
                   )}
                 </Tabs>
               </Box>
               {[0, 1, 2, 3, 4].map((i) => (
-                <TabPanel value={value} index={i}>
+                <TabPanel value={value} index={i} key={i}>
                   {data.meanings[i] ? (
                     <Box>
                       <Typography variant="h3" color="textSecondary">

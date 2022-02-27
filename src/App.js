@@ -3,7 +3,7 @@ import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Loading from './components/Loading'
-import Weather from './pages/Weather'
+// import Weather from './pages/Weather'
 import Home from './pages/Home'
 // import Dictionary from './pages/Dictionary'
 // import Exchange from './pages/Exchange'
@@ -34,11 +34,11 @@ const Dictionary = lazy(() => {
   })
 })
 
-// const Weather = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/Weather')), 500)
-//   })
-// })
+const Weather = lazy(() => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(import('./pages/Weather')), 500)
+  })
+})
 
 const Exchange = lazy(() => {
   return new Promise((resolve) => {
