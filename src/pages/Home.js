@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Typography, Container, Box, Grid } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 
 export default function Home() {
+  useEffect(() => {
+    document.title = 'Home'
+  }, [])
+
   return (
     <Box sx={{ mt: 16 }}>
       <Container maxwidth="sm">

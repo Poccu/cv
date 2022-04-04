@@ -1282,6 +1282,12 @@ export default function Weather() {
     }
   }
 
+  useEffect(() => {
+    data.name
+      ? (document.title = `Weather - ${data.name}`)
+      : (document.title = 'Weather')
+  }, [data.name])
+
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">

@@ -3,6 +3,8 @@ import { Container, Typography, Box } from '@mui/material'
 import Socials from './Socials'
 
 export default function Footer() {
+  let currentYear = new Date().getFullYear()
+
   return (
     <footer>
       <Box
@@ -22,7 +24,7 @@ export default function Footer() {
               <Socials />
             </Box>
             <Typography variant="p" component="div">
-              © ℜossi, 2021 - 2022
+              © ℜossi, 2021 - {currentYear}
             </Typography>
           </Box>
         </Container>

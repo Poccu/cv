@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Typography, Container, Box, Grid, Button } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { styled, alpha } from '@mui/material/styles'
@@ -20,6 +20,10 @@ const ThemeButton = styled(Button)(({ theme }) => ({
 }))
 
 export default function NotFound() {
+  useEffect(() => {
+    document.title = 'Oops! Page not found 😞'
+  }, [])
+
   return (
     <Box sx={{ mt: 16 }}>
       <Container maxwidth="sm">

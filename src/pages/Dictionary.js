@@ -322,6 +322,14 @@ export default function Dictionary() {
   // onBlur = { onInputBlur }
   // onChange = { onInputChange }
 
+  useEffect(() => {
+    {
+      data.word
+        ? (document.title = `Dictionary - ${data.word}`)
+        : (document.title = 'Dictionary')
+    }
+  }, [data.word])
+
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">

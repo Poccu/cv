@@ -243,6 +243,10 @@ export default function Exchange() {
     setInput('')
   }
 
+  useEffect(() => {
+    document.title = 'Exchange'
+  }, [])
+
   return (
     <Box sx={{ mt: 12 }}>
       <Container maxwidth="sm">
