@@ -221,7 +221,7 @@ export default function Weather() {
       .get(urlForecast)
       .then((response) => {
         setForecast(response.data)
-        console.log('useEffect getForecast:', response.data)
+        // console.log('useEffect getForecast:', response.data)
 
         let sun = [
           {
@@ -262,12 +262,12 @@ export default function Weather() {
             .filter((i) => i.dt > response.data.current.dt)
         )
 
-        console.log(
-          'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
-          [...response.data.hourly, ...sun]
-            .sort((a, b) => a.dt - b.dt)
-            .filter((i) => i.dt > response.data.current.dt)
-        )
+        // console.log(
+        //   'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
+        //   [...response.data.hourly, ...sun]
+        //     .sort((a, b) => a.dt - b.dt)
+        //     .filter((i) => i.dt > response.data.current.dt)
+        // )
       })
       .catch((error) => {
         setError(true)
@@ -290,7 +290,7 @@ export default function Weather() {
           // console.log(response.data.coord.lon)
           setDegree(response.data.wind.deg)
           setData(response.data)
-          console.log('searchLocation:', response.data)
+          // console.log('searchLocation:', response.data)
           // setOpen(true)
         })
         .catch((error) => {

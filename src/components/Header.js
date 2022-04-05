@@ -126,7 +126,7 @@ export default function Header() {
                   'aria-labelledby': 'basic-button',
                 }}
               >
-                <MenuItem component={RouterLink} to="/" onClick={handleClose}>
+                <MenuItem component={RouterLink} to="/cv" onClick={handleClose}>
                   <CottageOutlinedIcon />
                   <ListItemText>Home</ListItemText>
                 </MenuItem>
@@ -179,11 +179,12 @@ export default function Header() {
             </Box>
             <Box sx={{ mr: -1 }}>
               <Socials />
-              {/* <NavLink to="/">
-                <IconButton edge="start" to="/">
+              {/* <NavLink to="/cv">
+                <IconButton edge="start" to="/cv">
                   <Avatar
                     alt="Avatar"
-                    src="/logo7.png"
+                    src="/assets/images/logo7.png"
+                    src={`${process.env.PUBLIC_URL}/assets/images/logo7.png`}
                     sx={{ width: 50, height: 50 }}
                   />
                 </IconButton>
@@ -200,11 +201,12 @@ export default function Header() {
       >
         <Container maxwidth="sm">
           <Toolbar>
-            <NavLink to="/">
-              <IconButton edge="start" to="/">
+            <NavLink to="/cv">
+              <IconButton edge="start" to="/cv">
                 <Avatar
                   alt="Avatar"
-                  src="/logo7.png"
+                  // src="/assets/images/logo7.png"
+                  src={`${process.env.PUBLIC_URL}/assets/images/logo7.png`}
                   sx={{ width: 50, height: 50 }}
                 />
               </IconButton>
@@ -212,7 +214,7 @@ export default function Header() {
             <Box sx={{ flexGrow: 1 }}>
               <Stack direction="row" spacing={1}>
                 <NavLink
-                  to="/"
+                  to="/cv"
                   style={{ textDecoration: 'none', color: '#fff' }}
                 >
                   <ThemeButton

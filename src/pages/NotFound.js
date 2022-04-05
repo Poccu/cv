@@ -43,7 +43,7 @@ export default function NotFound() {
               variant="outlined"
               startIcon={<CottageOutlinedIcon style={{ fontSize: 30 }} />}
               component={Link}
-              to="/"
+              to="/cv"
             >
               Home
             </ThemeButton>

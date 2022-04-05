@@ -135,7 +135,7 @@ export default function App() {
           <ScrollToTop />
           <Routes>
             <Route
-              path="/"
+              path="/cv"
               element={
                 <>
                   <Header />
