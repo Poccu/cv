@@ -132,7 +132,7 @@ export default function Exchange() {
       .get(`${apiUrl}/latest/currencies/${from}.json?rand=${rndInt}`)
       .then((response) => {
         setInfo(response.data[from])
-        console.log('today :', response.data)
+        // console.log('today :', response.data)
       })
   }, [input, from, to])
 
@@ -143,7 +143,7 @@ export default function Exchange() {
       )
       .then((response) => {
         setYesterday(response.data[from])
-        console.log('yesterday :', response.data)
+        // console.log('yesterday :', response.data)
       })
   }, [input, from, to])
 

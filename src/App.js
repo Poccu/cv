@@ -3,10 +3,10 @@ import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Loading from './components/Loading'
-// import Weather from './pages/Weather'
+import Weather from './pages/Weather'
 import Home from './pages/Home'
-// import Dictionary from './pages/Dictionary'
-// import Exchange from './pages/Exchange'
+import Dictionary from './pages/Dictionary'
+import Exchange from './pages/Exchange'
 import NotFound from './pages/NotFound'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
@@ -28,23 +28,23 @@ import { IconButton, Box } from '@mui/material'
 //   })
 // })
 
-const Dictionary = lazy(() => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(import('./pages/Dictionary')), 500)
-  })
-})
+// const Dictionary = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/Dictionary')), 500)
+//   })
+// })
 
-const Weather = lazy(() => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(import('./pages/Weather')), 500)
-  })
-})
+// const Weather = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/Weather')), 500)
+//   })
+// })
 
-const Exchange = lazy(() => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(import('./pages/Exchange')), 500)
-  })
-})
+// const Exchange = lazy(() => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => resolve(import('./pages/Exchange')), 500)
+//   })
+// })
 
 // const NotFound = lazy(() => {
 //   return new Promise((resolve) => {
