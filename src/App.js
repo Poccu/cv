@@ -20,8 +20,6 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { IconButton, Box } from '@mui/material'
 
-// const Home = lazy(() => import('./pages/Home'))
-
 // const Home = lazy(() => {
 //   return new Promise((resolve) => {
 //     setTimeout(() => resolve(import('./pages/Home')), 500)
@@ -122,7 +120,9 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    window.localStorage.setItem('light', JSON.stringify(light))
+    if (light !== null) {
+      window.localStorage.setItem('light', JSON.stringify(light))
+    }
   }, [light])
 
   return (
@@ -130,8 +130,6 @@ export default function App() {
       <CssBaseline />
       <Router>
         <Suspense fallback={<Loading />}>
-          {/* {window.location.pathname === '/404' ? null : <Header />} */}
-
           <ScrollToTop />
           <Routes>
             <Route
@@ -186,15 +184,8 @@ export default function App() {
                 </main>
               }
             />
-            {/* <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<Navigate replace to="/404" />} /> */}
           </Routes>
-          <Box
-            style={style}
-            // sx={{
-            //   display: { xs: 'none', md: 'none', lg: 'block' },
-            // }}
-          >
+          <Box style={style}>
             {light ? (
               <IconButton
                 onClick={() => setLight((prev) => !prev)}

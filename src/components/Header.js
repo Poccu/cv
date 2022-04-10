@@ -202,10 +202,9 @@ export default function Header() {
         <Container maxwidth="sm">
           <Toolbar>
             <NavLink to="/cv">
-              <IconButton edge="start" to="/cv">
+              <IconButton edge="start">
                 <Avatar
                   alt="Avatar"
-                  // src="/assets/images/logo7.png"
                   src={`${process.env.PUBLIC_URL}/assets/images/logo7.png`}
                   sx={{ width: 50, height: 50 }}
                 />

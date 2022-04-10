@@ -70,7 +70,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Box>{children}</Box>
         </Box>
       )}
     </div>
@@ -139,19 +139,23 @@ export default function Dictionary() {
 
   // localStorage
   useEffect(() => {
-    setFavs(JSON.parse(window.localStorage.getItem('favs')))
-    setPhonetics(JSON.parse(window.localStorage.getItem('phonetics')))
-    setAudios(JSON.parse(window.localStorage.getItem('audios')))
+    if (JSON.parse(window.localStorage.getItem('favs')) !== null) {
+      setFavs(JSON.parse(window.localStorage.getItem('favs')))
+      setPhonetics(JSON.parse(window.localStorage.getItem('phonetics')))
+      setAudios(JSON.parse(window.localStorage.getItem('audios')))
+    }
   }, [])
 
   useEffect(() => {
-    window.localStorage.setItem('favs', JSON.stringify(favs))
-    window.localStorage.setItem('phonetics', JSON.stringify(phonetics))
-    window.localStorage.setItem('audios', JSON.stringify(audios))
+    if (favs !== null) {
+      window.localStorage.setItem('favs', JSON.stringify(favs))
+      window.localStorage.setItem('phonetics', JSON.stringify(phonetics))
+      window.localStorage.setItem('audios', JSON.stringify(audios))
+    }
   }, [favs])
 
   const setFavourite = () => {
-    if (favs.indexOf(data.word) === -1) {
+    if (favs?.indexOf(data.word) === -1) {
       setFavs((prevFavs) => [...prevFavs, data.word])
       if (data.phonetic) {
         setPhonetics((prevPhonetics) => [
@@ -177,7 +181,9 @@ export default function Dictionary() {
       )
     )
     setAudios((prevAudios) =>
-      prevAudios.filter((item) => item !== data.phonetics[0].audio)
+      prevAudios.filter(
+        (item) => item !== `${urlAudio}/${data.word}--_gb_1.mp3`
+      )
     )
     // console.log(favs)
     // console.log(phonetics)
@@ -196,16 +202,20 @@ export default function Dictionary() {
 
   // localStorage
   useEffect(() => {
-    setData(JSON.parse(window.localStorage.getItem('data')))
+    setData(JSON.parse(window.localStorage.getItem('dataDictionary')))
     setAudioWord(JSON.parse(window.localStorage.getItem('audioWord')))
   }, [])
 
   useEffect(() => {
-    window.localStorage.setItem('data', JSON.stringify(data))
+    if (data !== null) {
+      window.localStorage.setItem('dataDictionary', JSON.stringify(data))
+    }
   }, [data])
 
   useEffect(() => {
-    window.localStorage.setItem('audioWord', JSON.stringify(audioWord))
+    if (audioWord !== null) {
+      window.localStorage.setItem('audioWord', JSON.stringify(audioWord))
+    }
   }, [audioWord])
 
   const playAudio = () => {
@@ -297,9 +307,10 @@ export default function Dictionary() {
 
   const clearData = () => {
     setData({})
+    setAudioWord('')
   }
 
-  let length = [...Array(favs.length).keys()]
+  let favsLength = [...Array(favs?.length).keys()]
 
   const clearAllFavs = () => {
     setFavs([])
@@ -324,16 +335,16 @@ export default function Dictionary() {
 
   useEffect(() => {
     {
-      data.word
-        ? (document.title = `Dictionary - ${data.word}`)
+      data?.word
+        ? (document.title = `Dictionary - ${data?.word}`)
         : (document.title = 'Dictionary')
     }
-  }, [data.word])
+  }, [data?.word])
 
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        {!data.word ? (
+        {!data?.word ? (
           <Typography
             variant="h3"
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
@@ -392,7 +403,7 @@ export default function Dictionary() {
         </Box>
         <br />
 
-        {data.word ? (
+        {data?.word ? (
           <Box>
             <Grid
               container
@@ -453,10 +464,10 @@ export default function Dictionary() {
                       variant="h1"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
-                      {data.word.length > 16 ? (
-                        <b>{data.word.substr(-150, 13) + '…'}</b>
+                      {data?.word.length > 16 ? (
+                        <b>{data?.word.substr(-150, 13) + '…'}</b>
                       ) : (
-                        <b>{data.word}</b>
+                        <b>{data?.word}</b>
                       )}
                       {data.phonetic ? (
                         <Box>
@@ -506,7 +517,7 @@ export default function Dictionary() {
                 </Box>
 
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {favs.includes(data.word) ? (
+                  {favs?.includes(data.word) ? (
                     <IconButton
                       onClick={setNotFavourite}
                       color="error"
@@ -557,7 +568,7 @@ export default function Dictionary() {
                   </IconButton>
                 )}
 
-                {favs.includes(data.word) ? (
+                {favs?.includes(data.word) ? (
                   <IconButton
                     onClick={setNotFavourite}
                     color="error"
@@ -648,14 +659,14 @@ export default function Dictionary() {
                   variant="h3"
                   sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                 >
-                  <Badge badgeContent={favs.length} color="secondary" max={99}>
+                  <Badge badgeContent={favs?.length} color="secondary" max={99}>
                     <b>Favourites</b>
                   </Badge>
                 </Typography>
               </Divider>
               <br />
             </>
-            {favs.length > 0 ? (
+            {favs?.length > 0 ? (
               <Grid
                 container
                 // direction="row"
@@ -672,7 +683,7 @@ export default function Dictionary() {
                   <Box>
                     <List>
                       <TransitionGroup>
-                        {length.map((index) => (
+                        {favsLength.map((index) => (
                           <Collapse key={index}>
                             <ListItem
                               secondaryAction={
