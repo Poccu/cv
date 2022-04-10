@@ -162,7 +162,7 @@ export default function Dictionary() {
           ...prevPhonetics,
           data.phonetic.replace(/[\/\]\[]/g, ''),
         ])
-      } else setPhonetics((prevPhonetics) => [...prevPhonetics, undefined])
+      } else setPhonetics((prevPhonetics) => [...prevPhonetics, data.word])
       setAudios((prevAudios) => [
         ...prevAudios,
         `${urlAudio}/${data.word}--_gb_1.mp3`,
@@ -175,11 +175,16 @@ export default function Dictionary() {
 
   const setNotFavourite = () => {
     setFavs((prevFavs) => prevFavs.filter((item) => item !== data.word))
-    setPhonetics((prevPhonetics) =>
-      prevPhonetics.filter(
-        (item) => item !== data.phonetic.replace(/[\/\]\[]/g, '')
+    if (data.phonetic) {
+      setPhonetics((prevPhonetics) =>
+        prevPhonetics.filter(
+          (item) => item !== data?.phonetic?.replace(/[\/\]\[]/g, '')
+        )
       )
-    )
+    } else
+      setPhonetics((prevPhonetics) =>
+        prevPhonetics.filter((item) => item !== data.word)
+      )
     setAudios((prevAudios) =>
       prevAudios.filter(
         (item) => item !== `${urlAudio}/${data.word}--_gb_1.mp3`
@@ -478,7 +483,7 @@ export default function Dictionary() {
                       ) : (
                         <Box>
                           <Typography variant="h5" color="textSecondary">
-                            [ - ]
+                            [ {data.word} ]
                             {/* {data.phonetics[1].text.replace(/[\/\]\[]/g, '')} ] */}
                           </Typography>
                         </Box>
