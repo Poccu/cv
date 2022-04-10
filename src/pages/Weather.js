@@ -13,8 +13,6 @@ import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
-import AirIcon from '@mui/icons-material/Air'
-import { WiHumidity, WiThermometer } from 'react-icons/wi'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
 import Divider from '@mui/material/Divider'
@@ -118,6 +116,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
+const breakPoints = [
+  { width: 1, itemsToShow: 1, itemsToScroll: 1 },
+  { width: 214, itemsToShow: 2, itemsToScroll: 1 },
+  { width: 300, itemsToShow: 3, itemsToScroll: 1 },
+  { width: 427, itemsToShow: 4 },
+  { width: 590, itemsToShow: 5 },
+  { width: 690, itemsToShow: 6 },
+  { width: 810, itemsToShow: 7 },
+  { width: 930, itemsToShow: 8 },
+]
+
 export default function Weather() {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
@@ -146,7 +155,13 @@ export default function Weather() {
   }, [])
 
   useEffect(() => {
-    window.localStorage.setItem('dataWeather', JSON.stringify(data))
+    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
+  }, [])
+
+  useEffect(() => {
+    if (data !== null) {
+      window.localStorage.setItem('dataWeather', JSON.stringify(data))
+    }
   }, [data])
 
   useEffect(() => {
@@ -154,15 +169,21 @@ export default function Weather() {
   }, [location])
 
   useEffect(() => {
-    window.localStorage.setItem('celsius', JSON.stringify(celsius))
+    if (celsius !== null) {
+      window.localStorage.setItem('celsius', JSON.stringify(celsius))
+    }
   }, [celsius])
 
   useEffect(() => {
-    window.localStorage.setItem('lat', JSON.stringify(lat))
+    if (lat !== null) {
+      window.localStorage.setItem('lat', JSON.stringify(lat))
+    }
   }, [lat])
 
   useEffect(() => {
-    window.localStorage.setItem('lon', JSON.stringify(lon))
+    if (lon !== null) {
+      window.localStorage.setItem('lon', JSON.stringify(lon))
+    }
   }, [lon])
 
   useEffect(() => {
@@ -170,7 +191,9 @@ export default function Weather() {
   }, [forecast])
 
   useEffect(() => {
-    window.localStorage.setItem('degree', JSON.stringify(degree))
+    if (degree !== null) {
+      window.localStorage.setItem('degree', JSON.stringify(degree))
+    }
   }, [degree])
 
   useEffect(() => {
@@ -217,63 +240,65 @@ export default function Weather() {
 
   useEffect(() => {
     const urlForecast = `${apiUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
-    axios
-      .get(urlForecast)
-      .then((response) => {
-        setForecast(response.data)
-        // console.log('useEffect getForecast:', response.data)
+    if (lat !== null || lon !== null) {
+      axios
+        .get(urlForecast)
+        .then((response) => {
+          setForecast(response.data)
+          // console.log('useEffect getForecast:', response.data)
 
-        let sun = [
-          {
-            dt: response.data.daily[0].sunrise,
-            temp: 995,
-            weather: [{ id: 995 }],
-          },
-          {
-            dt: response.data.daily[1].sunrise,
-            temp: 995,
-            weather: [{ id: 995 }],
-          },
-          {
-            dt: response.data.daily[2].sunrise,
-            temp: 995,
-            weather: [{ id: 995 }],
-          },
-          {
-            dt: response.data.daily[0].sunset,
-            temp: 999,
-            weather: [{ id: 999 }],
-          },
-          {
-            dt: response.data.daily[1].sunset,
-            temp: 999,
-            weather: [{ id: 999 }],
-          },
-          {
-            dt: response.data.daily[2].sunset,
-            temp: 999,
-            weather: [{ id: 999 }],
-          },
-        ]
+          let sun = [
+            {
+              dt: response.data.daily[0].sunrise,
+              temp: 995,
+              weather: [{ id: 995 }],
+            },
+            {
+              dt: response.data.daily[1].sunrise,
+              temp: 995,
+              weather: [{ id: 995 }],
+            },
+            {
+              dt: response.data.daily[2].sunrise,
+              temp: 995,
+              weather: [{ id: 995 }],
+            },
+            {
+              dt: response.data.daily[0].sunset,
+              temp: 999,
+              weather: [{ id: 999 }],
+            },
+            {
+              dt: response.data.daily[1].sunset,
+              temp: 999,
+              weather: [{ id: 999 }],
+            },
+            {
+              dt: response.data.daily[2].sunset,
+              temp: 999,
+              weather: [{ id: 999 }],
+            },
+          ]
 
-        setHourlyForecast(
-          [...response.data.hourly, ...sun]
-            .sort((a, b) => a.dt - b.dt)
-            .filter((i) => i.dt > response.data.current.dt)
-        )
+          setHourlyForecast(
+            [...response.data.hourly, ...sun]
+              .sort((a, b) => a.dt - b.dt)
+              .filter((i) => i.dt > response.data.current.dt)
+          )
 
-        // console.log(
-        //   'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
-        //   [...response.data.hourly, ...sun]
-        //     .sort((a, b) => a.dt - b.dt)
-        //     .filter((i) => i.dt > response.data.current.dt)
-        // )
-      })
-      .catch((error) => {
-        setError(true)
-        setOpen(true)
-        console.error('THIS IS ERROR --->', error)
-      })
+          // console.log(
+          //   'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
+          //   [...response.data.hourly, ...sun]
+          //     .sort((a, b) => a.dt - b.dt)
+          //     .filter((i) => i.dt > response.data.current.dt)
+          // )
+        })
+        .catch((error) => {
+          setError(true)
+          setOpen(true)
+          console.error('THIS IS ERROR --->', error)
+        })
+    } else return
     setError(false)
     setLocation('')
   }, [data])
@@ -1283,15 +1308,15 @@ export default function Weather() {
   }
 
   useEffect(() => {
-    data.name
-      ? (document.title = `Weather - ${data.name}`)
+    data?.name
+      ? (document.title = `Weather - ${data?.name}`)
       : (document.title = 'Weather')
-  }, [data.name])
+  }, [data?.name])
 
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        {!data.main ? (
+        {!data?.main ? (
           <Typography
             variant="h3"
             component="div"
@@ -1349,7 +1374,7 @@ export default function Weather() {
         <br />
         <br />
 
-        {data.main ? (
+        {data?.main ? (
           <Box>
             <Typography
               variant="h6"
@@ -1376,27 +1401,29 @@ export default function Weather() {
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {celsius ? (
+                  {celsius === true || celsius === null ? (
                     <IconButton
-                      onClick={() => setCelsius((prev) => !prev)}
+                      onClick={() => setCelsius(false)}
                       color="inherit"
                       size="large"
                       title="Change to °F"
                     >
-                      <Button style={style} fontSize="inherit" color="inherit">
+                      <h5>°F</h5>
+                      {/* <Button style={style} fontSize="inherit" color="inherit">
                         <h1>°F</h1>
-                      </Button>
+                      </Button> */}
                     </IconButton>
                   ) : (
                     <IconButton
-                      onClick={() => setCelsius((prev) => !prev)}
+                      onClick={() => setCelsius(true)}
                       color="inherit"
                       size="large"
                       title="Change to °C"
                     >
-                      <Button style={style} fontSize="inherit" color="inherit">
+                      <h5>°C</h5>
+                      {/* <Button style={style} fontSize="inherit" color="inherit">
                         <h1>°C</h1>
-                      </Button>
+                      </Button> */}
                     </IconButton>
                   )}
                 </Box>
@@ -1410,7 +1437,7 @@ export default function Weather() {
                 <Box>
                   <Box>
                     <Box>
-                      {data.main ? (
+                      {data?.main ? (
                         <Grid
                           container
                           direction="row"
@@ -1425,7 +1452,7 @@ export default function Weather() {
                               height="20px"
                               title={data.sys?.country}
                               draggable={false}
-                              class="shadow"
+                              className="shadow"
                             />
                           </Box>
                         </Grid>
@@ -1470,7 +1497,7 @@ export default function Weather() {
                       component="div"
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
-                      {celsius ? (
+                      {celsius === true || celsius === null ? (
                         <>{data.main.temp.toFixed() - 273}°</>
                       ) : (
                         <>
@@ -1491,7 +1518,7 @@ export default function Weather() {
                         height="40%"
                         width="40%"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                       />
                     </Box>
                   </Grid>
@@ -1508,7 +1535,7 @@ export default function Weather() {
                     <Box>
                       <>
                         Feels like{' '}
-                        {celsius ? (
+                        {celsius === true || celsius === null ? (
                           <>{data.main.feels_like.toFixed() - 273}°</>
                         ) : (
                           <>
@@ -1547,27 +1574,29 @@ export default function Weather() {
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Stack justifyContent="center" direction="row" spacing={5}>
-                {celsius ? (
+                {celsius === true || celsius === null ? (
                   <IconButton
-                    onClick={() => setCelsius((prev) => !prev)}
+                    onClick={() => setCelsius(false)}
                     color="inherit"
                     size="large"
                     title="Change to °F"
                   >
-                    <Button style={style} fontSize="inherit" color="inherit">
+                    <h5>°F</h5>
+                    {/* <Button style={style} fontSize="inherit" color="inherit">
                       <h1>°F</h1>
-                    </Button>
+                    </Button> */}
                   </IconButton>
                 ) : (
                   <IconButton
-                    onClick={() => setCelsius((prev) => !prev)}
+                    onClick={() => setCelsius(true)}
                     color="inherit"
                     size="large"
                     title="Change to °C"
                   >
-                    <Button style={style} fontSize="inherit" color="inherit">
+                    <h5>°C</h5>
+                    {/* <Button style={style} fontSize="inherit" color="inherit">
                       <h1>°C</h1>
-                    </Button>
+                    </Button> */}
                   </IconButton>
                 )}
                 <IconButton onClick={clearData} color="inherit" title="Clear">
@@ -1580,7 +1609,17 @@ export default function Weather() {
             <br />
             <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
             <br />
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+            <Box
+              sx={{
+                display: {
+                  xs: 'none',
+                  sm: 'none',
+                  md: 'none',
+                  lg: 'block',
+                  xl: 'block',
+                },
+              }}
+            >
               <Grid
                 container
                 direction="row"
@@ -1612,7 +1651,7 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
                         &nbsp;{data.wind.speed.toFixed()} m/s,{' '}
@@ -1621,10 +1660,10 @@ export default function Weather() {
                       <img
                         src={`${weatherIconsUrl}/compass.svg`}
                         alt="weather"
-                        height="40px"
-                        width="40px"
+                        height="35px"
+                        width="35px"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                         style={{ transform: `rotate(${degree + 180}deg` }}
                       />
                     </Grid>
@@ -1642,11 +1681,13 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                       />
 
                       <Typography variant="p" color="textSecondary">
-                        {data.main ? <>&nbsp;{data.main.pressure} hPa</> : null}
+                        {data?.main ? (
+                          <>&nbsp;{data.main.pressure} hPa</>
+                        ) : null}
                       </Typography>
                     </Grid>
 
@@ -1663,10 +1704,10 @@ export default function Weather() {
                         height="40px"
                         width="40px"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
-                        {data.main ? <>&nbsp;{data.main.humidity} %</> : null}
+                        {data?.main ? <>&nbsp;{data.main.humidity} %</> : null}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -1679,7 +1720,8 @@ export default function Weather() {
                     // transitionMs={700}
                     initialActiveIndex={0}
                     itemsToScroll={2}
-                    itemsToShow={8}
+                    // itemsToShow={8}
+                    breakPoints={breakPoints}
                   >
                     <Grid
                       container
@@ -1702,11 +1744,11 @@ export default function Weather() {
                         height="42%"
                         width="42%"
                         draggable={false}
-                        class="shadow"
+                        className="shadow"
                       />
                       {/* <br /> */}
                       <Typography variant="h5">
-                        {celsius ? (
+                        {celsius === true || celsius === null ? (
                           <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
                         ) : (
                           <b>
@@ -1747,55 +1789,191 @@ export default function Weather() {
                           height="42%"
                           width="42%"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
-                        {/* <br /> */}
-                        <Stack
-                          justifyContent="center"
-                          direction="row"
-                          spacing={2}
-                        >
-                          <Typography variant="h5">
-                            {hourlyForecast[i]?.temp === 995 ? (
-                              <Typography
-                                variant="h6"
-                                color="textSecondary"
-                                sx={{ fontWeight: 'regular' }}
-                              >
-                                Sunrise
-                              </Typography>
-                            ) : null}
-                            {hourlyForecast[i]?.temp === 999 ? (
-                              <Typography
-                                variant="h6"
-                                color="textSecondary"
-                                sx={{ fontWeight: 'regular' }}
-                              >
-                                Sunset
-                              </Typography>
-                            ) : null}
-                            {hourlyForecast[i]?.temp < 990 ? (
-                              <>
-                                {celsius ? (
-                                  <b>
-                                    {hourlyForecast[i]?.temp?.toFixed() - 273}°
-                                  </b>
-                                ) : (
-                                  <b>
-                                    {(
-                                      ((hourlyForecast[i]?.temp?.toFixed() -
-                                        273) *
-                                        9) /
-                                        5 +
-                                      32
-                                    ).toFixed()}
-                                    °
-                                  </b>
-                                )}
-                              </>
-                            ) : null}
+                        {hourlyForecast[i]?.temp === 995 ? (
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'regular' }}
+                          >
+                            Sunrise
                           </Typography>
-                        </Stack>
+                        ) : null}
+                        {hourlyForecast[i]?.temp === 999 ? (
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'regular' }}
+                          >
+                            Sunset
+                          </Typography>
+                        ) : null}
+                        <Typography variant="h5">
+                          {hourlyForecast[i]?.temp < 990 ? (
+                            <>
+                              {celsius === true || celsius === null ? (
+                                <b>
+                                  {hourlyForecast[i]?.temp?.toFixed() - 273}°
+                                </b>
+                              ) : (
+                                <b>
+                                  {(
+                                    ((hourlyForecast[i]?.temp?.toFixed() -
+                                      273) *
+                                      9) /
+                                      5 +
+                                    32
+                                  ).toFixed()}
+                                  °
+                                </b>
+                              )}
+                            </>
+                          ) : null}
+                        </Typography>
+                      </Grid>
+                    ))}
+                  </Carousel>
+                </Grid>
+              </Grid>
+            </Box>
+            <Box
+              sx={{
+                display: {
+                  xs: 'block',
+                  sm: 'block',
+                  md: 'block',
+                  lg: 'none',
+                  xl: 'none',
+                },
+              }}
+            >
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                textAlign="center"
+                columns={14}
+              >
+                <Grid item xs={14}>
+                  <Carousel
+                    // easing="cubic-bezier(1,.15,.55,1.54)"
+                    // tiltEasing="cubic-bezier(0.110, 1, 1.000, 0.210)"
+                    // transitionMs={700}
+                    initialActiveIndex={0}
+                    itemsToScroll={2}
+                    // itemsToShow={8}
+                    breakPoints={breakPoints}
+                  >
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <Typography
+                        variant="h6"
+                        color="textSecondary"
+                        sx={{ fontWeight: 'regular' }}
+                      >
+                        Now
+                      </Typography>
+                      <img
+                        src={`${weatherIconsUrl}${getCurrentIconUrl(
+                          forecast?.current?.weather[0]?.id
+                        )}`}
+                        alt="weather"
+                        height="42%"
+                        width="42%"
+                        draggable={false}
+                        className="shadow"
+                      />
+                      {/* <br /> */}
+                      <Typography variant="h5">
+                        {celsius === true || celsius === null ? (
+                          <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
+                        ) : (
+                          <b>
+                            {(
+                              ((forecast.hourly[0].temp.toFixed() - 273) * 9) /
+                                5 +
+                              32
+                            ).toFixed()}
+                            °
+                          </b>
+                        )}
+                      </Typography>
+                    </Grid>
+                    {[
+                      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                      17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+                    ].map((i) => (
+                      <Grid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        key={hourlyForecast[i].dt}
+                      >
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ fontWeight: 'regular' }}
+                        >
+                          <>{getTimeFromUnix(i, forecast.timezone)}</>
+                        </Typography>
+                        <img
+                          src={`${weatherIconsUrl}${getHourlyIconUrl(
+                            hourlyForecast[i]?.weather[0]?.id,
+                            i
+                          )}`}
+                          alt="weather"
+                          height="42%"
+                          width="42%"
+                          draggable={false}
+                          className="shadow"
+                        />
+                        {hourlyForecast[i]?.temp === 995 ? (
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'regular' }}
+                          >
+                            Sunrise
+                          </Typography>
+                        ) : null}
+                        {hourlyForecast[i]?.temp === 999 ? (
+                          <Typography
+                            variant="h6"
+                            color="textSecondary"
+                            sx={{ fontWeight: 'regular' }}
+                          >
+                            Sunset
+                          </Typography>
+                        ) : null}
+                        <Typography variant="h5">
+                          {hourlyForecast[i]?.temp < 990 ? (
+                            <>
+                              {celsius === true || celsius === null ? (
+                                <b>
+                                  {hourlyForecast[i]?.temp?.toFixed() - 273}°
+                                </b>
+                              ) : (
+                                <b>
+                                  {(
+                                    ((hourlyForecast[i]?.temp?.toFixed() -
+                                      273) *
+                                      9) /
+                                      5 +
+                                    32
+                                  ).toFixed()}
+                                  °
+                                </b>
+                              )}
+                            </>
+                          ) : null}
+                        </Typography>
                       </Grid>
                     ))}
                   </Carousel>
@@ -1860,7 +2038,7 @@ export default function Weather() {
                           height="60px"
                           width="60px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -1872,7 +2050,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[0].temp.day.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -1887,7 +2065,7 @@ export default function Weather() {
                           )}
                         </Typography>
                         <Typography variant="h5" color="textSecondary">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[0].temp.night.toFixed() - 273}°
                             </b>
@@ -1948,7 +2126,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -1975,7 +2153,7 @@ export default function Weather() {
                           height="40px"
                           width="40px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                           style={{
                             transform: `rotate(${
                               forecast.daily[0].wind_deg + 180
@@ -2012,7 +2190,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[0].temp.morn.toFixed() - 273}°
                             </b>
@@ -2068,7 +2246,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2116,7 +2294,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[0].temp.day.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -2170,7 +2348,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2217,7 +2395,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[0].temp.eve.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -2273,7 +2451,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2320,7 +2498,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[0].temp.night.toFixed() - 273}°
                             </b>
@@ -2379,7 +2557,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2444,7 +2622,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -2473,7 +2651,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -2549,7 +2727,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -2578,7 +2756,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -2673,7 +2851,7 @@ export default function Weather() {
                           height="60px"
                           width="60px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2685,7 +2863,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[1].temp.day.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -2700,7 +2878,7 @@ export default function Weather() {
                           )}
                         </Typography>
                         <Typography variant="h5" color="textSecondary">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[1].temp.night.toFixed() - 273}°
                             </b>
@@ -2761,7 +2939,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2788,7 +2966,7 @@ export default function Weather() {
                           height="40px"
                           width="40px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                           style={{
                             transform: `rotate(${
                               forecast.daily[1].wind_deg + 180
@@ -2825,7 +3003,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[1].temp.morn.toFixed() - 273}°
                             </b>
@@ -2881,7 +3059,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -2929,7 +3107,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[1].temp.day.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -2983,7 +3161,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3030,7 +3208,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>{forecast.daily[1].temp.eve.toFixed() - 273}°</b>
                           ) : (
                             <b>
@@ -3086,7 +3264,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3133,7 +3311,7 @@ export default function Weather() {
                         spacing={2}
                       >
                         <Typography variant="h5">
-                          {celsius ? (
+                          {celsius === true || celsius === null ? (
                             <b>
                               {forecast.daily[1].temp.night.toFixed() - 273}°
                             </b>
@@ -3192,7 +3370,7 @@ export default function Weather() {
                           height="50px"
                           width="50px"
                           draggable={false}
-                          class="shadow"
+                          className="shadow"
                         />
                       </Stack>
                     </Grid>
@@ -3257,7 +3435,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -3286,7 +3464,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -3362,7 +3540,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -3391,7 +3569,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Box>
                         <Typography
@@ -3488,7 +3666,7 @@ export default function Weather() {
                             height="60px"
                             width="60px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3500,7 +3678,7 @@ export default function Weather() {
                           spacing={2}
                         >
                           <Typography variant="h5">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.day.toFixed() - 273}°
                               </b>
@@ -3518,7 +3696,7 @@ export default function Weather() {
                             )}
                           </Typography>
                           <Typography variant="h5" color="textSecondary">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.night.toFixed() - 273}°
                               </b>
@@ -3579,7 +3757,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3606,7 +3784,7 @@ export default function Weather() {
                             height="40px"
                             width="40px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                             style={{
                               transform: `rotate(${
                                 forecast.daily[i].wind_deg + 180
@@ -3643,7 +3821,7 @@ export default function Weather() {
                           spacing={2}
                         >
                           <Typography variant="h5">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.morn.toFixed() - 273}°
                               </b>
@@ -3700,7 +3878,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3748,7 +3926,7 @@ export default function Weather() {
                           spacing={2}
                         >
                           <Typography variant="h5">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.day.toFixed() - 273}°
                               </b>
@@ -3805,7 +3983,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3852,7 +4030,7 @@ export default function Weather() {
                           spacing={2}
                         >
                           <Typography variant="h5">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.eve.toFixed() - 273}°
                               </b>
@@ -3911,7 +4089,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -3958,7 +4136,7 @@ export default function Weather() {
                           spacing={2}
                         >
                           <Typography variant="h5">
-                            {celsius ? (
+                            {celsius === true || celsius === null ? (
                               <b>
                                 {forecast.daily[i].temp.night.toFixed() - 273}°
                               </b>
@@ -4017,7 +4195,7 @@ export default function Weather() {
                             height="50px"
                             width="50px"
                             draggable={false}
-                            class="shadow"
+                            className="shadow"
                           />
                         </Stack>
                       </Grid>
@@ -4082,7 +4260,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
-                              class="shadow"
+                              className="shadow"
                             />
                           </Box>
                           <Typography
@@ -4111,7 +4289,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
-                              class="shadow"
+                              className="shadow"
                             />
                           </Box>
                           <Typography
@@ -4187,7 +4365,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
-                              class="shadow"
+                              className="shadow"
                             />
                           </Box>
                           <Typography
@@ -4216,7 +4394,7 @@ export default function Weather() {
                               height="50px"
                               width="50px"
                               draggable={false}
-                              class="shadow"
+                              className="shadow"
                             />
                           </Box>
                           <Typography
