@@ -138,19 +138,16 @@ export default function Weather() {
   const [lon, setLon] = useState(0)
 
   const [forecast, setForecast] = useState({})
-  const [degree, setDegree] = useState(0)
 
   const [hourlyForecast, setHourlyForecast] = useState([])
 
   // localStorage
   useEffect(() => {
     setData(JSON.parse(window.localStorage.getItem('dataWeather')))
-    setLocation(JSON.parse(window.localStorage.getItem('location')))
     setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
     setLat(JSON.parse(window.localStorage.getItem('lat')))
     setLon(JSON.parse(window.localStorage.getItem('lon')))
     setForecast(JSON.parse(window.localStorage.getItem('forecast')))
-    setDegree(JSON.parse(window.localStorage.getItem('degree')))
     setHourlyForecast(JSON.parse(window.localStorage.getItem('hourlyForecast')))
   }, [])
 
@@ -163,10 +160,6 @@ export default function Weather() {
       window.localStorage.setItem('dataWeather', JSON.stringify(data))
     }
   }, [data])
-
-  useEffect(() => {
-    window.localStorage.setItem('location', JSON.stringify(location))
-  }, [location])
 
   useEffect(() => {
     if (celsius !== null) {
@@ -189,12 +182,6 @@ export default function Weather() {
   useEffect(() => {
     window.localStorage.setItem('forecast', JSON.stringify(forecast))
   }, [forecast])
-
-  useEffect(() => {
-    if (degree !== null) {
-      window.localStorage.setItem('degree', JSON.stringify(degree))
-    }
-  }, [degree])
 
   useEffect(() => {
     window.localStorage.setItem(
@@ -224,7 +211,6 @@ export default function Weather() {
           .then((response) => {
             setData(response.data)
             // console.log('getLocation:', response.data)
-            setDegree(response.data.wind.deg)
             // setOpen(true)
           })
           .catch((error) => {
@@ -313,7 +299,6 @@ export default function Weather() {
           setLon(response.data.coord.lon)
           // console.log(response.data.coord.lat)
           // console.log(response.data.coord.lon)
-          setDegree(response.data.wind.deg)
           setData(response.data)
           // console.log('searchLocation:', response.data)
           // setOpen(true)
@@ -337,7 +322,6 @@ export default function Weather() {
   //       setLon(response.data.coord.lon)
   //       // console.log(response.data.coord.lat)
   //       // console.log(response.data.coord.lon)
-  //       setDegree(response.data.wind.deg)
   //       setData(response.data)
   //       console.log('searchLocation:', response.data)
   //       // setOpen(true)
@@ -1478,11 +1462,8 @@ export default function Weather() {
                       color="textSecondary"
                     >
                       <Box sx={{ letterSpacing: 5 }}>
-                        {data.weather[0].description.toUpperCase()}
-                      </Box>
-                      {/* <Box sx={{ letterSpacing: 5 }}>
                         {forecast.current.weather[0].description.toUpperCase()}
-                      </Box> */}
+                      </Box>
                     </Typography>
                   </Box>
                   <br />
@@ -1498,11 +1479,11 @@ export default function Weather() {
                       sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                     >
                       {celsius === true || celsius === null ? (
-                        <>{data.main.temp.toFixed() - 273}°</>
+                        <>{forecast.current.temp.toFixed() - 273}°</>
                       ) : (
                         <>
                           {(
-                            ((data.main.temp.toFixed() - 273) * 9) / 5 +
+                            ((forecast.current.temp.toFixed() - 273) * 9) / 5 +
                             32
                           ).toFixed()}
                           °
@@ -1536,11 +1517,13 @@ export default function Weather() {
                       <>
                         Feels like{' '}
                         {celsius === true || celsius === null ? (
-                          <>{data.main.feels_like.toFixed() - 273}°</>
+                          <>{forecast.current.feels_like.toFixed() - 273}°</>
                         ) : (
                           <>
                             {(
-                              ((data.main.feels_like.toFixed() - 273) * 9) / 5 +
+                              ((forecast.current.feels_like.toFixed() - 273) *
+                                9) /
+                                5 +
                               32
                             ).toFixed()}
                             °
@@ -1645,7 +1628,7 @@ export default function Weather() {
                     >
                       <img
                         src={`${weatherFillIconsUrl}/${getWindSpeedSvg(
-                          +data.wind.speed.toFixed()
+                          +forecast.current.wind_speed.toFixed()
                         )}`}
                         alt="weather"
                         height="40px"
@@ -1654,8 +1637,8 @@ export default function Weather() {
                         className="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
-                        &nbsp;{data.wind.speed.toFixed()} m/s,{' '}
-                        {getDirection(data.wind.deg)}
+                        &nbsp;{forecast.current.wind_speed.toFixed()} m/s,{' '}
+                        {getDirection(forecast.current.wind_deg)}
                       </Typography>{' '}
                       <img
                         src={`${weatherIconsUrl}/compass.svg`}
@@ -1664,7 +1647,11 @@ export default function Weather() {
                         width="35px"
                         draggable={false}
                         className="shadow"
-                        style={{ transform: `rotate(${degree + 180}deg` }}
+                        style={{
+                          transform: `rotate(${
+                            forecast.current.wind_deg + 180
+                          }deg`,
+                        }}
                       />
                     </Grid>
 
@@ -1686,7 +1673,7 @@ export default function Weather() {
 
                       <Typography variant="p" color="textSecondary">
                         {data?.main ? (
-                          <>&nbsp;{data.main.pressure} hPa</>
+                          <>&nbsp;{forecast.current.pressure} hPa</>
                         ) : null}
                       </Typography>
                     </Grid>
@@ -1707,7 +1694,9 @@ export default function Weather() {
                         className="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
-                        {data?.main ? <>&nbsp;{data.main.humidity} %</> : null}
+                        {data?.main ? (
+                          <>&nbsp;{forecast.current.humidity} %</>
+                        ) : null}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -1749,11 +1738,11 @@ export default function Weather() {
                       {/* <br /> */}
                       <Typography variant="h5">
                         {celsius === true || celsius === null ? (
-                          <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
+                          <b>{forecast.current.temp.toFixed() - 273}°</b>
                         ) : (
                           <b>
                             {(
-                              ((forecast.hourly[0].temp.toFixed() - 273) * 9) /
+                              ((forecast.current.temp.toFixed() - 273) * 9) /
                                 5 +
                               32
                             ).toFixed()}
@@ -1892,11 +1881,11 @@ export default function Weather() {
                       {/* <br /> */}
                       <Typography variant="h5">
                         {celsius === true || celsius === null ? (
-                          <b>{forecast.hourly[0].temp.toFixed() - 273}°</b>
+                          <b>{forecast.current.temp.toFixed() - 273}°</b>
                         ) : (
                           <b>
                             {(
-                              ((forecast.hourly[0].temp.toFixed() - 273) * 9) /
+                              ((forecast.current.temp.toFixed() - 273) * 9) /
                                 5 +
                               32
                             ).toFixed()}
