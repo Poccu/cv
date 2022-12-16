@@ -7,6 +7,7 @@ import Weather from './pages/Weather'
 import Home from './pages/Home'
 import Dictionary from './pages/Dictionary'
 import Exchange from './pages/Exchange'
+import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
@@ -172,6 +173,17 @@ export default function App() {
                   <Header />
                   <main>
                     <Exchange />
+                  </main>
+                </>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Settings />
                   </main>
                 </>
               }

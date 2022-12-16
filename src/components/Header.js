@@ -18,6 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import NightsStayOutlinedIcon from '@mui/icons-material/NightsStayOutlined'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import SettingsIcon from '@mui/icons-material/Settings'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -158,6 +159,15 @@ export default function Header() {
                 <Divider />
                 <MenuItem
                   component={RouterLink}
+                  to="/settings"
+                  onClick={handleClose}
+                >
+                  <SettingsIcon />
+                  <ListItemText>Settings</ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem
+                  component={RouterLink}
                   to="/404"
                   onClick={handleClose}
                 >
@@ -245,6 +255,13 @@ export default function Header() {
                     }
                   >
                     Exchange
+                  </ThemeButton>
+                </NavLink>
+                <NavLink to="/settings" style={{ textDecoration: 'none' }}>
+                  <ThemeButton
+                    startIcon={<SettingsIcon style={{ fontSize: 24 }} />}
+                  >
+                    Settings
                   </ThemeButton>
                 </NavLink>
                 <NavLink to="/404" style={{ textDecoration: 'none' }}>
