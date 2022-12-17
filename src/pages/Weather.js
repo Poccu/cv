@@ -23,6 +23,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import MuiAccordion from '@mui/material/Accordion'
 import MuiAccordionSummary from '@mui/material/AccordionSummary'
 import MuiAccordionDetails from '@mui/material/AccordionDetails'
+import Skeleton from '@mui/material/Skeleton'
 
 const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY
 const apiUrl = process.env.REACT_APP_OPENWEATHER_URL
@@ -130,6 +131,7 @@ const breakPoints = [
 export default function Weather() {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
   const [celsius, setCelsius] = useState(true)
   const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
@@ -197,6 +199,7 @@ export default function Weather() {
   }
 
   const getLocation = () => {
+    setIsLoading(true)
     navigator.geolocation.getCurrentPosition((position) => {
       setLat(position.coords.latitude)
       setLon(position.coords.longitude)
@@ -212,11 +215,13 @@ export default function Weather() {
             setData(response.data)
             // console.log('getLocation:', response.data)
             // setOpen(true)
+            setIsLoading(false)
           })
           .catch((error) => {
             setError(true)
             setOpen(true)
             console.error('THIS IS ERROR --->', error)
+            setIsLoading(false)
           })
         setError(false)
         setLocation('')
@@ -225,6 +230,7 @@ export default function Weather() {
   }
 
   useEffect(() => {
+    // setIsLoading(true)
     const urlForecast = `${apiUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
     if (lat !== null || lon !== null) {
       axios
@@ -278,11 +284,13 @@ export default function Weather() {
           //     .sort((a, b) => a.dt - b.dt)
           //     .filter((i) => i.dt > response.data.current.dt)
           // )
+          setIsLoading(false)
         })
         .catch((error) => {
           setError(true)
           setOpen(true)
           console.error('THIS IS ERROR --->', error)
+          setIsLoading(false)
         })
     } else return
     setError(false)
@@ -292,6 +300,7 @@ export default function Weather() {
   const searchLocation = (event) => {
     const url = `${apiUrl}/weather?q=${location}&appid=${apiKey}`
     if (event.key === 'Enter') {
+      setIsLoading(true)
       axios
         .get(url)
         .then((response) => {
@@ -302,11 +311,13 @@ export default function Weather() {
           setData(response.data)
           // console.log('searchLocation:', response.data)
           // setOpen(true)
+          // setIsLoading(false)
         })
         .catch((error) => {
           setError(true)
           setOpen(true)
           console.error('THIS IS ERROR --->', error)
+          setIsLoading(false)
         })
       setError(false)
       setLocation('')
@@ -1428,17 +1439,25 @@ export default function Weather() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Box sx={{ width: '30px', height: '20px' }}>
-                            <img
-                              alt="flag"
-                              src={`${flagsUrl}/${data.sys?.country}.svg`}
-                              width="30px"
-                              height="20px"
-                              title={data.sys?.country}
-                              draggable={false}
-                              className="shadow"
+                          {!isLoading ? (
+                            <Box sx={{ width: '30px', height: '20px' }}>
+                              <img
+                                alt="flag"
+                                src={`${flagsUrl}/${data.sys?.country}.svg`}
+                                width="30px"
+                                height="20px"
+                                title={data.sys?.country}
+                                draggable={false}
+                                className="shadow"
+                              />
+                            </Box>
+                          ) : (
+                            <Skeleton
+                              variant="rectangular"
+                              width={30}
+                              height={20}
                             />
-                          </Box>
+                          )}
                         </Grid>
                       ) : null}
                     </Box>
@@ -1448,7 +1467,11 @@ export default function Weather() {
                       sx={{ flexGrow: 1, textAlign: 'center' }}
                     >
                       <Box sx={{ letterSpacing: 5 }}>
-                        <b>{data.name.toUpperCase()}</b>
+                        {!isLoading ? (
+                          <b>{data.name.toUpperCase()}</b>
+                        ) : (
+                          <Skeleton />
+                        )}
                       </Box>
                     </Typography>
                     <Typography
@@ -1462,7 +1485,11 @@ export default function Weather() {
                       color="textSecondary"
                     >
                       <Box sx={{ letterSpacing: 5 }}>
-                        {forecast.current.weather[0].description.toUpperCase()}
+                        {!isLoading ? (
+                          forecast.current.weather[0].description.toUpperCase()
+                        ) : (
+                          <Skeleton />
+                        )}
                       </Box>
                     </Typography>
                   </Box>
@@ -1473,35 +1500,43 @@ export default function Weather() {
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Typography
-                      variant="h1"
-                      component="div"
-                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                    >
-                      {celsius === true || celsius === null ? (
-                        <>{forecast.current.temp.toFixed() - 273}°</>
-                      ) : (
-                        <>
-                          {(
-                            ((forecast.current.temp.toFixed() - 273) * 9) / 5 +
-                            32
-                          ).toFixed()}
-                          °
-                        </>
-                      )}
-                    </Typography>
-                    <Box sx={{ ml: -10, mr: -12 }}>
-                      <img
-                        src={`${weatherIconsUrl}${getCurrentIconUrl(
-                          forecast?.current?.weather[0]?.id
-                        )}`}
-                        alt="weather"
-                        height="40%"
-                        width="40%"
-                        draggable={false}
-                        className="shadow"
-                      />
-                    </Box>
+                    {!isLoading ? (
+                      <>
+                        <Typography
+                          variant="h1"
+                          component="div"
+                          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                        >
+                          {celsius === true || celsius === null ? (
+                            <>{forecast.current.temp.toFixed() - 273}°</>
+                          ) : (
+                            <>
+                              {(
+                                ((forecast.current.temp.toFixed() - 273) * 9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </>
+                          )}
+                        </Typography>
+
+                        <Box sx={{ ml: -10, mr: -12 }}>
+                          <img
+                            src={`${weatherIconsUrl}${getCurrentIconUrl(
+                              forecast?.current?.weather[0]?.id
+                            )}`}
+                            alt="weather"
+                            height="40%"
+                            width="40%"
+                            draggable={false}
+                            className="shadow"
+                          />
+                        </Box>
+                      </>
+                    ) : (
+                      <Skeleton width={250} height={127} />
+                    )}
                   </Grid>
                   <Typography
                     variant="h6"
@@ -1514,22 +1549,26 @@ export default function Weather() {
                     color="textSecondary"
                   >
                     <Box>
-                      <>
-                        Feels like{' '}
-                        {celsius === true || celsius === null ? (
-                          <>{forecast.current.feels_like.toFixed() - 273}°</>
-                        ) : (
-                          <>
-                            {(
-                              ((forecast.current.feels_like.toFixed() - 273) *
-                                9) /
-                                5 +
-                              32
-                            ).toFixed()}
-                            °
-                          </>
-                        )}
-                      </>
+                      {!isLoading ? (
+                        <>
+                          Feels like{' '}
+                          {celsius === true || celsius === null ? (
+                            <>{forecast.current.feels_like.toFixed() - 273}°</>
+                          ) : (
+                            <>
+                              {(
+                                ((forecast.current.feels_like.toFixed() - 273) *
+                                  9) /
+                                  5 +
+                                32
+                              ).toFixed()}
+                              °
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <Skeleton />
+                      )}
                     </Box>
                   </Typography>
                 </Box>
