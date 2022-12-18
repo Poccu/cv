@@ -128,11 +128,10 @@ const breakPoints = [
   { width: 930, itemsToShow: 8 },
 ]
 
-export default function Weather() {
+export default function Weather({ celsius, setCelsius }) {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [celsius, setCelsius] = useState(true)
   const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -146,7 +145,6 @@ export default function Weather() {
   // localStorage
   useEffect(() => {
     setData(JSON.parse(window.localStorage.getItem('dataWeather')))
-    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
     setLat(JSON.parse(window.localStorage.getItem('lat')))
     setLon(JSON.parse(window.localStorage.getItem('lon')))
     setForecast(JSON.parse(window.localStorage.getItem('forecast')))
@@ -154,20 +152,10 @@ export default function Weather() {
   }, [])
 
   useEffect(() => {
-    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
-  }, [])
-
-  useEffect(() => {
     if (data !== null) {
       window.localStorage.setItem('dataWeather', JSON.stringify(data))
     }
   }, [data])
-
-  useEffect(() => {
-    if (celsius !== null) {
-      window.localStorage.setItem('celsius', JSON.stringify(celsius))
-    }
-  }, [celsius])
 
   useEffect(() => {
     if (lat !== null) {
@@ -1395,33 +1383,7 @@ export default function Weather() {
                 md={3}
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
-                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {celsius === true || celsius === null ? (
-                    <IconButton
-                      onClick={() => setCelsius(false)}
-                      color="inherit"
-                      size="large"
-                      title="Change to °F"
-                    >
-                      <h5>°F</h5>
-                      {/* <Button style={style} fontSize="inherit" color="inherit">
-                        <h1>°F</h1>
-                      </Button> */}
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() => setCelsius(true)}
-                      color="inherit"
-                      size="large"
-                      title="Change to °C"
-                    >
-                      <h5>°C</h5>
-                      {/* <Button style={style} fontSize="inherit" color="inherit">
-                        <h1>°C</h1>
-                      </Button> */}
-                    </IconButton>
-                  )}
-                </Box>
+                <Box sx={{ display: { xs: 'none', md: 'block' } }}></Box>
               </Grid>
               <Grid
                 item
@@ -1593,41 +1555,6 @@ export default function Weather() {
                 </Box>
               </Grid>
             </Grid>
-
-            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-              <Stack justifyContent="center" direction="row" spacing={5}>
-                {celsius === true || celsius === null ? (
-                  <IconButton
-                    onClick={() => setCelsius(false)}
-                    color="inherit"
-                    size="large"
-                    title="Change to °F"
-                  >
-                    <h5>°F</h5>
-                    {/* <Button style={style} fontSize="inherit" color="inherit">
-                      <h1>°F</h1>
-                    </Button> */}
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={() => setCelsius(true)}
-                    color="inherit"
-                    size="large"
-                    title="Change to °C"
-                  >
-                    <h5>°C</h5>
-                    {/* <Button style={style} fontSize="inherit" color="inherit">
-                      <h1>°C</h1>
-                    </Button> */}
-                  </IconButton>
-                )}
-                <IconButton onClick={clearData} color="inherit" title="Clear">
-                  <CloseIcon style={{ fontSize: 40 }} />
-                </IconButton>
-              </Stack>
-              <br />
-            </Box>
-            <br />
             <br />
             <Divider sx={{ borderBottomWidth: 2, width: '100%' }} />
             <br />

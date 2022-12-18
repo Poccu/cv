@@ -113,12 +113,20 @@ const style = {
 }
 
 export default function App() {
+  const [celsius, setCelsius] = useState(true)
   const [light, setLight] = useState(false) // set light/dark theme
 
   // localStorage
   useEffect(() => {
     setLight(JSON.parse(window.localStorage.getItem('light')))
+    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
   }, [])
+
+  useEffect(() => {
+    if (celsius !== null) {
+      window.localStorage.setItem('celsius', JSON.stringify(celsius))
+    }
+  }, [celsius])
 
   useEffect(() => {
     if (light !== null) {
@@ -150,7 +158,7 @@ export default function App() {
                 <>
                   <Header />
                   <main>
-                    <Weather />
+                    <Weather celsius={celsius} setCelsius={setCelsius} />
                   </main>
                 </>
               }
@@ -183,7 +191,12 @@ export default function App() {
                 <>
                   <Header />
                   <main>
-                    <Settings />
+                    <Settings
+                      light={light}
+                      setLight={setLight}
+                      celsius={celsius}
+                      setCelsius={setCelsius}
+                    />
                   </main>
                 </>
               }
@@ -198,12 +211,12 @@ export default function App() {
             />
           </Routes>
           <Box style={style}>
-            {light ? (
+            {!light ? (
               <IconButton
                 onClick={() => setLight((prev) => !prev)}
                 color="inherit"
                 size="large"
-                title="Dark Mode"
+                title="Change Theme to Light Mode"
               >
                 <DarkModeOutlinedIcon fontSize="inherit" />
               </IconButton>
@@ -212,7 +225,7 @@ export default function App() {
                 onClick={() => setLight((prev) => !prev)}
                 color="inherit"
                 size="large"
-                title="Light Mode"
+                title="Change Theme to Dark Mode"
               >
                 <LightModeOutlinedIcon fontSize="inherit" />
               </IconButton>
