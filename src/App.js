@@ -113,7 +113,7 @@ const style = {
 }
 
 export default function App() {
-  const [celsius, setCelsius] = useState(true)
+  const [celsius, setCelsius] = useState(true) // set celsius/fahrenheit temperature
   const [light, setLight] = useState(false) // set light/dark theme
 
   // localStorage
@@ -158,7 +158,7 @@ export default function App() {
                 <>
                   <Header />
                   <main>
-                    <Weather celsius={celsius} setCelsius={setCelsius} />
+                    <Weather celsius={celsius} />
                   </main>
                 </>
               }

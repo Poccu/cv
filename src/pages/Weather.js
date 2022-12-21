@@ -5,19 +5,16 @@ import {
   Box,
   Grid,
   IconButton,
-  Button,
   Stack,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
-import CloseIcon from '@mui/icons-material/Close'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
 import Divider from '@mui/material/Divider'
 import GpsFixedIcon from '@mui/icons-material/GpsFixed'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import Carousel from 'react-elastic-carousel'
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import MuiAccordion from '@mui/material/Accordion'
@@ -65,17 +62,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
-
-const style = {
-  // background: 'linear-gradient(45deg, #FE6B8B 10%, #FF8E53 90%)',
-  fontSize: 16,
-  borderRadius: 50,
-  border: 0,
-  // color: 'white',
-  height: 63,
-  padding: '0 16px',
-  // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .30)',
-}
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -128,7 +114,7 @@ const breakPoints = [
   { width: 930, itemsToShow: 8 },
 ]
 
-export default function Weather({ celsius, setCelsius }) {
+export default function Weather({ celsius }) {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -312,37 +298,11 @@ export default function Weather({ celsius, setCelsius }) {
     }
   }
 
-  // const refreshLocation = () => {
-  //   const url = `${apiUrl}/weather?q=${data.name}&appid=${apiKey}`
-  //   axios
-  //     .get(url)
-  //     .then((response) => {
-  //       setLat(response.data.coord.lat)
-  //       setLon(response.data.coord.lon)
-  //       // console.log(response.data.coord.lat)
-  //       // console.log(response.data.coord.lon)
-  //       setData(response.data)
-  //       console.log('searchLocation:', response.data)
-  //       // setOpen(true)
-  //     })
-  //     .catch((error) => {
-  //       setError(true)
-  //       setOpen(true)
-  //       console.error('THIS IS ERROR --->', error)
-  //     })
-  //   setError(false)
-  //   setLocation('')
-  // }
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
     setOpen(false)
-  }
-
-  const clearData = () => {
-    setData({})
   }
 
   let date = new Date()
@@ -394,14 +354,11 @@ export default function Weather({ celsius, setCelsius }) {
       switch (id) {
         case 200:
           return '/thunderstorms-day-rain.svg'
-          break
         case 201:
         case 202:
           return '/thunderstorms-rain.svg'
-          break
         case 210:
           return '/thunderstorms-day.svg'
-          break
         case 211:
         case 212:
         case 221:
@@ -409,14 +366,11 @@ export default function Weather({ celsius, setCelsius }) {
         case 231:
         case 232:
           return '/thunderstorms.svg'
-          break
         case 300:
           return '/partly-cloudy-day-drizzle.svg'
-          break
         case 301:
         case 302:
           return '/drizzle.svg'
-          break
         case 310:
         case 311:
         case 312:
@@ -424,27 +378,22 @@ export default function Weather({ celsius, setCelsius }) {
         case 314:
         case 321:
           return '/rain.svg'
-          break
         case 500:
         case 501:
         case 502:
         case 503:
         case 504:
           return '/partly-cloudy-day-rain.svg'
-          break
         case 511:
           return '/snow.svg'
-          break
         case 520:
         case 521:
         case 522:
         case 531:
           return '/rain.svg'
-          break
         case 600:
         case 601:
           return '/partly-cloudy-day-snow.svg'
-          break
         case 602:
         case 611:
         case 612:
@@ -455,47 +404,34 @@ export default function Weather({ celsius, setCelsius }) {
         case 621:
         case 622:
           return '/snow.svg'
-          break
         case 701:
           return '/mist.svg'
-          break
         case 711:
           return '/partly-cloudy-day-smoke.svg'
-          break
         case 721:
           return '/haze-day.svg'
-          break
         case 731:
           return '/dust-day.svg'
-          break
         case 741:
           return '/fog-day.svg'
-          break
         case 751:
         case 761:
         case 762:
           return '/dust-day.svg'
-          break
         case 771:
           return '/wind.svg'
-          break
         case 781:
           return '/tornado.svg'
-          break
         case 800:
           return '/clear-day.svg'
-          break
         case 801:
           return '/partly-cloudy-day.svg'
-          break
         case 802:
           // return '/cloudy.svg'
           return '/partly-cloudy-day.svg'
-          break
         case 803:
         case 804:
           return '/overcast-day.svg'
-          break
         default:
           return '/not-available.svg'
       }
@@ -503,14 +439,11 @@ export default function Weather({ celsius, setCelsius }) {
       switch (id) {
         case 200:
           return '/thunderstorms-night-rain.svg'
-          break
         case 201:
         case 202:
           return '/thunderstorms-rain.svg'
-          break
         case 210:
           return '/thunderstorms-night.svg'
-          break
         case 211:
         case 212:
         case 221:
@@ -518,14 +451,11 @@ export default function Weather({ celsius, setCelsius }) {
         case 231:
         case 232:
           return '/thunderstorms.svg'
-          break
         case 300:
           return '/partly-cloudy-night-drizzle.svg'
-          break
         case 301:
         case 302:
           return '/drizzle.svg'
-          break
         case 310:
         case 311:
         case 312:
@@ -533,27 +463,22 @@ export default function Weather({ celsius, setCelsius }) {
         case 314:
         case 321:
           return '/rain.svg'
-          break
         case 500:
         case 501:
         case 502:
         case 503:
         case 504:
           return '/partly-cloudy-night-rain.svg'
-          break
         case 511:
           return '/snow.svg'
-          break
         case 520:
         case 521:
         case 522:
         case 531:
           return '/rain.svg'
-          break
         case 600:
         case 601:
           return '/partly-cloudy-night-snow.svg'
-          break
         case 602:
         case 611:
         case 612:
@@ -564,48 +489,35 @@ export default function Weather({ celsius, setCelsius }) {
         case 621:
         case 622:
           return '/snow.svg'
-          break
         case 701:
           return '/mist.svg'
-          break
         case 711:
           return '/partly-cloudy-night-smoke.svg'
-          break
         case 721:
           return '/haze-night.svg'
-          break
         case 731:
           return '/dust-night.svg'
-          break
         case 741:
           return '/fog-night.svg'
-          break
         case 751:
         case 761:
         case 762:
           return '/dust-night.svg'
-          break
         case 771:
           return '/wind.svg'
-          break
         case 781:
           return '/tornado.svg'
-          break
         case 800:
           return '/clear-night.svg'
-          // return '/starry-night.svg'
-          break
+        // return '/starry-night.svg'
         case 801:
           return '/partly-cloudy-night.svg'
-          break
         case 802:
           // return '/cloudy.svg'
           return '/partly-cloudy-night.svg'
-          break
         case 803:
         case 804:
           return '/overcast-night.svg'
-          break
         default:
           return '/not-available.svg'
       }
@@ -646,14 +558,11 @@ export default function Weather({ celsius, setCelsius }) {
           return '/sunset.svg'
         case 200:
           return '/thunderstorms-day-rain.svg'
-          break
         case 201:
         case 202:
           return '/thunderstorms-rain.svg'
-          break
         case 210:
           return '/thunderstorms-day.svg'
-          break
         case 211:
         case 212:
         case 221:
@@ -661,14 +570,11 @@ export default function Weather({ celsius, setCelsius }) {
         case 231:
         case 232:
           return '/thunderstorms.svg'
-          break
         case 300:
           return '/partly-cloudy-day-drizzle.svg'
-          break
         case 301:
         case 302:
           return '/drizzle.svg'
-          break
         case 310:
         case 311:
         case 312:
@@ -676,27 +582,22 @@ export default function Weather({ celsius, setCelsius }) {
         case 314:
         case 321:
           return '/rain.svg'
-          break
         case 500:
         case 501:
         case 502:
         case 503:
         case 504:
           return '/partly-cloudy-day-rain.svg'
-          break
         case 511:
           return '/snow.svg'
-          break
         case 520:
         case 521:
         case 522:
         case 531:
           return '/rain.svg'
-          break
         case 600:
         case 601:
           return '/partly-cloudy-day-snow.svg'
-          break
         case 602:
         case 611:
         case 612:
@@ -707,47 +608,34 @@ export default function Weather({ celsius, setCelsius }) {
         case 621:
         case 622:
           return '/snow.svg'
-          break
         case 701:
           return '/mist.svg'
-          break
         case 711:
           return '/partly-cloudy-day-smoke.svg'
-          break
         case 721:
           return '/haze-day.svg'
-          break
         case 731:
           return '/dust-day.svg'
-          break
         case 741:
           return '/fog-day.svg'
-          break
         case 751:
         case 761:
         case 762:
           return '/dust-day.svg'
-          break
         case 771:
           return '/wind.svg'
-          break
         case 781:
           return '/tornado.svg'
-          break
         case 800:
           return '/clear-day.svg'
-          break
         case 801:
           return '/partly-cloudy-day.svg'
-          break
         case 802:
           // return '/cloudy.svg'
           return '/partly-cloudy-day.svg'
-          break
         case 803:
         case 804:
           return '/overcast-day.svg'
-          break
         default:
           return '/not-available.svg'
       }
@@ -759,14 +647,11 @@ export default function Weather({ celsius, setCelsius }) {
           return '/sunset.svg'
         case 200:
           return '/thunderstorms-day-rain.svg'
-          break
         case 201:
         case 202:
           return '/thunderstorms-rain.svg'
-          break
         case 210:
           return '/thunderstorms-day.svg'
-          break
         case 211:
         case 212:
         case 221:
@@ -774,14 +659,11 @@ export default function Weather({ celsius, setCelsius }) {
         case 231:
         case 232:
           return '/thunderstorms.svg'
-          break
         case 300:
           return '/partly-cloudy-day-drizzle.svg'
-          break
         case 301:
         case 302:
           return '/drizzle.svg'
-          break
         case 310:
         case 311:
         case 312:
@@ -789,27 +671,22 @@ export default function Weather({ celsius, setCelsius }) {
         case 314:
         case 321:
           return '/rain.svg'
-          break
         case 500:
         case 501:
         case 502:
         case 503:
         case 504:
           return '/partly-cloudy-day-rain.svg'
-          break
         case 511:
           return '/snow.svg'
-          break
         case 520:
         case 521:
         case 522:
         case 531:
           return '/rain.svg'
-          break
         case 600:
         case 601:
           return '/partly-cloudy-day-snow.svg'
-          break
         case 602:
         case 611:
         case 612:
@@ -820,47 +697,34 @@ export default function Weather({ celsius, setCelsius }) {
         case 621:
         case 622:
           return '/snow.svg'
-          break
         case 701:
           return '/mist.svg'
-          break
         case 711:
           return '/partly-cloudy-day-smoke.svg'
-          break
         case 721:
           return '/haze-day.svg'
-          break
         case 731:
           return '/dust-day.svg'
-          break
         case 741:
           return '/fog-day.svg'
-          break
         case 751:
         case 761:
         case 762:
           return '/dust-day.svg'
-          break
         case 771:
           return '/wind.svg'
-          break
         case 781:
           return '/tornado.svg'
-          break
         case 800:
           return '/clear-day.svg'
-          break
         case 801:
           return '/partly-cloudy-day.svg'
-          break
         case 802:
           // return '/cloudy.svg'
           return '/partly-cloudy-day.svg'
-          break
         case 803:
         case 804:
           return '/overcast-day.svg'
-          break
         default:
           return '/not-available.svg'
       }
@@ -872,14 +736,11 @@ export default function Weather({ celsius, setCelsius }) {
           return '/sunset.svg'
         case 200:
           return '/thunderstorms-night-rain.svg'
-          break
         case 201:
         case 202:
           return '/thunderstorms-rain.svg'
-          break
         case 210:
           return '/thunderstorms-night.svg'
-          break
         case 211:
         case 212:
         case 221:
@@ -887,14 +748,11 @@ export default function Weather({ celsius, setCelsius }) {
         case 231:
         case 232:
           return '/thunderstorms.svg'
-          break
         case 300:
           return '/partly-cloudy-night-drizzle.svg'
-          break
         case 301:
         case 302:
           return '/drizzle.svg'
-          break
         case 310:
         case 311:
         case 312:
@@ -902,27 +760,22 @@ export default function Weather({ celsius, setCelsius }) {
         case 314:
         case 321:
           return '/rain.svg'
-          break
         case 500:
         case 501:
         case 502:
         case 503:
         case 504:
           return '/partly-cloudy-night-rain.svg'
-          break
         case 511:
           return '/snow.svg'
-          break
         case 520:
         case 521:
         case 522:
         case 531:
           return '/rain.svg'
-          break
         case 600:
         case 601:
           return '/partly-cloudy-night-snow.svg'
-          break
         case 602:
         case 611:
         case 612:
@@ -933,48 +786,35 @@ export default function Weather({ celsius, setCelsius }) {
         case 621:
         case 622:
           return '/snow.svg'
-          break
         case 701:
           return '/mist.svg'
-          break
         case 711:
           return '/partly-cloudy-night-smoke.svg'
-          break
         case 721:
           return '/haze-night.svg'
-          break
         case 731:
           return '/dust-night.svg'
-          break
         case 741:
           return '/fog-night.svg'
-          break
         case 751:
         case 761:
         case 762:
           return '/dust-night.svg'
-          break
         case 771:
           return '/wind.svg'
-          break
         case 781:
           return '/tornado.svg'
-          break
         case 800:
           return '/clear-night.svg'
-          // return '/starry-night.svg'
-          break
+        // return '/starry-night.svg'
         case 801:
           return '/partly-cloudy-night.svg'
-          break
         case 802:
           // return '/cloudy.svg'
           return '/partly-cloudy-night.svg'
-          break
         case 803:
         case 804:
           return '/overcast-night.svg'
-          break
         default:
           return '/not-available.svg'
       }
@@ -985,14 +825,11 @@ export default function Weather({ celsius, setCelsius }) {
     switch (id) {
       case 200:
         return '/thunderstorms-day-rain.svg'
-        break
       case 201:
       case 202:
         return '/thunderstorms-rain.svg'
-        break
       case 210:
         return '/thunderstorms-day.svg'
-        break
       case 211:
       case 212:
       case 221:
@@ -1000,14 +837,11 @@ export default function Weather({ celsius, setCelsius }) {
       case 231:
       case 232:
         return '/thunderstorms.svg'
-        break
       case 300:
         return '/partly-cloudy-day-drizzle.svg'
-        break
       case 301:
       case 302:
         return '/drizzle.svg'
-        break
       case 310:
       case 311:
       case 312:
@@ -1015,27 +849,22 @@ export default function Weather({ celsius, setCelsius }) {
       case 314:
       case 321:
         return '/rain.svg'
-        break
       case 500:
       case 501:
       case 502:
       case 503:
       case 504:
         return '/partly-cloudy-day-rain.svg'
-        break
       case 511:
         return '/snow.svg'
-        break
       case 520:
       case 521:
       case 522:
       case 531:
         return '/rain.svg'
-        break
       case 600:
       case 601:
         return '/partly-cloudy-day-snow.svg'
-        break
       case 602:
       case 611:
       case 612:
@@ -1046,47 +875,34 @@ export default function Weather({ celsius, setCelsius }) {
       case 621:
       case 622:
         return '/snow.svg'
-        break
       case 701:
         return '/mist.svg'
-        break
       case 711:
         return '/partly-cloudy-day-smoke.svg'
-        break
       case 721:
         return '/haze-day.svg'
-        break
       case 731:
         return '/dust-day.svg'
-        break
       case 741:
         return '/fog-day.svg'
-        break
       case 751:
       case 761:
       case 762:
         return '/dust-day.svg'
-        break
       case 771:
         return '/wind.svg'
-        break
       case 781:
         return '/tornado.svg'
-        break
       case 800:
         return '/clear-day.svg'
-        break
       case 801:
         return '/partly-cloudy-day.svg'
-        break
       case 802:
         // return '/cloudy.svg'
         return '/partly-cloudy-day.svg'
-        break
       case 803:
       case 804:
         return '/overcast-day.svg'
-        break
       default:
         return '/not-available.svg'
     }
@@ -1141,34 +957,24 @@ export default function Weather({ celsius, setCelsius }) {
       case 0:
       case 1:
         return 'uv-index-1.svg'
-        break
       case 2:
         return 'uv-index-2.svg'
-        break
       case 3:
         return 'uv-index-3.svg'
-        break
       case 4:
         return 'uv-index-4.svg'
-        break
       case 5:
         return 'uv-index-5.svg'
-        break
       case 6:
         return 'uv-index-6.svg'
-        break
       case 7:
         return 'uv-index-7.svg'
-        break
       case 8:
         return 'uv-index-8.svg'
-        break
       case 9:
         return 'uv-index-9.svg'
-        break
       case 10:
         return 'uv-index-10.svg'
-        break
       case 11:
       case 12:
       case 13:
@@ -1180,7 +986,6 @@ export default function Weather({ celsius, setCelsius }) {
       case 19:
       case 20:
         return 'uv-index-11.svg'
-        break
       default:
         return 'not-available.svg'
     }
@@ -1191,37 +996,26 @@ export default function Weather({ celsius, setCelsius }) {
       case 0:
       case 1:
         return '1 (low)'
-        break
       case 2:
         return '2 (low)'
-        break
       case 3:
         return '3 (moderate)'
-        break
       case 4:
         return '4 (moderate)'
-        break
       case 5:
         return '5 (moderate)'
-        break
       case 6:
         return '6 (high)'
-        break
       case 7:
         return '7 (high)'
-        break
       case 8:
         return '8 (very high)'
-        break
       case 9:
         return '9 (very high)'
-        break
       case 10:
         return '10 (very high)'
-        break
       case 11:
         return '11 (extreme)'
-        break
       case 12:
       case 13:
       case 14:
@@ -1232,7 +1026,6 @@ export default function Weather({ celsius, setCelsius }) {
       case 19:
       case 20:
         return '11+ (extreme)'
-        break
       default:
         return 'not-available.svg'
     }
@@ -1243,37 +1036,26 @@ export default function Weather({ celsius, setCelsius }) {
       case 0:
       case 1:
         return 'wind-beaufort-1.svg'
-        break
       case 2:
         return 'wind-beaufort-2.svg'
-        break
       case 3:
         return 'wind-beaufort-3.svg'
-        break
       case 4:
         return 'wind-beaufort-4.svg'
-        break
       case 5:
         return 'wind-beaufort-5.svg'
-        break
       case 6:
         return 'wind-beaufort-6.svg'
-        break
       case 7:
         return 'wind-beaufort-7.svg'
-        break
       case 8:
         return 'wind-beaufort-8.svg'
-        break
       case 9:
         return 'wind-beaufort-9.svg'
-        break
       case 10:
         return 'wind-beaufort-10.svg'
-        break
       case 11:
         return 'wind-beaufort-11.svg'
-        break
       case 12:
       case 13:
       case 14:
@@ -1284,7 +1066,6 @@ export default function Weather({ celsius, setCelsius }) {
       case 19:
       case 20:
         return 'wind-beaufort-12.svg'
-        break
       default:
         return 'not-available.svg'
     }
@@ -1541,18 +1322,7 @@ export default function Weather({ celsius, setCelsius }) {
                 md={3}
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
-                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {/* <IconButton onClick={clearData} color="inherit" title="Clear">
-                    <CloseIcon style={{ fontSize: 40 }} />
-                  </IconButton> */}
-                  {/* <IconButton
-                    // onClick={refreshLocation}
-                    color="inherit"
-                    title="Refresh"
-                  >
-                    <RefreshIcon style={{ fontSize: 40 }} />
-                  </IconButton> */}
-                </Box>
+                <Box sx={{ display: { xs: 'none', md: 'block' } }}></Box>
               </Grid>
             </Grid>
             <br />
@@ -1701,7 +1471,6 @@ export default function Weather({ celsius, setCelsius }) {
                         draggable={false}
                         className="shadow"
                       />
-                      {/* <br /> */}
                       <Typography variant="h5">
                         {celsius === true || celsius === null ? (
                           <b>{forecast.current.temp.toFixed() - 273}°</b>
@@ -1841,7 +1610,6 @@ export default function Weather({ celsius, setCelsius }) {
                         draggable={false}
                         className="shadow"
                       />
-                      {/* <br /> */}
                       <Typography variant="h5">
                         {celsius === true || celsius === null ? (
                           <b>{forecast.current.temp.toFixed() - 273}°</b>
@@ -2100,8 +1868,6 @@ export default function Weather({ celsius, setCelsius }) {
                             color="textSecondary"
                             sx={{ fontWeight: 'light' }}
                           >
-                            {/* {forecast.daily[i].wind_speed.toFixed(1)} m/s
-                             */}
                             {forecast.daily[i].wind_speed.toFixed()} m/s,{' '}
                             {getDirection(forecast.daily[i].wind_deg)}
                           </Typography>
@@ -2765,16 +2531,6 @@ export default function Weather({ celsius, setCelsius }) {
             </Box>
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}></Box>
-
-            {/* <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-              <Alert
-                onClose={handleClose}
-                severity="success"
-                sx={{ width: '100%' }}
-              >
-                Great!
-              </Alert>
-            </Snackbar> */}
           </Box>
         ) : (
           <>

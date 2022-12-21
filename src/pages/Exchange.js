@@ -122,7 +122,7 @@ export default function Exchange() {
     return date.toISOString().split('T')[0]
   }
 
-  const todayDate = new Date().toISOString().split('T')[0] // 2022-mm-dd today date
+  // const todayDate = new Date().toISOString().split('T')[0] // 2022-mm-dd today date
 
   const rndInt = Math.floor(Math.random() * 9999) + 1000 // random number from 1000 to 9999
 
@@ -171,69 +171,51 @@ export default function Exchange() {
     } else setInput(output.toFixed(2))
   }
 
-  function country(from) {
+  function countryFrom(from) {
     switch (from) {
       case 'rub':
         return 'Russian Ruble'
-        break
       case 'usd':
         return 'US Dollar'
-        break
       case 'cny':
         return 'Chinese Yuan'
-        break
       case 'eur':
         return 'Euro'
-        break
       case 'chf':
         return 'Swiss Franc'
-        break
       case 'try':
         return 'Turkish Lira'
-        break
       case 'gbp':
         return 'Pound Sterling'
-        break
       case 'inr':
         return 'Indian Rupee'
-        break
       case 'jpy':
         return 'Japanese Yen'
-        break
       default:
         return ''
     }
   }
 
-  function country(to) {
+  function countryTo(to) {
     switch (to) {
       case 'rub':
         return 'Russian Ruble'
-        break
       case 'usd':
         return 'US Dollar'
-        break
       case 'cny':
         return 'Chinese Yuan'
-        break
       case 'eur':
         return 'Euro'
-        break
       case 'chf':
         return 'Swiss Franc'
-        break
       case 'try':
         return 'Turkish Lira'
-        break
       case 'gbp':
         return 'Pound Sterling'
-        break
       case 'inr':
         return 'Indian Rupee'
-        break
       case 'jpy':
         return 'Japanese Yen'
-        break
       default:
         return ''
     }
@@ -374,7 +356,7 @@ export default function Exchange() {
                 </SearchIconWrapperEnd>
                 <StyledInputBase
                   // type="number"
-                  placeholder={country(from)}
+                  placeholder={countryFrom(from)}
                   inputProps={{ 'aria-label': 'search' }}
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
@@ -777,7 +759,7 @@ export default function Exchange() {
                   // color="secondary"
                   // disabled
                   // type="number"
-                  placeholder={country(to)}
+                  placeholder={countryTo(to)}
                   inputProps={{ 'aria-label': 'search' }}
                   value={input > 0 ? output.toFixed(2) : ''}
                   // onChange={(event) => setInput(event.target.value)}
