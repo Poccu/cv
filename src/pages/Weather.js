@@ -121,8 +121,12 @@ export default function Weather({ celsius }) {
   const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const [lat, setLat] = useState(0)
-  const [lon, setLon] = useState(0)
+  const [lat, setLat] = useState(
+    JSON.parse(window.localStorage.getItem('lat')) || 0
+  )
+  const [lon, setLon] = useState(
+    JSON.parse(window.localStorage.getItem('lon')) || 0
+  )
 
   const [forecast, setForecast] = useState({})
 
