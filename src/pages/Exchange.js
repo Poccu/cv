@@ -11,7 +11,6 @@ import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import CloseIcon from '@mui/icons-material/Close'
-import MuiAlert from '@mui/material/Alert'
 import CurrencyRubleIcon from '@mui/icons-material/CurrencyRuble'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import EuroIcon from '@mui/icons-material/Euro'
@@ -51,10 +50,6 @@ function NumberFormatCustom(props) {
     />
   )
 }
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
 
 const Search = styled('div')(({ theme }) => ({
   margin: 'auto',
@@ -113,7 +108,6 @@ export default function Exchange() {
   const [input, setInput] = useState('')
   const [from, setFrom] = useState('usd')
   const [to, setTo] = useState('rub')
-  const [options, setOptions] = useState([])
   const [output, setOutput] = useState(0)
 
   const getYesterdayDate = () => {
@@ -124,10 +118,9 @@ export default function Exchange() {
 
   // const todayDate = new Date().toISOString().split('T')[0] // 2022-mm-dd today date
 
-  const rndInt = Math.floor(Math.random() * 9999) + 1000 // random number from 1000 to 9999
-
   // Calling the api whenever the dependency changes
   useEffect(() => {
+    const rndInt = Math.floor(Math.random() * 9999) + 1000 // random number from 1000 to 9999
     axios
       .get(`${apiUrl}/latest/currencies/${from}.json?rand=${rndInt}`)
       .then((response) => {
@@ -137,6 +130,7 @@ export default function Exchange() {
   }, [input, from, to])
 
   useEffect(() => {
+    const rndInt = Math.floor(Math.random() * 9999) + 1000 // random number from 1000 to 9999
     axios
       .get(
         `${apiUrl}/${getYesterdayDate()}/currencies/${from}.json?rand=${rndInt}`
@@ -149,7 +143,6 @@ export default function Exchange() {
 
   // Calling the convert function whenever a user switches the currency
   useEffect(() => {
-    setOptions(Object.keys(info))
     convert()
   }, [info])
 
@@ -360,9 +353,6 @@ export default function Exchange() {
                   inputProps={{ 'aria-label': 'search' }}
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  // onKeyPress={() => {
-                  //   convert()
-                  // }}
                   inputComponent={NumberFormatCustom} // todo error
                 />
               </Search>
@@ -652,9 +642,7 @@ export default function Exchange() {
               </Typography>
               <br />
               <Search>
-                {/* {to} */}
                 <SearchIconWrapper>
-                  {/* <SearchIcon /> */}
                   {to === 'rub' ? (
                     <CurrencyRubleIcon style={{ fontSize: 40 }} />
                   ) : null}
@@ -762,13 +750,6 @@ export default function Exchange() {
                   placeholder={countryTo(to)}
                   inputProps={{ 'aria-label': 'search' }}
                   value={input > 0 ? output.toFixed(2) : ''}
-                  // onChange={(event) => setInput(event.target.value)}
-                  // onChange={() => {
-                  //   convert2()
-                  // }}
-                  // onKeyPress={() => {
-                  //   convert()
-                  // }}
                   inputComponent={NumberFormatCustom} // todo error
                 />
               </Search>
@@ -966,10 +947,7 @@ export default function Exchange() {
                           height="20px"
                         />
                       ) : null}{' '}
-                      {exchangeRate}{' '}
-                      {/* {exchangeRate != 1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                      {/* {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                      {to.toUpperCase()}
+                      {exchangeRate} {to.toUpperCase()}
                       {exchangeRate > yesterdayRate ? (
                         <KeyboardDoubleArrowUpIcon color="success" />
                       ) : null}
@@ -1138,10 +1116,7 @@ export default function Exchange() {
                     height="20px"
                   />
                 ) : null}{' '}
-                {exchangeRate}{' '}
-                {/* {exchangeRate != 1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                {/* {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                {to.toUpperCase()}
+                {exchangeRate} {to.toUpperCase()}
                 {exchangeRate > yesterdayRate ? (
                   <KeyboardDoubleArrowUpIcon color="success" />
                 ) : null}
@@ -1307,10 +1282,7 @@ export default function Exchange() {
                     height="20px"
                   />
                 ) : null}{' '}
-                {exchangeRate}{' '}
-                {/* {exchangeRate != 1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                {/* {exchangeRate > 1.1 ? exchangeRate.toFixed(2) : exchangeRate}{' '} */}
-                {to.toUpperCase()}
+                {exchangeRate} {to.toUpperCase()}
                 {exchangeRate > yesterdayRate ? (
                   <KeyboardDoubleArrowUpIcon color="success" />
                 ) : null}

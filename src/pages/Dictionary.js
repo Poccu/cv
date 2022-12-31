@@ -33,6 +33,8 @@ import ClearAllIcon from '@mui/icons-material/ClearAll'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'
 
+/* eslint-disable no-useless-escape */
+
 let randomWords = require('random-words')
 
 const urlAudio = process.env.REACT_APP_AUDIO_URL
@@ -46,15 +48,11 @@ const ThemeButton = styled(Button)(({ theme }) => ({
   padding: '0 16px',
   border: '2px solid',
   borderColor: alpha(theme.palette.search.primary, 0.1),
-  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
   '&:hover': {
     border: '2px solid',
     borderColor: alpha(theme.palette.search.primary, 0),
     backgroundColor: alpha(theme.palette.search.primary, 0.1),
   },
-  // '&:active': {
-  //   backgroundColor: '#0062cc',
-  // },
 }))
 
 function TabPanel(props) {
@@ -152,7 +150,7 @@ export default function Dictionary() {
       window.localStorage.setItem('phonetics', JSON.stringify(phonetics))
       window.localStorage.setItem('audios', JSON.stringify(audios))
     }
-  }, [favs])
+  }, [favs, phonetics, audios])
 
   const setFavourite = () => {
     if (favs?.indexOf(data.word) === -1) {
@@ -298,10 +296,6 @@ export default function Dictionary() {
     setOpen2(false)
   }
 
-  // const handleClick = () => {
-  //   setOpen(true)
-  // }
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
@@ -323,27 +317,10 @@ export default function Dictionary() {
     setAudios([])
   }
 
-  // todo
-  // const [localValue, setLocalValue] = useState('')
-
-  // const onInputBlur = () => {
-  //   // changeValue(localValue) // fixme
-  //   setSearchWord(localValue)
-  // }
-  // const onInputChange = (e) => {
-  //   setLocalValue(e.target.value)
-  // }
-
-  // onChange={(event) => setSearchWord(event.target.value)}
-  // onBlur = { onInputBlur }
-  // onChange = { onInputChange }
-
   useEffect(() => {
-    {
-      data?.word
-        ? (document.title = `Dictionary - ${data?.word}`)
-        : (document.title = 'Dictionary')
-    }
+    data?.word
+      ? (document.title = `Dictionary - ${data?.word}`)
+      : (document.title = 'Dictionary')
   }, [data?.word])
 
   return (
@@ -382,8 +359,6 @@ export default function Dictionary() {
               inputProps={{ 'aria-label': 'search' }}
               value={searchWord}
               onChange={(event) => setSearchWord(event.target.value)}
-              // onBlur={onInputBlur} // todo
-              // onChange={onInputChange}
               onKeyPress={getMeaning}
             />
           </Search>
@@ -423,7 +398,6 @@ export default function Dictionary() {
                 sx={({ flexGrow: 1 }, { textAlign: 'center' })}
               >
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {/* {data.phonetics[0].audio ? ( */}
                   {true ? (
                     <IconButton
                       onClick={playAudio}
@@ -545,7 +519,6 @@ export default function Dictionary() {
 
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <Stack justifyContent="center" direction="row" spacing={5}>
-                {/* {data.phonetics[0].audio ? ( */}
                 {true ? (
                   <IconButton onClick={playAudio} color="inherit" title="Audio">
                     <HearingIcon style={{ fontSize: 50 }} />
@@ -748,7 +721,7 @@ export default function Dictionary() {
                                           // audio.play()
 
                                           let url = `${urlAudio}/${favs[index]}--_gb_1.mp3`
-                                          let audio = new Audio(url)
+                                          // let audio = new Audio(url)
                                           // audio.play()
                                           setAudioWord(url)
                                         })

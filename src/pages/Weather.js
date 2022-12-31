@@ -24,7 +24,6 @@ import Skeleton from '@mui/material/Skeleton'
 
 const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY
 const apiUrl = process.env.REACT_APP_OPENWEATHER_URL
-const apiIconsUrl = process.env.REACT_APP_OPENWEATHER_ICONS_URL
 const flagsUrl = process.env.REACT_APP_COUNTRY_FLAG_ICONS_URL
 const weatherIconsUrl = process.env.REACT_APP_ANIMATED_WEATHER_ICONS_URL
 const weatherFillIconsUrl =
@@ -255,13 +254,6 @@ export default function Weather({ celsius }) {
               .sort((a, b) => a.dt - b.dt)
               .filter((i) => i.dt > response.data.current.dt)
           )
-
-          // console.log(
-          //   'hourlyForecast + sunrise&sunset + sort + filter > curr dt:',
-          //   [...response.data.hourly, ...sun]
-          //     .sort((a, b) => a.dt - b.dt)
-          //     .filter((i) => i.dt > response.data.current.dt)
-          // )
           setIsLoading(false)
         })
         .catch((error) => {
@@ -273,7 +265,7 @@ export default function Weather({ celsius }) {
     } else return
     setError(false)
     setLocation('')
-  }, [data])
+  }, [data, lat, lon])
 
   const searchLocation = (event) => {
     const url = `${apiUrl}/weather?q=${location}&appid=${apiKey}`

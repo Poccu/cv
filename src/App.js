@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -21,36 +21,6 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { IconButton, Box } from '@mui/material'
 
-// const Home = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/Home')), 500)
-//   })
-// })
-
-// const Dictionary = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/Dictionary')), 500)
-//   })
-// })
-
-// const Weather = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/Weather')), 500)
-//   })
-// })
-
-// const Exchange = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/Exchange')), 500)
-//   })
-// })
-
-// const NotFound = lazy(() => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => resolve(import('./pages/NotFound')), 500)
-//   })
-// })
-
 let themeLight = createTheme({
   palette: {
     primary: {
@@ -64,7 +34,6 @@ let themeLight = createTheme({
     },
     text: {
       primary: '#000000',
-      // secondary: '#595959',
       secondary: '#858585',
     },
     search: {
@@ -73,7 +42,6 @@ let themeLight = createTheme({
     button: {
       primary: '#000000',
     },
-    // divider: '#393939',
   },
 })
 themeLight = responsiveFontSizes(themeLight)
@@ -91,7 +59,6 @@ let themeDark = createTheme({
     },
     text: {
       primary: '#ffffff',
-      // secondary: '#c1c1c1',
       secondary: '#858585',
     },
     search: {
@@ -107,7 +74,6 @@ themeDark = responsiveFontSizes(themeDark)
 
 const style = {
   position: 'fixed',
-  // paddingTop: '15px',
   bottom: '47%',
   left: 0,
 }
