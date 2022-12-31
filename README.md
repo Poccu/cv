@@ -56,6 +56,8 @@ I started this project to practice and consolidate my knowledge of `React`, `Jav
 - [x] Adding Carousel for hourly forecast
 - [x] Adding shadows to SVG icons for better visibility
 - [x] Responsive styling
+- [x] Adding Skeleton
+- [x] Refactoring code
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
