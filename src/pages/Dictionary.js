@@ -608,20 +608,38 @@ export default function Dictionary() {
                       <Typography variant="h5">
                         <b>Definition</b>
                       </Typography>
-                      <Typography color="textSecondary">
-                        {data.meanings[
-                          i
-                        ].definitions[0].definition[0].toUpperCase() +
-                          data.meanings[i].definitions[0].definition.slice(1)}
-                      </Typography>
-                      {data.meanings[i].definitions[0].example ? (
+                      {data.meanings[i].definitions.map((i) => (
+                        <>
+                          <Typography color="textSecondary">
+                            - {i.definition}
+                          </Typography>
+                          {i.example ? (
+                            <Typography color="textSecondary">
+                              <i>'{i.example}'</i>
+                            </Typography>
+                          ) : null}
+                          <br />
+                        </>
+                      ))}
+                      {data.meanings[i].synonyms.length > 0 ? (
                         <Box>
                           <br />
                           <Typography variant="h5">
-                            <b>Example</b>
+                            <b>Synonyms</b>
                           </Typography>
                           <Typography color="textSecondary">
-                            <i>'{data.meanings[i].definitions[0].example}'</i>
+                            {data.meanings[i].synonyms.join(', ')}
+                          </Typography>
+                        </Box>
+                      ) : null}
+                      {data.meanings[i].antonyms.length > 0 ? (
+                        <Box>
+                          <br />
+                          <Typography variant="h5">
+                            <b>Antonyms</b>
+                          </Typography>
+                          <Typography color="textSecondary">
+                            {data.meanings[i].antonyms.join(', ')}
                           </Typography>
                         </Box>
                       ) : null}
