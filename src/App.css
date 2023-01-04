@@ -73,3 +73,7 @@ button.rec-dot:focus {
 .shadow {
   filter: drop-shadow(0 0 1px rgba(12, 12, 12, 1));
 }
+
+body {
+  overflow: overlay;
+}

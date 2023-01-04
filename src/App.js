@@ -43,6 +43,36 @@ let themeLight = createTheme({
       primary: '#000000',
     },
   },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+            width: '0.9rem',
+            backgroundColor: '#f5f5f5',
+          },
+          '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
+            borderRadius: 8,
+            backgroundColor: '#333333',
+            minHeight: 24,
+            border: '3px solid #f5f5f5',
+          },
+          '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus':
+            {
+              backgroundColor: '#808080',
+            },
+          '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active':
+            {
+              backgroundColor: '#808080',
+            },
+          '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
+            {
+              backgroundColor: '#808080',
+            },
+        },
+      },
+    },
+  },
 })
 themeLight = responsiveFontSizes(themeLight)
 
@@ -68,6 +98,36 @@ let themeDark = createTheme({
       primary: '#ffffff',
     },
     divider: '#393939',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+            width: '0.9rem',
+            backgroundColor: '#121212',
+          },
+          '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
+            borderRadius: 8,
+            backgroundColor: '#cccccc',
+            minHeight: 24,
+            border: '3px solid #121212',
+          },
+          '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus':
+            {
+              backgroundColor: '#808080',
+            },
+          '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active':
+            {
+              backgroundColor: '#808080',
+            },
+          '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
+            {
+              backgroundColor: '#808080',
+            },
+        },
+      },
+    },
   },
 })
 themeDark = responsiveFontSizes(themeDark)
