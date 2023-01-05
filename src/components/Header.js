@@ -8,7 +8,6 @@ import {
   Box,
 } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import Avatar from '@mui/material/Avatar'
 import { NavLink } from 'react-router-dom'
 import Socials from './Socials'
 import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined'
@@ -19,6 +18,7 @@ import NightsStayOutlinedIcon from '@mui/icons-material/NightsStayOutlined'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import SettingsIcon from '@mui/icons-material/Settings'
+import PasswordIcon from '@mui/icons-material/Password'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -74,15 +74,6 @@ const ThemeButton = styled(Button)(({ theme }) => ({
   borderRadius: 25,
   height: 44,
   padding: '0 16px',
-  // border: '2px solid',
-  // borderColor: alpha(theme.palette.search.primary, 0.1),
-  // backgroundColor: alpha(theme.palette.search.primary, 0.1),
-  // '&:hover': {
-  //   backgroundColor: alpha(theme.palette.search.primary, 0.1),
-  // },
-  // '&:active': {
-  //   backgroundColor: '#0062cc',
-  // },
 }))
 
 export default function Header() {
@@ -156,6 +147,14 @@ export default function Header() {
                   <CurrencyExchangeIcon />
                   <ListItemText>Exchange</ListItemText>
                 </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/password"
+                  onClick={handleClose}
+                >
+                  <PasswordIcon />
+                  <ListItemText>Password</ListItemText>
+                </MenuItem>
                 <Divider />
                 <MenuItem
                   component={RouterLink}
@@ -174,31 +173,10 @@ export default function Header() {
                   <WarningAmberIcon />
                   <ListItemText>404</ListItemText>
                 </MenuItem>
-                {/* <MenuItem
-                  component={RouterLink}
-                  to="/cut"
-                  onClick={handleClose}
-                >
-                  <CurrencyExchangeIcon />
-                  <ListItemText>Cut</ListItemText>
-                  <Typography variant="inherit" color="text.secondary">
-                    ⌘X
-                  </Typography>
-                </MenuItem> */}
               </StyledMenu>
             </Box>
-            <Box sx={{ mr: -1 }}>
+            <Box sx={{ mr: -3 }}>
               <Socials />
-              {/* <NavLink to="/cv">
-                <IconButton edge="start" to="/cv">
-                  <Avatar
-                    alt="Avatar"
-                    src="/assets/images/logo7.png"
-                    src={`${process.env.PUBLIC_URL}/assets/images/logo7.png`}
-                    sx={{ width: 50, height: 50 }}
-                  />
-                </IconButton>
-              </NavLink> */}
             </Box>
           </Toolbar>
         </Container>
@@ -211,17 +189,8 @@ export default function Header() {
       >
         <Container maxwidth="sm">
           <Toolbar>
-            <NavLink to="/cv">
-              <IconButton edge="start">
-                <Avatar
-                  alt="Avatar"
-                  src={`${process.env.PUBLIC_URL}/assets/images/logo7.png`}
-                  sx={{ width: 50, height: 50 }}
-                />
-              </IconButton>
-            </NavLink>
             <Box sx={{ flexGrow: 1 }}>
-              <Stack direction="row" spacing={1}>
+              <Stack direction="row" spacing={1} justifyContent="center">
                 <NavLink
                   to="/cv"
                   style={{ textDecoration: 'none', color: '#fff' }}
@@ -257,6 +226,13 @@ export default function Header() {
                     Exchange
                   </ThemeButton>
                 </NavLink>
+                <NavLink to="/password" style={{ textDecoration: 'none' }}>
+                  <ThemeButton
+                    startIcon={<PasswordIcon style={{ fontSize: 24 }} />}
+                  >
+                    Password
+                  </ThemeButton>
+                </NavLink>
                 <NavLink to="/settings" style={{ textDecoration: 'none' }}>
                   <ThemeButton
                     startIcon={<SettingsIcon style={{ fontSize: 24 }} />}
@@ -273,7 +249,6 @@ export default function Header() {
                 </NavLink>
               </Stack>
             </Box>
-            <Socials />
           </Toolbar>
         </Container>
       </AppBar>

@@ -23,9 +23,7 @@ export default function Footer() {
             <Box sx={{ mb: 3 }}>
               <Socials />
             </Box>
-            <Typography variant="p" component="div">
-              © ℜossi, 2021 - {currentYear}
-            </Typography>
+            <Typography variant="p">© ℜossi, 2021 - {currentYear}</Typography>
           </Box>
         </Container>
       </Box>

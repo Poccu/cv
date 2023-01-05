@@ -26,20 +26,16 @@ export default function Home() {
           >
             <Grid item xs={12} md={8}>
               <Box>
-                <Typography variant="h1" component="div">
+                <Typography variant="h1">
                   <b>Hey there👋</b>
                 </Typography>
               </Box>
               <Box sx={{ mt: 2 }}>
-                <Typography variant="h2" component="div">
-                  My name is
-                </Typography>
+                <Typography variant="h2">My name is</Typography>
               </Box>
-              <Typography variant="h2" component="div">
-                Grigory Chemeris
-              </Typography>
+              <Typography variant="h2">Grigory Chemeris</Typography>
               <Box sx={{ mt: 4 }}>
-                <Typography variant="h3" component="div">
+                <Typography variant="h3">
                   <b>And I'm a Frontend Developer</b>
                 </Typography>
               </Box>
@@ -65,12 +61,12 @@ export default function Home() {
             <Grid item xs={12} md={12}>
               <Box>
                 <Box>
-                  <Typography variant="h1" component="div" align="center">
+                  <Typography variant="h1" align="center">
                     <b>Hey there👋</b>
                   </Typography>
                 </Box>
                 <Box sx={{ mt: 2 }}>
-                  <Typography variant="h2" component="div" align="center">
+                  <Typography variant="h2" align="center">
                     My name is Grigory Chemeris
                   </Typography>
                 </Box>
@@ -88,7 +84,7 @@ export default function Home() {
           <Grid item xs={12} md={12}>
             <Box sx={{ mt: 5 }}>
               <Box>
-                <Typography variant="h3" component="div" align="center">
+                <Typography variant="h3" align="center">
                   <b>And I'm a Frontend Developer</b>
                 </Typography>
               </Box>

@@ -1079,7 +1079,6 @@ export default function Weather({ celsius }) {
         {!data?.main ? (
           <Typography
             variant="h3"
-            component="div"
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <b>Enter the name of the city</b>
@@ -1131,14 +1130,19 @@ export default function Weather({ celsius }) {
             ) : null}
           </Box>
         </Box>
-        <br />
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+          }}
+        >
+          <br />
+        </Box>
         <br />
 
         {data?.main ? (
           <Box>
             <Typography
               variant="h6"
-              component="div"
               sx={
                 ({ flexGrow: 1 }, { textAlign: 'center', fontWeight: 'light' })
               }
@@ -1202,7 +1206,6 @@ export default function Weather({ celsius }) {
                     </Box>
                     <Typography
                       variant="h2"
-                      component="div"
                       sx={{ flexGrow: 1, textAlign: 'center' }}
                     >
                       <Box sx={{ letterSpacing: 5 }}>
@@ -1215,7 +1218,6 @@ export default function Weather({ celsius }) {
                     </Typography>
                     <Typography
                       variant="h6"
-                      component="div"
                       sx={{
                         flexGrow: 1,
                         textAlign: 'center',
@@ -1243,7 +1245,6 @@ export default function Weather({ celsius }) {
                       <>
                         <Typography
                           variant="h1"
-                          component="div"
                           sx={({ flexGrow: 1 }, { textAlign: 'center' })}
                         >
                           {celsius === true || celsius === null ? (
@@ -1279,7 +1280,6 @@ export default function Weather({ celsius }) {
                   </Grid>
                   <Typography
                     variant="h6"
-                    component="div"
                     sx={{
                       flexGrow: 1,
                       textAlign: 'center',

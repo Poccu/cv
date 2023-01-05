@@ -35,7 +35,7 @@ export default function NotFound() {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography variant="h3">
+            <Typography variant="h3" align="center">
               <b>Oops! Page not found 😞</b>
             </Typography>
             <br />

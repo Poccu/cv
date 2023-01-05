@@ -458,25 +458,9 @@ export default function Dictionary() {
                         <Box>
                           <Typography variant="h5" color="textSecondary">
                             [ {data.word} ]
-                            {/* {data.phonetics[1].text.replace(/[\/\]\[]/g, '')} ] */}
                           </Typography>
                         </Box>
                       )}
-                      {/* {data.phonetics[0].text ? (
-                        <Box>
-                          <Typography variant="h5" color="textSecondary">
-                            [ {data.phonetics[0].text.replace(/[\/\]\[]/g, '')}{' '}
-                            ]
-                          </Typography>
-                        </Box>
-                      ) : (
-                        <Box>
-                          <Typography variant="h5" color="textSecondary">
-                            [ {data.phonetics[1].text.replace(/[\/\]\[]/g, '')}{' '}
-                            ]
-                          </Typography>
-                        </Box>
-                      )} */}
                     </Typography>
                   </Box>
                   <br />
@@ -782,13 +766,6 @@ export default function Dictionary() {
                                       variant="p"
                                       color="textSecondary"
                                     >
-                                      {/* {phonetics[index].length < 20
-                                      ? '[ ' + phonetics[index] + ' ]'
-                                      : '[ ' +
-                                        phonetics[index].substr(-150, 29) +
-                                        '…' +
-                                        ' ]'} */}
-
                                       {phonetics[index]
                                         ? '[ ' + phonetics[index] + ' ]'
                                         : '[ - ]'}

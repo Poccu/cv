@@ -7,6 +7,7 @@ import Weather from './pages/Weather'
 import Home from './pages/Home'
 import Dictionary from './pages/Dictionary'
 import Exchange from './pages/Exchange'
+import Password from './pages/Password'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -49,7 +50,7 @@ let themeLight = createTheme({
         body: {
           '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
             width: '0.9rem',
-            backgroundColor: '#f5f5f5',
+            // backgroundColor: '#f5f5f5',
           },
           '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
             borderRadius: 8,
@@ -105,7 +106,7 @@ let themeDark = createTheme({
         body: {
           '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
             width: '0.9rem',
-            backgroundColor: '#121212',
+            // backgroundColor: '#921212',
           },
           '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
             borderRadius: 8,
@@ -212,6 +213,22 @@ export default function App() {
               }
             />
             <Route
+              path="/password"
+              element={
+                <>
+                  <Header />
+                  <main>
+                    <Password
+                      light={light}
+                      setLight={setLight}
+                      celsius={celsius}
+                      setCelsius={setCelsius}
+                    />
+                  </main>
+                </>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <>
@@ -236,7 +253,7 @@ export default function App() {
               }
             />
           </Routes>
-          <Box style={style}>
+          <Box style={style} sx={{ display: { xs: 'none', md: 'block' } }}>
             {!light ? (
               <IconButton
                 onClick={() => setLight((prev) => !prev)}
