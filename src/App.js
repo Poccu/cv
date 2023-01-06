@@ -21,21 +21,22 @@ import {
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { IconButton, Box } from '@mui/material'
+import { grey, red } from '@mui/material/colors'
 
 let themeLight = createTheme({
   palette: {
     primary: {
-      main: '#ffffff',
+      main: grey[50],
     },
     secondary: {
-      main: '#d32f2f',
+      main: red[700],
     },
     background: {
-      default: '#f5f5f5',
+      default: grey[100],
     },
     text: {
       primary: '#000000',
-      secondary: '#858585',
+      secondary: grey[600],
     },
     search: {
       primary: '#000000',
@@ -50,7 +51,7 @@ let themeLight = createTheme({
         body: {
           '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
             width: '0.9rem',
-            // backgroundColor: '#f5f5f5',
+            // backgroundColor: grey[600],
           },
           '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
             borderRadius: 8,
@@ -60,15 +61,15 @@ let themeLight = createTheme({
           },
           '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
           '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
           '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
         },
       },
@@ -83,22 +84,22 @@ let themeDark = createTheme({
       main: '#191919',
     },
     secondary: {
-      main: '#f44336',
+      main: red[500],
     },
     background: {
       default: '#121212',
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#858585',
+      primary: grey[50],
+      secondary: grey[500],
     },
     search: {
-      primary: '#ffffff',
+      primary: grey[50],
     },
     button: {
-      primary: '#ffffff',
+      primary: grey[50],
     },
-    divider: '#393939',
+    divider: grey[800],
   },
   components: {
     MuiCssBaseline: {
@@ -116,15 +117,15 @@ let themeDark = createTheme({
           },
           '&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
           '&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
           '&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover':
             {
-              backgroundColor: '#808080',
+              backgroundColor: grey[600],
             },
         },
       },

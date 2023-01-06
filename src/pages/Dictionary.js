@@ -7,6 +7,7 @@ import {
   IconButton,
   Button,
   Stack,
+  Chip,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { styled, alpha } from '@mui/material/styles'
@@ -32,6 +33,7 @@ import Badge from '@mui/material/Badge'
 import ClearAllIcon from '@mui/icons-material/ClearAll'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'
+import { blue, red } from '@mui/material/colors'
 
 /* eslint-disable no-useless-escape */
 
@@ -127,9 +129,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function Dictionary() {
-  const [error, setError] = useState(false) // catch errors
-  const [open, setOpen] = useState(false) // no input notifications
-  const [open2, setOpen2] = useState(false) // no audio notifications
+  const [openNoData, setOpenNoData] = useState(false) // no input notifications
+  const [openNoAudio, setOpenNoAudio] = useState(false) // no audio notifications
+  const [openAddFav, setOpenAddFav] = useState(false) // add fav notifications
 
   const [favs, setFavs] = useState([]) // array of favourite words
   const [phonetics, setPhonetics] = useState([]) // array of phonetics of favourite words
@@ -165,10 +167,8 @@ export default function Dictionary() {
         ...prevAudios,
         `${urlAudio}/${data.word}--_gb_1.mp3`,
       ])
-      // console.log(favs)
-      // console.log(phonetics)
-      // console.log(audios)
     }
+    setOpenAddFav(true)
   }
 
   const setNotFavourite = () => {
@@ -188,15 +188,12 @@ export default function Dictionary() {
         (item) => item !== `${urlAudio}/${data.word}--_gb_1.mp3`
       )
     )
-    // console.log(favs)
-    // console.log(phonetics)
-    // console.log(audios)
   }
 
-  const [value, setValue] = useState(0) // tabs state
+  const [tab, setTab] = useState(0) // tabs state
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
+  const handleChangeTabs = (event, newValue) => {
+    setTab(newValue)
   }
 
   const [data, setData] = useState({}) // response data object
@@ -224,12 +221,6 @@ export default function Dictionary() {
   const playAudio = () => {
     let audio = new Audio(audioWord)
     audio.play()
-
-    // todo
-    // try {
-    // } catch (err) {
-    //   console.log('oops')
-    // }
   }
 
   const getMeaning = (event) => {
@@ -239,69 +230,64 @@ export default function Dictionary() {
       axios
         .get(urlSearchWord)
         .then((response) => {
-          setValue(0)
+          setTab(0)
           setData(response.data[0])
-          // console.log(response.data[0])
-          // setOpen(true)
           let url = `${urlAudio}/${searchWord.toLowerCase()}--_gb_1.mp3`
           let audio = new Audio(url)
           audio.play()
           setAudioWord(url)
-          // console.log(audioWord)
         })
         .catch((error) => {
-          setError(true)
-          setOpen(true)
-          console.error('THIS IS ERROR --->', error)
+          setOpenNoData(true)
         })
-      setError(false)
       setSearchWord('')
     }
   }
 
   const getRandom = () => {
     const random = randomWords()
-    // console.log(random)
     axios
       .get(`${urlDictionary}/${random}`)
       .then((response) => {
-        setValue(0)
+        setTab(0)
         setData(response.data[0])
-        // console.log(response.data[0])
-        // setOpen(true)
         let url = `${urlAudio}/${random}--_gb_1.mp3`
         let audio = new Audio(url)
         audio.play()
         setAudioWord(url)
-        // console.log(audioWord)
       })
       .catch((error) => {
-        setError(true)
-        setOpen(true)
-        console.error('THIS IS ERROR --->', error)
+        setOpenNoData(true)
       })
-    setError(false)
     setSearchWord('')
   }
 
-  const handleClick2 = () => {
-    setOpen2(true)
+  const handleClickNoAudio = () => {
+    setOpenNoAudio(true)
   }
 
-  const handleClose2 = (event, reason) => {
+  const handleCloseNoAudio = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
 
-    setOpen2(false)
+    setOpenNoAudio(false)
   }
 
-  const handleClose = (event, reason) => {
+  const handleCloseNoData = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
 
-    setOpen(false)
+    setOpenNoData(false)
+  }
+
+  const handleCloseAddFav = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpenAddFav(false)
   }
 
   const clearData = () => {
@@ -326,14 +312,27 @@ export default function Dictionary() {
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        {!data?.word ? (
+        <Snackbar
+          open={openAddFav} // todo
+          autoHideDuration={3000}
+          onClose={handleCloseAddFav}
+        >
+          <Alert
+            onClose={handleCloseAddFav}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            Added to Favourites!
+          </Alert>
+        </Snackbar>
+        {!data?.word && (
           <Typography
             variant="h3"
             sx={({ flexGrow: 1 }, { textAlign: 'center' })}
           >
             <b>Enter the word</b>
           </Typography>
-        ) : null}
+        )}
         <Box
           sx={{ mt: 5 }}
           display="flex"
@@ -364,25 +363,22 @@ export default function Dictionary() {
           </Search>
 
           <Box>
-            {error ? (
-              <Snackbar
-                open={open}
-                autoHideDuration={3000}
-                onClose={handleClose}
+            <Snackbar
+              open={openNoData}
+              autoHideDuration={3000}
+              onClose={handleCloseNoData}
+            >
+              <Alert
+                onClose={handleCloseNoData}
+                severity="error"
+                sx={{ width: '100%' }}
               >
-                <Alert
-                  onClose={handleClose}
-                  severity="error"
-                  sx={{ width: '100%' }}
-                >
-                  Enter the correct word!
-                </Alert>
-              </Snackbar>
-            ) : null}
+                Enter the correct word!
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
         <br />
-
         {data?.word ? (
           <Box>
             <Grid
@@ -408,18 +404,18 @@ export default function Dictionary() {
                     </IconButton>
                   ) : (
                     <IconButton
-                      onClick={handleClick2}
+                      onClick={handleClickNoAudio}
                       color="inherit"
                       title="No Audio"
                     >
                       <HearingDisabledIcon style={{ fontSize: 40 }} />
                       <Snackbar
-                        open={open2}
+                        open={openNoAudio}
                         autoHideDuration={3000}
-                        onClose={handleClose2}
+                        onClose={handleCloseNoAudio}
                       >
                         <Alert
-                          onClose={handleClose2}
+                          onClose={handleCloseNoAudio}
                           severity="error"
                           sx={{ width: '100%' }}
                         >
@@ -509,18 +505,18 @@ export default function Dictionary() {
                   </IconButton>
                 ) : (
                   <IconButton
-                    onClick={handleClick2}
+                    onClick={handleClickNoAudio}
                     color="inherit"
                     title="No Audio"
                   >
                     <HearingDisabledIcon style={{ fontSize: 50 }} />
                     <Snackbar
-                      open={open2}
+                      open={openNoAudio}
                       autoHideDuration={3000}
-                      onClose={handleClose2}
+                      onClose={handleCloseNoAudio}
                     >
                       <Alert
-                        onClose={handleClose2}
+                        onClose={handleCloseNoAudio}
                         severity="error"
                         sx={{ width: '100%' }}
                       >
@@ -556,8 +552,8 @@ export default function Dictionary() {
             <Box>
               <Box display="flex" justifyContent="center" width="100%">
                 <Tabs
-                  value={value}
-                  onChange={handleChange}
+                  value={tab}
+                  onChange={handleChangeTabs}
                   aria-label="tabs"
                   textColor="inherit"
                   indicatorColor="secondary"
@@ -566,24 +562,25 @@ export default function Dictionary() {
                   scrollButtons="auto"
                   allowScrollButtonsMobile
                 >
-                  {[0, 1, 2, 3, 4].map((i) =>
-                    data.meanings[i] ? (
-                      <Tab
-                        label={
-                          <Typography variant="h6">
-                            <b>{data.meanings[i]?.partOfSpeech}</b>
-                          </Typography>
-                        }
-                        {...a11yProps(0)}
-                        key={i}
-                      />
-                    ) : null
+                  {[0, 1, 2, 3, 4].map(
+                    (i) =>
+                      data.meanings[i] && (
+                        <Tab
+                          label={
+                            <Typography variant="h6">
+                              <b>{data.meanings[i]?.partOfSpeech}</b>
+                            </Typography>
+                          }
+                          {...a11yProps(0)}
+                          key={i}
+                        />
+                      )
                   )}
                 </Tabs>
               </Box>
               {[0, 1, 2, 3, 4].map((i) => (
-                <TabPanel value={value} index={i} key={i}>
-                  {data.meanings[i] ? (
+                <TabPanel value={tab} index={i} key={i}>
+                  {data.meanings[i] && (
                     <Box>
                       <Typography variant="h3" color="textSecondary">
                         <b>{data.meanings[i]?.partOfSpeech}</b>
@@ -592,43 +589,118 @@ export default function Dictionary() {
                       <Typography variant="h5">
                         <b>Definition</b>
                       </Typography>
-                      {data.meanings[i].definitions.map((i) => (
-                        <>
+                      <br />
+                      {data.meanings[i].definitions.map((i, index) => (
+                        <Box key={index}>
                           <Typography color="textSecondary">
                             - {i.definition}
                           </Typography>
-                          {i.example ? (
+                          {i.example && (
                             <Typography color="textSecondary">
                               <i>'{i.example}'</i>
                             </Typography>
-                          ) : null}
+                          )}
                           <br />
-                        </>
-                      ))}
-                      {data.meanings[i].synonyms.length > 0 ? (
-                        <Box>
-                          <br />
-                          <Typography variant="h5">
-                            <b>Synonyms</b>
-                          </Typography>
-                          <Typography color="textSecondary">
-                            {data.meanings[i].synonyms.join(', ')}
-                          </Typography>
                         </Box>
-                      ) : null}
-                      {data.meanings[i].antonyms.length > 0 ? (
+                      ))}
+                      {data.meanings[i].synonyms.length > 0 && (
+                        <>
+                          <Box>
+                            <br />
+                            <Typography variant="h5">
+                              <b>Synonyms</b>
+                            </Typography>
+                            <br />
+                            <Stack
+                              direction="row"
+                              sx={{ flexWrap: 'wrap', gap: 1 }}
+                            >
+                              {data.meanings[i].synonyms.map((i, index) => (
+                                <Box key={index}>
+                                  <Chip
+                                    // variant="outlined"
+                                    color="info"
+                                    label={i}
+                                    sx={{
+                                      backgroundColor: blue[700],
+                                    }}
+                                    onClick={() => {
+                                      axios
+                                        .get(`${urlDictionary}/${i}`)
+                                        .then((response) => {
+                                          window.scrollTo({
+                                            top: 0,
+                                            behavior: 'smooth',
+                                          })
+                                          setTab(0)
+                                          setData(response.data[0])
+
+                                          let url = `${urlAudio}/${i}--_gb_1.mp3`
+                                          let audio = new Audio(url)
+                                          audio.play()
+                                          setAudioWord(url)
+                                        })
+                                        .catch((error) => {
+                                          setOpenNoData(true)
+                                        })
+                                      setSearchWord('')
+                                    }}
+                                  />
+                                </Box>
+                              ))}
+                            </Stack>
+                          </Box>
+                        </>
+                      )}
+                      {data.meanings[i].antonyms.length > 0 && (
                         <Box>
                           <br />
                           <Typography variant="h5">
                             <b>Antonyms</b>
                           </Typography>
-                          <Typography color="textSecondary">
-                            {data.meanings[i].antonyms.join(', ')}
-                          </Typography>
+                          <br />
+                          <Stack
+                            direction="row"
+                            sx={{ flexWrap: 'wrap', gap: 1 }}
+                          >
+                            {data.meanings[i].antonyms.map((i, index) => (
+                              <Box key={index}>
+                                <Chip
+                                  // variant="outlined"
+                                  color="error"
+                                  label={i}
+                                  sx={{
+                                    backgroundColor: red[700],
+                                  }}
+                                  onClick={() => {
+                                    axios
+                                      .get(`${urlDictionary}/${i}`)
+                                      .then((response) => {
+                                        window.scrollTo({
+                                          top: 0,
+                                          behavior: 'smooth',
+                                        })
+                                        setTab(0)
+                                        setData(response.data[0])
+
+                                        let url = `${urlAudio}/${i}--_gb_1.mp3`
+                                        let audio = new Audio(url)
+                                        audio.play()
+                                        setAudioWord(url)
+                                      })
+                                      .catch((error) => {
+                                        setOpenNoData(true)
+                                      })
+                                    setSearchWord('')
+                                  }}
+                                />
+                              </Box>
+                            ))}
+                          </Stack>
                         </Box>
-                      ) : null}
+                      )}
                     </Box>
-                  ) : null}
+                  )}
                 </TabPanel>
               ))}
             </Box>
@@ -684,9 +756,6 @@ export default function Dictionary() {
                                         (item) => item !== audios[index]
                                       )
                                     )
-                                    // console.log(favs)
-                                    // console.log(phonetics)
-                                    // console.log(audios)
                                   }}
                                   edge="end"
                                   aria-label="delete"
@@ -704,38 +773,28 @@ export default function Dictionary() {
                                         let audio = new Audio(audios[index])
                                         audio.play()
                                       }
-                                    : handleClick2
+                                    : handleClickNoAudio
                                 }
                               >
                                 <ListItemAvatar>
                                   <IconButton
                                     onClick={() => {
-                                      window.scrollTo(0, 0)
+                                      window.scrollTo({
+                                        top: 0,
+                                        behavior: 'smooth',
+                                      })
                                       axios
                                         .get(`${urlDictionary}/${favs[index]}`)
                                         .then((response) => {
-                                          setValue(0)
+                                          setTab(0)
                                           setData(response.data[0])
-                                          // setOpen(true)
-                                          // let audio = new Audio(
-                                          //   response.data[0].phonetics[0].audio
-                                          // )
-                                          // audio.play()
 
                                           let url = `${urlAudio}/${favs[index]}--_gb_1.mp3`
-                                          // let audio = new Audio(url)
-                                          // audio.play()
                                           setAudioWord(url)
                                         })
                                         .catch((error) => {
-                                          setError(true)
-                                          setOpen(true)
-                                          console.error(
-                                            'THIS IS ERROR --->',
-                                            error
-                                          )
+                                          setOpenNoData(true)
                                         })
-                                      setError(false)
                                       setSearchWord('')
                                     }}
                                     color="inherit"
