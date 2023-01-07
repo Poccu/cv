@@ -191,10 +191,7 @@ export default function Header() {
           <Toolbar>
             <Box sx={{ flexGrow: 1 }}>
               <Stack direction="row" spacing={1} justifyContent="center">
-                <NavLink
-                  to="/cv"
-                  style={{ textDecoration: 'none', color: '#fff' }}
-                >
+                <NavLink to="/cv" style={{ textDecoration: 'none' }}>
                   <ThemeButton
                     startIcon={<CottageOutlinedIcon style={{ fontSize: 24 }} />}
                   >

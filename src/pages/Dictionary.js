@@ -312,25 +312,9 @@ export default function Dictionary() {
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        <Snackbar
-          open={openAddFav} // todo
-          autoHideDuration={3000}
-          onClose={handleCloseAddFav}
-        >
-          <Alert
-            onClose={handleCloseAddFav}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            Added to Favourites!
-          </Alert>
-        </Snackbar>
         {!data?.word && (
-          <Typography
-            variant="h3"
-            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-          >
-            <b>Enter the word</b>
+          <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            <b>DICTIONARY</b>
           </Typography>
         )}
         <Box
@@ -435,10 +419,7 @@ export default function Dictionary() {
                 <Box>
                   <br />
                   <Box display="flex" justifyContent="center" width="100%">
-                    <Typography
-                      variant="h1"
-                      sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                    >
+                    <Typography variant="h1" sx={{ textAlign: 'center' }}>
                       {data?.word.length > 16 ? (
                         <b>{data?.word.substr(-150, 13) + '…'}</b>
                       ) : (
@@ -707,10 +688,7 @@ export default function Dictionary() {
             <>
               <br />
               <Divider>
-                <Typography
-                  variant="h3"
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                >
+                <Typography variant="h3" sx={{ textAlign: 'center' }}>
                   <Badge badgeContent={favs?.length} color="secondary" max={99}>
                     <b>Favourites</b>
                   </Badge>
@@ -855,7 +833,7 @@ export default function Dictionary() {
               <>
                 <Typography
                   variant="h4"
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                  sx={{ textAlign: 'center' }}
                   color="textSecondary"
                 >
                   <br />
@@ -863,7 +841,7 @@ export default function Dictionary() {
                 </Typography>
                 <Typography
                   variant="h5"
-                  sx={({ flexGrow: 1 }, { textAlign: 'center' })}
+                  sx={{ textAlign: 'center' }}
                   color="textSecondary"
                 >
                   <b>Please, add some!</b>
@@ -905,6 +883,19 @@ export default function Dictionary() {
             </Box>
           </>
         )}
+        <Snackbar
+          open={openAddFav} // todo
+          autoHideDuration={3000}
+          onClose={handleCloseAddFav}
+        >
+          <Alert
+            onClose={handleCloseAddFav}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            Added to Favourites!
+          </Alert>
+        </Snackbar>
       </Container>
     </Box>
   )

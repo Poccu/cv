@@ -8,7 +8,7 @@ export default function Home() {
   }, [])
 
   return (
-    <Box sx={{ mt: 16 }}>
+    <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
         <Box
           sx={{

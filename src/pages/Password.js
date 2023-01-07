@@ -8,7 +8,6 @@ import {
   FormGroup,
   Slider,
   IconButton,
-  Stack,
 } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
@@ -52,7 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     marginRight: theme.spacing(7),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '470px',
+      width: '450px',
     },
   },
   '& .MuiInputBase-input.Mui-disabled': {
@@ -143,14 +142,6 @@ export default function Password() {
       setOpenErrorOptions(true)
     }
 
-    // let result = charList //unique chars
-    //   .split('')
-    //   .sort(() => {
-    //     return 0.5 - Math.random()
-    //   })
-    //   .join('')
-    //   .slice(-passwordLength)
-
     let result = ''
 
     if (charList) {
@@ -240,64 +231,10 @@ export default function Password() {
 
   return (
     <Box sx={{ mt: 14 }}>
-      <Container maxwidth="xs">
+      <Container maxwidth="sm">
         <Box display="flex" justifyContent="center" alignItems="center">
           <Box>
-            <Snackbar
-              open={openSuccess}
-              autoHideDuration={5000}
-              onClose={handleCloseSuccess}
-            >
-              <Alert
-                onClose={handleCloseSuccess}
-                severity="success"
-                sx={{ width: '100%' }}
-              >
-                Copied to your clipboard!
-              </Alert>
-            </Snackbar>
-            <Snackbar
-              open={openError}
-              autoHideDuration={4000}
-              onClose={handleCloseError}
-            >
-              <Alert
-                onClose={handleCloseError}
-                severity="error"
-                sx={{ width: '100%' }}
-              >
-                No password to copy!
-              </Alert>
-            </Snackbar>
-            <Snackbar
-              open={openError}
-              autoHideDuration={4000}
-              onClose={handleCloseError}
-            >
-              <Alert
-                onClose={handleCloseError}
-                severity="error"
-                sx={{ width: '100%' }}
-              >
-                No password to copy!
-              </Alert>
-            </Snackbar>
-            <Snackbar
-              open={openErrorOptions}
-              autoHideDuration={4000}
-              onClose={handleCloseErrorOptions}
-            >
-              <Alert
-                onClose={handleCloseErrorOptions}
-                severity="error"
-                sx={{ width: '100%' }}
-              >
-                Please select at least one option!
-              </Alert>
-            </Snackbar>
-          </Box>
-          <Box>
-            <Typography variant="h4" align="center" color="textSecondary">
+            <Typography variant="h3" sx={{ textAlign: 'center' }}>
               <b>PASSWORD GENERATOR</b>
             </Typography>
             <br />
@@ -322,24 +259,23 @@ export default function Password() {
                 </IconButton>
               </SearchIconWrapperCopy>
               <SearchIconWrapperChip>
-                {password &&
-                  passwordLength + complexity < 12 && ( //4 = 12 (+8 to old)
-                    <Chip
-                      color="success"
-                      icon={<MoodBadIcon />}
-                      label="Very Weak"
-                      sx={{
-                        backgroundColor: red[800],
-                      }}
-                    />
-                  )}
+                {password && passwordLength + complexity < 12 && (
+                  <Chip
+                    color="success"
+                    icon={<MoodBadIcon />}
+                    label={<b>VERY WEAK</b>}
+                    sx={{
+                      backgroundColor: red[800],
+                    }}
+                  />
+                )}
                 {password &&
                   passwordLength + complexity > 11 &&
-                  passwordLength + complexity < 16 && ( // 3, 7 = 11, 15 (+8 to old)
+                  passwordLength + complexity < 16 && (
                     <Chip
                       color="success"
                       icon={<SentimentVeryDissatisfiedIcon />}
-                      label="Weak"
+                      label={<b>WEAK</b>}
                       sx={{
                         backgroundColor: orange[700],
                       }}
@@ -347,11 +283,11 @@ export default function Password() {
                   )}
                 {password &&
                   passwordLength + complexity > 15 &&
-                  passwordLength + complexity < 20 && ( // 6, 11 = 14, 19 (+8 to old)
+                  passwordLength + complexity < 20 && (
                     <Chip
                       color="success"
                       icon={<SentimentSatisfiedIcon />}
-                      label="Good"
+                      label={<b>GOOD</b>}
                       sx={{
                         backgroundColor: yellow[700],
                       }}
@@ -359,27 +295,26 @@ export default function Password() {
                   )}
                 {password &&
                   passwordLength + complexity > 19 &&
-                  passwordLength + complexity < 24 && ( // 10, 15 = 18, 22  (+8 to old)
+                  passwordLength + complexity < 24 && (
                     <Chip
                       color="success"
                       icon={<SentimentSatisfiedAltIcon />}
-                      label="Strong"
+                      label={<b>STRONG</b>}
                       sx={{
                         backgroundColor: green[600],
                       }}
                     />
                   )}
-                {password &&
-                  passwordLength + complexity > 23 && ( // 14 = 22(+8 to old)
-                    <Chip
-                      color="success"
-                      icon={<SentimentVerySatisfiedIcon />}
-                      label="Very Strong"
-                      sx={{
-                        backgroundColor: green[900],
-                      }}
-                    />
-                  )}
+                {password && passwordLength + complexity > 23 && (
+                  <Chip
+                    color="success"
+                    icon={<SentimentVerySatisfiedIcon />}
+                    label={<b>VERY STRONG</b>}
+                    sx={{
+                      backgroundColor: green[900],
+                    }}
+                  />
+                )}
               </SearchIconWrapperChip>
               <StyledInputBase
                 disabled
@@ -456,18 +391,70 @@ export default function Password() {
               </FormGroup>
             </Box>
             <br />
-            <Stack direction="row" spacing={7}>
-              <Slider
-                value={passwordLength}
-                onChange={(event, newValue) => setPasswordLength(newValue)}
-                min={1}
-                step={1}
-                max={30}
-                color="secondary"
-                valueLabelDisplay="on"
-                marks
-              />
-            </Stack>
+            <Slider
+              value={passwordLength}
+              onChange={(event, newValue) => setPasswordLength(newValue)}
+              min={1}
+              step={1}
+              max={30}
+              color="secondary"
+              valueLabelDisplay="on"
+              marks
+            />
+          </Box>
+          <Box>
+            <Snackbar
+              open={openSuccess}
+              autoHideDuration={6000}
+              onClose={handleCloseSuccess}
+            >
+              <Alert
+                onClose={handleCloseSuccess}
+                severity="success"
+                sx={{ width: '100%' }}
+              >
+                Copied to your clipboard!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={openError}
+              autoHideDuration={4000}
+              onClose={handleCloseError}
+            >
+              <Alert
+                onClose={handleCloseError}
+                severity="error"
+                sx={{ width: '100%' }}
+              >
+                No password to copy!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={openError}
+              autoHideDuration={4000}
+              onClose={handleCloseError}
+            >
+              <Alert
+                onClose={handleCloseError}
+                severity="error"
+                sx={{ width: '100%' }}
+              >
+                No password to copy!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={openErrorOptions}
+              autoHideDuration={4000}
+              onClose={handleCloseErrorOptions}
+            >
+              <Alert
+                onClose={handleCloseErrorOptions}
+                severity="error"
+                sx={{ width: '100%' }}
+              >
+                Please select at least one option!
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
       </Container>

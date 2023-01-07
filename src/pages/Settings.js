@@ -12,11 +12,8 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        <Typography
-          variant="h3"
-          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-        >
-          <b>Settings</b>
+        <Typography variant="h3" sx={{ textAlign: 'center' }}>
+          <b>SETTINGS</b>
         </Typography>
         <br />
         <Divider variant="middle" sx={{ borderBottomWidth: 2 }} />
@@ -27,10 +24,7 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography
-            variant="h5"
-            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-          >
+          <Typography variant="h5" sx={{ textAlign: 'center' }}>
             <b>Theme</b>
           </Typography>
           {!light ? (
@@ -62,10 +56,7 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography
-            variant="h5"
-            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-          >
+          <Typography variant="h5" sx={{ textAlign: 'center' }}>
             <b>Temperature</b>
           </Typography>
           {celsius === true || celsius === null ? (

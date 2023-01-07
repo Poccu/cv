@@ -117,7 +117,6 @@ export default function Weather({ celsius }) {
   const [data, setData] = useState({})
   const [location, setLocation] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(false)
   const [open, setOpen] = useState(false)
 
   const [lat, setLat] = useState(
@@ -169,7 +168,7 @@ export default function Weather({ celsius }) {
     )
   }, [hourlyForecast])
 
-  const [expanded, setExpanded] = useState('') //'panel0'
+  const [expanded, setExpanded] = useState('') // 'panel0'
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false)
@@ -190,31 +189,24 @@ export default function Weather({ celsius }) {
           .get(urlGeo)
           .then((response) => {
             setData(response.data)
-            // console.log('getLocation:', response.data)
-            // setOpen(true)
             setIsLoading(false)
           })
           .catch((error) => {
-            setError(true)
             setOpen(true)
-            console.error('THIS IS ERROR --->', error)
             setIsLoading(false)
           })
-        setError(false)
         setLocation('')
       })
     }
   }
 
   useEffect(() => {
-    // setIsLoading(true)
     const urlForecast = `${apiUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
     if (lat !== null || lon !== null) {
       axios
         .get(urlForecast)
         .then((response) => {
           setForecast(response.data)
-          // console.log('useEffect getForecast:', response.data)
 
           let sun = [
             {
@@ -257,13 +249,10 @@ export default function Weather({ celsius }) {
           setIsLoading(false)
         })
         .catch((error) => {
-          setError(true)
           setOpen(true)
-          console.error('THIS IS ERROR --->', error)
           setIsLoading(false)
         })
     } else return
-    setError(false)
     setLocation('')
   }, [data, lat, lon])
 
@@ -276,20 +265,12 @@ export default function Weather({ celsius }) {
         .then((response) => {
           setLat(response.data.coord.lat)
           setLon(response.data.coord.lon)
-          // console.log(response.data.coord.lat)
-          // console.log(response.data.coord.lon)
           setData(response.data)
-          // console.log('searchLocation:', response.data)
-          // setOpen(true)
-          // setIsLoading(false)
         })
         .catch((error) => {
-          setError(true)
           setOpen(true)
-          console.error('THIS IS ERROR --->', error)
           setIsLoading(false)
         })
-      setError(false)
       setLocation('')
     }
   }
@@ -1076,14 +1057,11 @@ export default function Weather({ celsius }) {
   return (
     <Box sx={{ mt: 14 }}>
       <Container maxwidth="sm">
-        {!data?.main ? (
-          <Typography
-            variant="h3"
-            sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-          >
-            <b>Enter the name of the city</b>
+        {!data?.main && (
+          <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            <b>WEATHER FORECAST</b>
           </Typography>
-        ) : null}
+        )}
         <Box
           sx={{ mt: 5 }}
           display="flex"
@@ -1113,21 +1091,15 @@ export default function Weather({ celsius }) {
             />
           </Search>
           <Box>
-            {error ? (
-              <Snackbar
-                open={open}
-                autoHideDuration={3000}
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+              <Alert
                 onClose={handleClose}
+                severity="error"
+                sx={{ width: '100%' }}
               >
-                <Alert
-                  onClose={handleClose}
-                  severity="error"
-                  sx={{ width: '100%' }}
-                >
-                  Enter the correct name!
-                </Alert>
-              </Snackbar>
-            ) : null}
+                Enter the correct name!
+              </Alert>
+            </Snackbar>
           </Box>
         </Box>
         <Box
@@ -1143,9 +1115,7 @@ export default function Weather({ celsius }) {
           <Box>
             <Typography
               variant="h6"
-              sx={
-                ({ flexGrow: 1 }, { textAlign: 'center', fontWeight: 'light' })
-              }
+              sx={{ textAlign: 'center', fontWeight: 'light' }}
               color="textSecondary"
             >
               {todayDate}
@@ -1175,7 +1145,7 @@ export default function Weather({ celsius }) {
                 <Box>
                   <Box>
                     <Box>
-                      {data?.main ? (
+                      {data?.main && (
                         <Grid
                           container
                           direction="row"
@@ -1202,12 +1172,9 @@ export default function Weather({ celsius }) {
                             />
                           )}
                         </Grid>
-                      ) : null}
+                      )}
                     </Box>
-                    <Typography
-                      variant="h2"
-                      sx={{ flexGrow: 1, textAlign: 'center' }}
-                    >
+                    <Typography variant="h2" sx={{ textAlign: 'center' }}>
                       <Box sx={{ letterSpacing: 5 }}>
                         {!isLoading ? (
                           <b>{data.name.toUpperCase()}</b>
@@ -1219,7 +1186,6 @@ export default function Weather({ celsius }) {
                     <Typography
                       variant="h6"
                       sx={{
-                        flexGrow: 1,
                         textAlign: 'center',
                         fontWeight: 'regular',
                       }}
@@ -1243,10 +1209,7 @@ export default function Weather({ celsius }) {
                   >
                     {!isLoading ? (
                       <>
-                        <Typography
-                          variant="h1"
-                          sx={({ flexGrow: 1 }, { textAlign: 'center' })}
-                        >
+                        <Typography variant="h1" sx={{ textAlign: 'center' }}>
                           {celsius === true || celsius === null ? (
                             <>{forecast.current.temp.toFixed() - 273}°</>
                           ) : (
@@ -1281,7 +1244,6 @@ export default function Weather({ celsius }) {
                   <Typography
                     variant="h6"
                     sx={{
-                      flexGrow: 1,
                       textAlign: 'center',
                       fontWeight: 'regular',
                     }}
@@ -1404,9 +1366,9 @@ export default function Weather({ celsius }) {
                       />
 
                       <Typography variant="p" color="textSecondary">
-                        {data?.main ? (
+                        {data?.main && (
                           <>&nbsp;{forecast.current.pressure} hPa</>
-                        ) : null}
+                        )}
                       </Typography>
                     </Grid>
 
@@ -1426,9 +1388,7 @@ export default function Weather({ celsius }) {
                         className="shadow"
                       />
                       <Typography variant="p" color="textSecondary">
-                        {data?.main ? (
-                          <>&nbsp;{forecast.current.humidity} %</>
-                        ) : null}
+                        {data?.main && <>&nbsp;{forecast.current.humidity} %</>}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -1436,12 +1396,8 @@ export default function Weather({ celsius }) {
 
                 <Grid item xs={12}>
                   <Carousel
-                    // easing="cubic-bezier(1,.15,.55,1.54)"
-                    // tiltEasing="cubic-bezier(0.110, 1, 1.000, 0.210)"
-                    // transitionMs={700}
                     initialActiveIndex={0}
                     itemsToScroll={2}
-                    // itemsToShow={8}
                     breakPoints={breakPoints}
                   >
                     <Grid
@@ -1508,7 +1464,7 @@ export default function Weather({ celsius }) {
                           draggable={false}
                           className="shadow"
                         />
-                        {hourlyForecast[i]?.temp === 995 ? (
+                        {hourlyForecast[i]?.temp === 995 && (
                           <Typography
                             variant="h6"
                             color="textSecondary"
@@ -1516,8 +1472,8 @@ export default function Weather({ celsius }) {
                           >
                             Sunrise
                           </Typography>
-                        ) : null}
-                        {hourlyForecast[i]?.temp === 999 ? (
+                        )}
+                        {hourlyForecast[i]?.temp === 999 && (
                           <Typography
                             variant="h6"
                             color="textSecondary"
@@ -1525,9 +1481,9 @@ export default function Weather({ celsius }) {
                           >
                             Sunset
                           </Typography>
-                        ) : null}
+                        )}
                         <Typography variant="h5">
-                          {hourlyForecast[i]?.temp < 990 ? (
+                          {hourlyForecast[i]?.temp < 990 && (
                             <>
                               {celsius === true || celsius === null ? (
                                 <b>
@@ -1546,7 +1502,7 @@ export default function Weather({ celsius }) {
                                 </b>
                               )}
                             </>
-                          ) : null}
+                          )}
                         </Typography>
                       </Grid>
                     ))}
@@ -1575,12 +1531,8 @@ export default function Weather({ celsius }) {
               >
                 <Grid item xs={14}>
                   <Carousel
-                    // easing="cubic-bezier(1,.15,.55,1.54)"
-                    // tiltEasing="cubic-bezier(0.110, 1, 1.000, 0.210)"
-                    // transitionMs={700}
                     initialActiveIndex={0}
                     itemsToScroll={2}
-                    // itemsToShow={8}
                     breakPoints={breakPoints}
                   >
                     <Grid
@@ -1647,7 +1599,7 @@ export default function Weather({ celsius }) {
                           draggable={false}
                           className="shadow"
                         />
-                        {hourlyForecast[i]?.temp === 995 ? (
+                        {hourlyForecast[i]?.temp === 995 && (
                           <Typography
                             variant="h6"
                             color="textSecondary"
@@ -1655,8 +1607,8 @@ export default function Weather({ celsius }) {
                           >
                             Sunrise
                           </Typography>
-                        ) : null}
-                        {hourlyForecast[i]?.temp === 999 ? (
+                        )}
+                        {hourlyForecast[i]?.temp === 999 && (
                           <Typography
                             variant="h6"
                             color="textSecondary"
@@ -1664,9 +1616,9 @@ export default function Weather({ celsius }) {
                           >
                             Sunset
                           </Typography>
-                        ) : null}
+                        )}
                         <Typography variant="h5">
-                          {hourlyForecast[i]?.temp < 990 ? (
+                          {hourlyForecast[i]?.temp < 990 && (
                             <>
                               {celsius === true || celsius === null ? (
                                 <b>
@@ -1685,7 +1637,7 @@ export default function Weather({ celsius }) {
                                 </b>
                               )}
                             </>
-                          ) : null}
+                          )}
                         </Typography>
                       </Grid>
                     ))}
@@ -1723,11 +1675,11 @@ export default function Weather({ celsius }) {
                           >
                             <Grid item>
                               <Typography variant="h5" color="textPrimary">
-                                {i === 0 ? <b>Today</b> : null}
-                                {i === 1 ? <b>Tomorrow</b> : null}
-                                {i !== 0 && i !== 1 ? (
+                                {i === 0 && <b>Today</b>}
+                                {i === 1 && <b>Tomorrow</b>}
+                                {i !== 0 && i !== 1 && (
                                   <b>{getWeekdayFromUnix(i)}</b>
-                                ) : null}
+                                )}
                               </Typography>
                             </Grid>
                             <Grid item>
