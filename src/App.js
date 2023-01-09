@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -146,19 +146,19 @@ export default function App() {
 
   // localStorage
   useEffect(() => {
-    setLight(JSON.parse(window.localStorage.getItem('light')))
-    setCelsius(JSON.parse(window.localStorage.getItem('celsius')))
+    setLight(JSON.parse(localStorage.getItem('light')))
+    setCelsius(JSON.parse(localStorage.getItem('celsius')))
   }, [])
 
   useEffect(() => {
     if (celsius !== null) {
-      window.localStorage.setItem('celsius', JSON.stringify(celsius))
+      localStorage.setItem('celsius', JSON.stringify(celsius))
     }
   }, [celsius])
 
   useEffect(() => {
     if (light !== null) {
-      window.localStorage.setItem('light', JSON.stringify(light))
+      localStorage.setItem('light', JSON.stringify(light))
     }
   }, [light])
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Typography, Container, Box, Grid } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 

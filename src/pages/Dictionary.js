@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
 import {
   Typography,
   Container,
@@ -84,7 +84,7 @@ function a11yProps(index) {
   }
 }
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
@@ -139,18 +139,18 @@ export default function Dictionary() {
 
   // localStorage
   useEffect(() => {
-    if (JSON.parse(window.localStorage.getItem('favs')) !== null) {
-      setFavs(JSON.parse(window.localStorage.getItem('favs')))
-      setPhonetics(JSON.parse(window.localStorage.getItem('phonetics')))
-      setAudios(JSON.parse(window.localStorage.getItem('audios')))
+    if (JSON.parse(localStorage.getItem('favs')) !== null) {
+      setFavs(JSON.parse(localStorage.getItem('favs')))
+      setPhonetics(JSON.parse(localStorage.getItem('phonetics')))
+      setAudios(JSON.parse(localStorage.getItem('audios')))
     }
   }, [])
 
   useEffect(() => {
-    if (favs !== null) {
-      window.localStorage.setItem('favs', JSON.stringify(favs))
-      window.localStorage.setItem('phonetics', JSON.stringify(phonetics))
-      window.localStorage.setItem('audios', JSON.stringify(audios))
+    if (favs !== null || phonetics !== null || audios !== null) {
+      localStorage.setItem('favs', JSON.stringify(favs))
+      localStorage.setItem('phonetics', JSON.stringify(phonetics))
+      localStorage.setItem('audios', JSON.stringify(audios))
     }
   }, [favs, phonetics, audios])
 
@@ -202,24 +202,25 @@ export default function Dictionary() {
 
   // localStorage
   useEffect(() => {
-    setData(JSON.parse(window.localStorage.getItem('dataDictionary')))
-    setAudioWord(JSON.parse(window.localStorage.getItem('audioWord')))
+    setData(JSON.parse(localStorage.getItem('dataDictionary')))
+    setAudioWord(JSON.parse(localStorage.getItem('audioWord')))
   }, [])
 
   useEffect(() => {
     if (data !== null) {
-      window.localStorage.setItem('dataDictionary', JSON.stringify(data))
+      localStorage.setItem('dataDictionary', JSON.stringify(data))
     }
   }, [data])
 
   useEffect(() => {
     if (audioWord !== null) {
-      window.localStorage.setItem('audioWord', JSON.stringify(audioWord))
+      localStorage.setItem('audioWord', JSON.stringify(audioWord))
     }
   }, [audioWord])
 
   const playAudio = () => {
     let audio = new Audio(audioWord)
+    audio.volume = 0.3
     audio.play()
   }
 
@@ -234,6 +235,7 @@ export default function Dictionary() {
           setData(response.data[0])
           let url = `${urlAudio}/${searchWord.toLowerCase()}--_gb_1.mp3`
           let audio = new Audio(url)
+          audio.volume = 0.3
           audio.play()
           setAudioWord(url)
         })
@@ -253,6 +255,7 @@ export default function Dictionary() {
         setData(response.data[0])
         let url = `${urlAudio}/${random}--_gb_1.mp3`
         let audio = new Audio(url)
+        audio.volume = 0.3
         audio.play()
         setAudioWord(url)
       })
@@ -596,39 +599,42 @@ export default function Dictionary() {
                               direction="row"
                               sx={{ flexWrap: 'wrap', gap: 1 }}
                             >
-                              {data.meanings[i].synonyms.map((i, index) => (
-                                <Box key={index}>
-                                  <Chip
-                                    // variant="outlined"
-                                    color="info"
-                                    label={i}
-                                    sx={{
-                                      backgroundColor: blue[700],
-                                    }}
-                                    onClick={() => {
-                                      axios
-                                        .get(`${urlDictionary}/${i}`)
-                                        .then((response) => {
-                                          window.scrollTo({
-                                            top: 0,
-                                            behavior: 'smooth',
-                                          })
-                                          setTab(0)
-                                          setData(response.data[0])
+                              {[...new Set(data.meanings[i].synonyms)]
+                                .filter((i) => i.constructor.name == 'String')
+                                .map((i, index) => (
+                                  <Box key={index}>
+                                    <Chip
+                                      // variant="outlined"
+                                      color="info"
+                                      label={i}
+                                      sx={{
+                                        backgroundColor: blue[700],
+                                      }}
+                                      onClick={() => {
+                                        axios
+                                          .get(`${urlDictionary}/${i}`)
+                                          .then((response) => {
+                                            window.scrollTo({
+                                              top: 0,
+                                              behavior: 'smooth',
+                                            })
+                                            setTab(0)
+                                            setData(response.data[0])
 
-                                          let url = `${urlAudio}/${i}--_gb_1.mp3`
-                                          let audio = new Audio(url)
-                                          audio.play()
-                                          setAudioWord(url)
-                                        })
-                                        .catch((error) => {
-                                          setOpenNoData(true)
-                                        })
-                                      setSearchWord('')
-                                    }}
-                                  />
-                                </Box>
-                              ))}
+                                            let url = `${urlAudio}/${i}--_gb_1.mp3`
+                                            let audio = new Audio(url)
+                                            audio.volume = 0.3
+                                            audio.play()
+                                            setAudioWord(url)
+                                          })
+                                          .catch((error) => {
+                                            setOpenNoData(true)
+                                          })
+                                        setSearchWord('')
+                                      }}
+                                    />
+                                  </Box>
+                                ))}
                             </Stack>
                           </Box>
                         </>
@@ -644,39 +650,42 @@ export default function Dictionary() {
                             direction="row"
                             sx={{ flexWrap: 'wrap', gap: 1 }}
                           >
-                            {data.meanings[i].antonyms.map((i, index) => (
-                              <Box key={index}>
-                                <Chip
-                                  // variant="outlined"
-                                  color="error"
-                                  label={i}
-                                  sx={{
-                                    backgroundColor: red[700],
-                                  }}
-                                  onClick={() => {
-                                    axios
-                                      .get(`${urlDictionary}/${i}`)
-                                      .then((response) => {
-                                        window.scrollTo({
-                                          top: 0,
-                                          behavior: 'smooth',
-                                        })
-                                        setTab(0)
-                                        setData(response.data[0])
+                            {[...new Set(data.meanings[i].antonyms)].map(
+                              (i, index) => (
+                                <Box key={index}>
+                                  <Chip
+                                    // variant="outlined"
+                                    color="error"
+                                    label={i}
+                                    sx={{
+                                      backgroundColor: red[700],
+                                    }}
+                                    onClick={() => {
+                                      axios
+                                        .get(`${urlDictionary}/${i}`)
+                                        .then((response) => {
+                                          window.scrollTo({
+                                            top: 0,
+                                            behavior: 'smooth',
+                                          })
+                                          setTab(0)
+                                          setData(response.data[0])
 
-                                        let url = `${urlAudio}/${i}--_gb_1.mp3`
-                                        let audio = new Audio(url)
-                                        audio.play()
-                                        setAudioWord(url)
-                                      })
-                                      .catch((error) => {
-                                        setOpenNoData(true)
-                                      })
-                                    setSearchWord('')
-                                  }}
-                                />
-                              </Box>
-                            ))}
+                                          let url = `${urlAudio}/${i}--_gb_1.mp3`
+                                          let audio = new Audio(url)
+                                          audio.volume = 0.3
+                                          audio.play()
+                                          setAudioWord(url)
+                                        })
+                                        .catch((error) => {
+                                          setOpenNoData(true)
+                                        })
+                                      setSearchWord('')
+                                    }}
+                                  />
+                                </Box>
+                              )
+                            )}
                           </Stack>
                         </Box>
                       )}
@@ -749,6 +758,7 @@ export default function Dictionary() {
                                   audios[index]
                                     ? () => {
                                         let audio = new Audio(audios[index])
+                                        audio.volume = 0.3
                                         audio.play()
                                       }
                                     : handleClickNoAudio

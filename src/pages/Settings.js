@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Typography, Container, Box, Grid, IconButton } from '@mui/material'
 import Divider from '@mui/material/Divider'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
