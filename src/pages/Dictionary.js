@@ -154,7 +154,12 @@ export default function Dictionary() {
         words: [...favs?.words, data.word],
         phonetics: [
           ...favs?.phonetics,
-          data?.phonetic?.replace(/[\/\]\[]/g, '') || data.word,
+          data?.phonetic?.replace(/[\/\]\[]/g, '') ||
+            data?.phonetics[0]?.text?.replace(/[\/\]\[]/g, '') ||
+            data?.phonetics[1]?.text?.replace(/[\/\]\[]/g, '') ||
+            data?.phonetics[2]?.text?.replace(/[\/\]\[]/g, '') ||
+            data?.phonetics[3]?.text?.replace(/[\/\]\[]/g, '') ||
+            data.word,
         ],
         audios: [...favs?.audios, `${urlAudio}/${data.word}--_gb_1.mp3`],
       })
@@ -168,6 +173,10 @@ export default function Dictionary() {
       phonetics: favs.phonetics.filter(
         (item) =>
           item !== data?.phonetic?.replace(/[\/\]\[]/g, '') &&
+          item !== data?.phonetics[0]?.text?.replace(/[\/\]\[]/g, '') &&
+          item !== data?.phonetics[1]?.text?.replace(/[\/\]\[]/g, '') &&
+          item !== data?.phonetics[2]?.text?.replace(/[\/\]\[]/g, '') &&
+          item !== data?.phonetics[3]?.text?.replace(/[\/\]\[]/g, '') &&
           item !== data.word
       ),
       audios: favs.audios.filter(
@@ -417,19 +426,30 @@ export default function Dictionary() {
                       ) : (
                         <b>{data?.word}</b>
                       )}
-                      {data.phonetic ? (
-                        <Box>
-                          <Typography variant="h5" color="textSecondary">
-                            [ {data.phonetic.replace(/[\/\]\[]/g, '')} ]
-                          </Typography>
-                        </Box>
-                      ) : (
-                        <Box>
-                          <Typography variant="h5" color="textSecondary">
-                            [ {data.word} ]
-                          </Typography>
-                        </Box>
-                      )}
+                      <Box>
+                        <Typography variant="h5" color="textSecondary">
+                          [{' '}
+                          {data?.phonetic?.replace(/[\/\]\[]/g, '') ||
+                            data?.phonetics[0]?.text?.replace(
+                              /[\/\]\[]/g,
+                              ''
+                            ) ||
+                            data?.phonetics[1]?.text?.replace(
+                              /[\/\]\[]/g,
+                              ''
+                            ) ||
+                            data?.phonetics[2]?.text?.replace(
+                              /[\/\]\[]/g,
+                              ''
+                            ) ||
+                            data?.phonetics[3]?.text?.replace(
+                              /[\/\]\[]/g,
+                              ''
+                            ) ||
+                            data.word}{' '}
+                          ]
+                        </Typography>
+                      </Box>
                     </Typography>
                   </Box>
                   <br />
@@ -532,10 +552,10 @@ export default function Dictionary() {
                   indicatorColor="secondary"
                   // centered
                   variant="scrollable"
-                  scrollButtons="auto"
+                  scrollButtons
                   allowScrollButtonsMobile
                 >
-                  {[0, 1, 2, 3, 4].map(
+                  {[...Array(10).keys()].map(
                     (i) =>
                       data.meanings[i] && (
                         <Tab
@@ -551,7 +571,7 @@ export default function Dictionary() {
                   )}
                 </Tabs>
               </Box>
-              {[0, 1, 2, 3, 4].map((i) => (
+              {[...Array(10).keys()].map((i) => (
                 <TabPanel value={tab} index={i} key={i}>
                   {data.meanings[i] && (
                     <Box>
@@ -589,7 +609,7 @@ export default function Dictionary() {
                               sx={{ flexWrap: 'wrap', gap: 1 }}
                             >
                               {[...new Set(data.meanings[i].synonyms)]
-                                .filter((i) => i.constructor.name == 'String')
+                                .filter((i) => i.constructor.name === 'String')
                                 .map((i, index) => (
                                   <Box key={index}>
                                     <Chip
