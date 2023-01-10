@@ -133,61 +133,47 @@ export default function Dictionary() {
   const [openNoAudio, setOpenNoAudio] = useState(false) // no audio notifications
   const [openAddFav, setOpenAddFav] = useState(false) // add fav notifications
 
-  const [favs, setFavs] = useState([]) // array of favourite words
-  const [phonetics, setPhonetics] = useState([]) // array of phonetics of favourite words
-  const [audios, setAudios] = useState([]) // array of audio of favourite words
+  const [favs, setFavs] = useState(
+    JSON.parse(localStorage.getItem('favs')) || {
+      words: [],
+      phonetics: [],
+      audios: [],
+    }
+  )
 
   // localStorage
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem('favs')) !== null) {
-      setFavs(JSON.parse(localStorage.getItem('favs')))
-      setPhonetics(JSON.parse(localStorage.getItem('phonetics')))
-      setAudios(JSON.parse(localStorage.getItem('audios')))
-    }
-  }, [])
-
-  useEffect(() => {
-    if (favs !== null || phonetics !== null || audios !== null) {
+    if (favs !== null) {
       localStorage.setItem('favs', JSON.stringify(favs))
-      localStorage.setItem('phonetics', JSON.stringify(phonetics))
-      localStorage.setItem('audios', JSON.stringify(audios))
     }
-  }, [favs, phonetics, audios])
+  }, [favs])
 
   const setFavourite = () => {
-    if (favs?.indexOf(data.word) === -1) {
-      setFavs((prevFavs) => [...prevFavs, data.word])
-      if (data.phonetic) {
-        setPhonetics((prevPhonetics) => [
-          ...prevPhonetics,
-          data.phonetic.replace(/[\/\]\[]/g, ''),
-        ])
-      } else setPhonetics((prevPhonetics) => [...prevPhonetics, data.word])
-      setAudios((prevAudios) => [
-        ...prevAudios,
-        `${urlAudio}/${data.word}--_gb_1.mp3`,
-      ])
+    if (!favs.words?.includes(data.word)) {
+      setFavs({
+        words: [...favs?.words, data.word],
+        phonetics: [
+          ...favs?.phonetics,
+          data?.phonetic?.replace(/[\/\]\[]/g, '') || data.word,
+        ],
+        audios: [...favs?.audios, `${urlAudio}/${data.word}--_gb_1.mp3`],
+      })
+      setOpenAddFav(true)
     }
-    setOpenAddFav(true)
   }
 
   const setNotFavourite = () => {
-    setFavs((prevFavs) => prevFavs.filter((item) => item !== data.word))
-    if (data.phonetic) {
-      setPhonetics((prevPhonetics) =>
-        prevPhonetics.filter(
-          (item) => item !== data?.phonetic?.replace(/[\/\]\[]/g, '')
-        )
-      )
-    } else
-      setPhonetics((prevPhonetics) =>
-        prevPhonetics.filter((item) => item !== data.word)
-      )
-    setAudios((prevAudios) =>
-      prevAudios.filter(
+    setFavs({
+      words: favs.words.filter((item) => item !== data.word),
+      phonetics: favs.phonetics.filter(
+        (item) =>
+          item !== data?.phonetic?.replace(/[\/\]\[]/g, '') &&
+          item !== data.word
+      ),
+      audios: favs.audios.filter(
         (item) => item !== `${urlAudio}/${data.word}--_gb_1.mp3`
-      )
-    )
+      ),
+    })
   }
 
   const [tab, setTab] = useState(0) // tabs state
@@ -204,6 +190,7 @@ export default function Dictionary() {
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem('dataDictionary')))
     setAudioWord(JSON.parse(localStorage.getItem('audioWord')))
+    setFavs(JSON.parse(localStorage.getItem('favs')))
   }, [])
 
   useEffect(() => {
@@ -298,12 +285,14 @@ export default function Dictionary() {
     setAudioWord('')
   }
 
-  let favsLength = [...Array(favs?.length).keys()]
+  let favsLength = [...Array(favs?.words?.length).keys()]
 
   const clearAllFavs = () => {
-    setFavs([])
-    setPhonetics([])
-    setAudios([])
+    setFavs({
+      words: [],
+      phonetics: [],
+      audios: [],
+    })
   }
 
   useEffect(() => {
@@ -460,7 +449,7 @@ export default function Dictionary() {
                 </Box>
 
                 <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                  {favs?.includes(data.word) ? (
+                  {favs?.words?.includes(data.word) ? (
                     <IconButton
                       onClick={setNotFavourite}
                       color="error"
@@ -510,7 +499,7 @@ export default function Dictionary() {
                   </IconButton>
                 )}
 
-                {favs?.includes(data.word) ? (
+                {favs?.words?.includes(data.word) ? (
                   <IconButton
                     onClick={setNotFavourite}
                     color="error"
@@ -698,14 +687,18 @@ export default function Dictionary() {
               <br />
               <Divider>
                 <Typography variant="h3" sx={{ textAlign: 'center' }}>
-                  <Badge badgeContent={favs?.length} color="secondary" max={99}>
+                  <Badge
+                    badgeContent={favs?.words?.length}
+                    color="secondary"
+                    max={99}
+                  >
                     <b>Favourites</b>
                   </Badge>
                 </Typography>
               </Divider>
               <br />
             </>
-            {favs?.length > 0 ? (
+            {favs?.words?.length > 0 ? (
               <Grid
                 container
                 // direction="row"
@@ -728,21 +721,17 @@ export default function Dictionary() {
                               secondaryAction={
                                 <IconButton
                                   onClick={() => {
-                                    setFavs((prevFavs) =>
-                                      prevFavs.filter(
-                                        (item) => item !== favs[index]
-                                      )
-                                    )
-                                    setPhonetics((prevPhonetics) =>
-                                      prevPhonetics.filter(
-                                        (item) => item !== phonetics[index]
-                                      )
-                                    )
-                                    setAudios((prevAudios) =>
-                                      prevAudios.filter(
-                                        (item) => item !== audios[index]
-                                      )
-                                    )
+                                    setFavs({
+                                      words: favs.words.filter(
+                                        (item) => item !== favs.words[index]
+                                      ),
+                                      phonetics: favs.phonetics.filter(
+                                        (item) => item !== favs.phonetics[index]
+                                      ),
+                                      audios: favs.audios.filter(
+                                        (item) => item !== favs.audios[index]
+                                      ),
+                                    })
                                   }}
                                   edge="end"
                                   aria-label="delete"
@@ -755,9 +744,11 @@ export default function Dictionary() {
                             >
                               <ListItemButton
                                 onClick={
-                                  audios[index]
+                                  favs.audios[index]
                                     ? () => {
-                                        let audio = new Audio(audios[index])
+                                        let audio = new Audio(
+                                          favs.audios[index]
+                                        )
                                         audio.volume = 0.3
                                         audio.play()
                                       }
@@ -772,12 +763,14 @@ export default function Dictionary() {
                                         behavior: 'smooth',
                                       })
                                       axios
-                                        .get(`${urlDictionary}/${favs[index]}`)
+                                        .get(
+                                          `${urlDictionary}/${favs.words[index]}`
+                                        )
                                         .then((response) => {
                                           setTab(0)
                                           setData(response.data[0])
 
-                                          let url = `${urlAudio}/${favs[index]}--_gb_1.mp3`
+                                          let url = `${urlAudio}/${favs.words[index]}--_gb_1.mp3`
                                           setAudioWord(url)
                                         })
                                         .catch((error) => {
@@ -799,12 +792,13 @@ export default function Dictionary() {
                                       variant="h4"
                                       color="textPrimary"
                                     >
-                                      {favs[index].length > 16 ? (
+                                      {favs.words[index].length > 16 ? (
                                         <b>
-                                          {favs[index].substr(-150, 13) + '…'}
+                                          {favs.words[index].substr(-150, 13) +
+                                            '…'}
                                         </b>
                                       ) : (
-                                        <b>{favs[index]}</b>
+                                        <b>{favs.words[index]}</b>
                                       )}
                                     </Typography>
                                   }
@@ -813,8 +807,8 @@ export default function Dictionary() {
                                       variant="p"
                                       color="textSecondary"
                                     >
-                                      {phonetics[index]
-                                        ? '[ ' + phonetics[index] + ' ]'
+                                      {favs.phonetics[index]
+                                        ? '[ ' + favs.phonetics[index] + ' ]'
                                         : '[ - ]'}
                                     </Typography>
                                   }
@@ -894,7 +888,7 @@ export default function Dictionary() {
           </>
         )}
         <Snackbar
-          open={openAddFav} // todo
+          open={openAddFav}
           autoHideDuration={3000}
           onClose={handleCloseAddFav}
         >

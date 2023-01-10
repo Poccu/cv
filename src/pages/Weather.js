@@ -119,8 +119,12 @@ export default function Weather({ celsius }) {
   const [isLoading, setIsLoading] = useState(true)
   const [open, setOpen] = useState(false)
 
-  const [lat, setLat] = useState(JSON.parse(localStorage.getItem('lat')) || 0)
-  const [lon, setLon] = useState(JSON.parse(localStorage.getItem('lon')) || 0)
+  const [coords, setCoords] = useState(
+    JSON.parse(localStorage.getItem('coords')) || {
+      lat: 0,
+      lon: 0,
+    }
+  )
 
   const [forecast, setForecast] = useState({})
   const [hourlyForecast, setHourlyForecast] = useState([])
@@ -128,23 +132,16 @@ export default function Weather({ celsius }) {
   // localStorage
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem('dataWeather')))
-    setLat(JSON.parse(localStorage.getItem('lat')))
-    setLon(JSON.parse(localStorage.getItem('lon')))
+    setCoords(JSON.parse(localStorage.getItem('coords')))
     setForecast(JSON.parse(localStorage.getItem('forecast')))
     setHourlyForecast(JSON.parse(localStorage.getItem('hourlyForecast')))
   }, [])
 
   useEffect(() => {
-    if (lat !== null) {
-      localStorage.setItem('lat', JSON.stringify(lat))
+    if (coords !== null) {
+      localStorage.setItem('coords', JSON.stringify(coords))
     }
-  }, [lat])
-
-  useEffect(() => {
-    if (lon !== null) {
-      localStorage.setItem('lon', JSON.stringify(lon))
-    }
-  }, [lon])
+  }, [coords])
 
   useEffect(() => {
     if (forecast !== null) {
@@ -174,8 +171,10 @@ export default function Weather({ celsius }) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setIsLoading(true)
-        setLat(position.coords.latitude)
-        setLon(position.coords.longitude)
+        setCoords({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        })
         const urlGeo = `${apiUrl}/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}`
         axios
           .get(urlGeo)
@@ -192,8 +191,8 @@ export default function Weather({ celsius }) {
   }
 
   useEffect(() => {
-    const urlForecast = `${apiUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${apiKey}`
-    if (lat !== null || lon !== null) {
+    if (coords !== null) {
+      const urlForecast = `${apiUrl}/onecall?lat=${coords.lat}&lon=${coords.lon}&exclude=minutely&appid=${apiKey}`
       axios
         .get(urlForecast)
         .then((response) => {
@@ -264,8 +263,10 @@ export default function Weather({ celsius }) {
       axios
         .get(url)
         .then((response) => {
-          setLat(response.data.coord.lat)
-          setLon(response.data.coord.lon)
+          setCoords({
+            lat: response.data.coord.lat,
+            lon: response.data.coord.lon,
+          })
           setData(response.data)
         })
         .catch((error) => {
