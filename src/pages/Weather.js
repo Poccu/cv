@@ -274,6 +274,7 @@ export default function Weather({ celsius }) {
           setIsLoading(false)
         })
       setLocation('')
+      event.target.blur()
     }
   }
 
@@ -1122,7 +1123,13 @@ export default function Weather({ celsius }) {
             >
               {todayDate}
             </Typography>
-            <br />
+            <Box
+              sx={{
+                display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+              }}
+            >
+              <br />
+            </Box>
             <br />
             <Grid
               container
@@ -1180,7 +1187,7 @@ export default function Weather({ celsius }) {
                       variant="h2"
                       sx={{ textAlign: 'center', letterSpacing: 5 }}
                     >
-                      {!isLoading ? (
+                      {!isLoading ? ( // todo
                         <b>{data.name.toUpperCase()}</b>
                       ) : (
                         <Skeleton />
@@ -1202,7 +1209,18 @@ export default function Weather({ celsius }) {
                       )}
                     </Typography>
                   </Box>
-                  <br />
+                  <Box
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'none',
+                        md: 'none',
+                        lg: 'block',
+                      },
+                    }}
+                  >
+                    <br />
+                  </Box>
                   <Grid
                     container
                     direction="row"

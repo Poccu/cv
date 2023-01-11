@@ -239,6 +239,7 @@ export default function Dictionary() {
           setOpenNoData(true)
         })
       setSearchWord('')
+      event.target.blur()
     }
   }
 
