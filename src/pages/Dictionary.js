@@ -583,18 +583,78 @@ export default function Dictionary() {
                       <Typography variant="h5">
                         <b>Definition</b>
                       </Typography>
-                      <br />
                       {data.meanings[i].definitions.map((i, index) => (
                         <Box key={index}>
-                          <Typography color="textSecondary">
-                            - {i.definition}
-                          </Typography>
-                          {i.example && (
-                            <Typography color="textSecondary">
-                              <i>'{i.example}'</i>
-                            </Typography>
-                          )}
-                          <br />
+                          {i.definition.length > 1 &&
+                            !i.definition.includes('http') && (
+                              <>
+                                <br />
+                                <Typography color="textSecondary">
+                                  {i.definition}
+                                </Typography>
+                                {i.example && (
+                                  <Typography
+                                    color="textSecondary"
+                                    sx={{ ml: 1 }}
+                                  >
+                                    <i>
+                                      <span
+                                        dangerouslySetInnerHTML={{
+                                          __html: i.example
+                                            .split(/ |\s\s\s/g)
+                                            .map(
+                                              (str) =>
+                                                `<li> ${str.trim()} </li>`
+                                            )
+                                            .join(' ')
+                                            .split(' ')
+                                            .map((word) =>
+                                              word
+                                                .toLowerCase()
+                                                .startsWith(
+                                                  data?.sourceUrls[0]?.replace(
+                                                    'https://en.wiktionary.org/wiki/',
+                                                    ''
+                                                  )
+                                                )
+                                                ? `<b>${word}</b>`
+                                                : word
+                                                    .toLowerCase()
+                                                    .startsWith(
+                                                      data?.sourceUrls[1]?.replace(
+                                                        'https://en.wiktionary.org/wiki/',
+                                                        ''
+                                                      )
+                                                    )
+                                                ? `<b>${word}</b>`
+                                                : word
+                                                    .toLowerCase()
+                                                    .startsWith(
+                                                      data?.sourceUrls[2]?.replace(
+                                                        'https://en.wiktionary.org/wiki/',
+                                                        ''
+                                                      )
+                                                    )
+                                                ? `<b>${word}</b>`
+                                                : word
+                                                    .toLowerCase()
+                                                    .startsWith(
+                                                      data?.sourceUrls[3]?.replace(
+                                                        'https://en.wiktionary.org/wiki/',
+                                                        ''
+                                                      )
+                                                    )
+                                                ? `<b>${word}</b>`
+                                                : word
+                                            )
+                                            .join(' '),
+                                        }}
+                                      />
+                                    </i>
+                                  </Typography>
+                                )}
+                              </>
+                            )}
                         </Box>
                       ))}
                       {data.meanings[i].synonyms.length > 0 && (
