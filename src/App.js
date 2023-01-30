@@ -219,12 +219,7 @@ export default function App() {
                 <>
                   <Header />
                   <main>
-                    <Password
-                      light={light}
-                      setLight={setLight}
-                      celsius={celsius}
-                      setCelsius={setCelsius}
-                    />
+                    <Password />
                   </main>
                 </>
               }
@@ -260,18 +255,18 @@ export default function App() {
                 onClick={() => setLight((prev) => !prev)}
                 color="inherit"
                 size="large"
-                title="Change Theme to Light Mode"
+                title="Change to Light Mode"
               >
-                <DarkModeOutlinedIcon fontSize="inherit" />
+                <LightModeOutlinedIcon fontSize="inherit" />
               </IconButton>
             ) : (
               <IconButton
                 onClick={() => setLight((prev) => !prev)}
                 color="inherit"
                 size="large"
-                title="Change Theme to Dark Mode"
+                title="Change to Dark Mode"
               >
-                <LightModeOutlinedIcon fontSize="inherit" />
+                <DarkModeOutlinedIcon fontSize="inherit" />
               </IconButton>
             )}
           </Box>

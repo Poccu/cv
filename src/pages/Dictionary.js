@@ -592,7 +592,7 @@ export default function Dictionary() {
                                 <Typography color="textSecondary">
                                   {i.definition}
                                 </Typography>
-                                {i.example && (
+                                {i.example && !i.example.includes('http') && (
                                   <Typography
                                     color="textSecondary"
                                     sx={{ ml: 1 }}

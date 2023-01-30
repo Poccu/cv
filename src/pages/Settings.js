@@ -32,18 +32,18 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
               onClick={() => setLight((prev) => !prev)}
               color="inherit"
               size="large"
-              title="Change Theme to Light Mode"
+              title="Change to Light Mode"
             >
-              <DarkModeOutlinedIcon fontSize="inherit" />
+              <LightModeOutlinedIcon fontSize="inherit" />
             </IconButton>
           ) : (
             <IconButton
               onClick={() => setLight((prev) => !prev)}
               color="inherit"
               size="large"
-              title="Change Theme to Dark Mode"
+              title="Change to Dark Mode"
             >
-              <LightModeOutlinedIcon fontSize="inherit" />
+              <DarkModeOutlinedIcon fontSize="inherit" />
             </IconButton>
           )}
         </Grid>
@@ -64,7 +64,7 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
               onClick={() => setCelsius(false)}
               color="inherit"
               size="large"
-              title="Change temperature to °F"
+              title="Change to °F"
               sx={{ width: '52px', height: '52px' }}
             >
               <h5>°C</h5>
@@ -74,7 +74,7 @@ export default function Settings({ light, setLight, celsius, setCelsius }) {
               onClick={() => setCelsius(true)}
               color="inherit"
               size="large"
-              title="Change temperature to °C"
+              title="Change to °C"
               sx={{ width: '52px', height: '52px' }}
             >
               <h5>°F</h5>
