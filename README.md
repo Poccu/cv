@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://poccu.github.io/cv/">    
-    <img src="https://s7.gifyu.com/images/logo_circle_200.png" alt="Logo" width="200" height="200">
+    <img src="https://s11.gifyu.com/images/SQD8J.png" alt="Logo" width="200" height="200">
   </a>
 
   <h3 align="center">👋 Hey there, my name is Grigory Chemeris</h3>
